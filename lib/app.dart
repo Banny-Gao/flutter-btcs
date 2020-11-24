@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
-import 'scoped_models/app_model.dart';
+import 'scoped_models/models.dart';
 import 'package:scoped_model/scoped_model.dart';
-import 'widgets/utilviews/toggle_theme_widget.dart';
+import 'components/toggle_theme_widget.dart';
 
-class CinematicApp extends StatelessWidget {
+import 'widgets/widgets.dart';
+
+class OreApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
@@ -25,52 +27,7 @@ class App extends StatefulWidget {
 class AppState extends State<App> {
   PageController _pageController;
   int _page = 0;
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        actions: <Widget>[
-          ToggleThemeButton(),
-        ],
-        title: Text("Cinematic"),
-      ),
-      body: PageView(
-        children: [],
-        pageSnapping: true,
-        controller: _pageController,
-        onPageChanged: (int index) {
-          setState(() {
-            _page = index;
-          });
-        },
-      ),
-      bottomNavigationBar: BottomNavigationBar(
-        items: _getNavBarItems(),
-        onTap: _navigationTapped,
-        currentIndex: _page,
-      ),
-    );
-  }
-
-  List<BottomNavigationBarItem> _getNavBarItems() {
-    return [
-      BottomNavigationBarItem(
-          icon: Icon(Icons.thumb_up), title: Text('Popular')),
-      BottomNavigationBarItem(
-          icon: Icon(Icons.live_tv), title: Text('On The Air')),
-      BottomNavigationBarItem(icon: Icon(Icons.star), title: Text('Top Rated')),
-    ];
-  }
-
-  List<Widget> _getMediaList() {
-    return <Widget>[];
-  }
-
-  void _navigationTapped(int page) {
-    _pageController.animateToPage(page,
-        duration: const Duration(milliseconds: 300), curve: Curves.ease);
-  }
+  String _appBarTitle = 'ORE';
 
   @override
   void initState() {
@@ -82,5 +39,56 @@ class AppState extends State<App> {
   void dispose() {
     super.dispose();
     _pageController.dispose();
+  }
+
+  void _navigationTapped(int page) {
+    _pageController.animateToPage(page,
+        duration: const Duration(milliseconds: 300), curve: Curves.ease);
+  }
+
+  void _onPageChanged(int index) {
+    setState(() {
+      _page = index;
+    });
+  }
+
+  List<Widget> _getMediaList() {
+    return <Widget>[
+      Home(),
+      GroupBooking(),
+      Owner(),
+    ];
+  }
+
+  List<BottomNavigationBarItem> _getNavBarItems() {
+    return [
+      BottomNavigationBarItem(icon: Icon(Icons.home), label: '首页'),
+      BottomNavigationBarItem(
+          icon: Icon(Icons.monetization_on_outlined), label: '拼团'),
+      BottomNavigationBarItem(icon: Icon(Icons.account_circle), label: '我的'),
+    ];
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        actions: <Widget>[
+          ToggleThemeButton(),
+        ],
+        title: Text('$_appBarTitle'),
+      ),
+      body: PageView(
+        children: _getMediaList(),
+        pageSnapping: true,
+        controller: _pageController,
+        onPageChanged: _onPageChanged,
+      ),
+      bottomNavigationBar: BottomNavigationBar(
+        items: _getNavBarItems(),
+        onTap: _navigationTapped,
+        currentIndex: _page,
+      ),
+    );
   }
 }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import '../../scoped_models/app_model.dart';
 import 'package:scoped_model/scoped_model.dart';
+
+import '../scoped_models/models.dart';
 
 class ToggleThemeButton extends StatelessWidget {
   const ToggleThemeButton({

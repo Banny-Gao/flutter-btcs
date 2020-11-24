@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:scoped_model/scoped_model.dart';
 
-import 'scoped_models/app_model.dart';
+import 'scoped_models/models.dart';
 import 'app.dart';
 
 void collectLog(String line) {
@@ -28,7 +28,7 @@ void main() async {
 
   runZoned(
     () => runApp(ScopedModel<AppModel>(
-        model: AppModel(sharedPreferences), child: CinematicApp())),
+        model: AppModel(sharedPreferences), child: OreApp())),
     zoneSpecification: ZoneSpecification(
       print: (Zone self, ZoneDelegate parent, Zone zone, String line) {
         collectLog(line); // 收集日志
