@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:scoped_model/scoped_model.dart';
 
-import 'scoped_models/models.dart';
+import 'scoped_models/index.dart';
 import 'app.dart';
 
 void collectLog(String line) {
@@ -24,11 +24,8 @@ void main() async {
     reportErrorAndLog(details);
   };
 
-  SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
-
   runZoned(
-    () => runApp(ScopedModel<AppModel>(
-        model: AppModel(sharedPreferences), child: OreApp())),
+    () => runApp(ScopedModel<AppModel>(model: AppModel(), child: OreApp())),
     zoneSpecification: ZoneSpecification(
       print: (Zone self, ZoneDelegate parent, Zone zone, String line) {
         collectLog(line); // 收集日志

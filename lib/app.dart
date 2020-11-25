@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'scoped_models/models.dart';
 import 'package:scoped_model/scoped_model.dart';
+
+import 'scoped_models/index.dart';
 import 'components/toggle_theme_widget.dart';
 
 import 'widgets/widgets.dart';
