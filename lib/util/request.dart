@@ -1,86 +1,67 @@
-import 'dart:collection';
+import 'dart:async';
+import 'dart:convert';
+import 'dart:io';
+
+import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
-import '../scoped_models/index.dart';
+import 'package:dio/adapter.dart';
 
-class CacheObject {
-  CacheObject(this.response)
-      : timeStamp = DateTime.now().millisecondsSinceEpoch;
-  Response response;
-  int timeStamp;
+import '../scopedModels/index.dart';
+import '../models/index.dart';
+import 'index.dart';
 
-  @override
-  bool operator ==(other) {
-    return response.hashCode == other.hashCode;
+class Request {
+  static NetCache netCache = NetCache();
+
+  Request([this.context]) {
+    _options = Options(extra: {"context": context});
   }
 
-  @override
-  int get hashCode => response.realUri.hashCode;
-}
+  BuildContext context;
+  Options _options;
+  static Dio dio = new Dio(BaseOptions(
+    baseUrl: 'https://api.github.com/',
+    headers: {
+      HttpHeaders.acceptHeader: "application/vnd.github.squirrel-girl-preview,"
+          "application/vnd.github.symmetra-preview+json",
+    },
+  ));
 
-class NetCache extends Interceptor {
-  // 为确保迭代器顺序和对象插入时间一致顺序一致，我们使用LinkedHashMap
-  var cache = LinkedHashMap<String, CacheObject>();
+  static void init() {
+    // 添加缓存插件
+    dio.interceptors.add(Request.netCache);
+    // 设置用户token（可能为null，代表未登录）
+    dio.options.headers[HttpHeaders.authorizationHeader] =
+        ProfileModel.profile.token;
 
-  @override
-  onRequest(RequestOptions options) async {
-    if (!AppModel.profile.cache.enable) return options;
-    // refresh标记是否是"下拉刷新"
-    bool refresh = options.extra["refresh"] == true;
-    //如果是下拉刷新，先删除相关缓存
-    if (refresh) {
-      if (options.extra["list"] == true) {
-        //若是列表，则只要url中包含当前path的缓存全部删除（简单实现，并不精准）
-        cache.removeWhere((key, v) => key.contains(options.path));
-      } else {
-        // 如果不是列表，则只删除uri相同的缓存
-        delete(options.uri.toString());
-      }
-      return options;
-    }
-    if (options.extra["noCache"] != true &&
-        options.method.toLowerCase() == 'get') {
-      String key = options.extra["cacheKey"] ?? options.uri.toString();
-      var ob = cache[key];
-      if (ob != null) {
-        //若缓存未过期，则返回缓存内容
-        if ((DateTime.now().millisecondsSinceEpoch - ob.timeStamp) / 1000 <
-            AppModel.profile.cache.maxAge) {
-          return cache[key].response;
-        } else {
-          //若已过期则删除缓存，继续向服务器请求
-          cache.remove(key);
-        }
-      }
+    // 在调试模式下需要抓包调试，所以我们使用代理，并禁用HTTPS证书校验
+    if (!AppModel.isRelease) {
+      (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
+          (client) {
+        client.findProxy = (uri) {
+          return "PROXY 10.1.10.250:8888";
+        };
+        //代理工具会提供一个抓包的自签名证书，会通不过证书校验，所以我们禁用证书校验
+        client.badCertificateCallback =
+            (X509Certificate cert, String host, int port) => true;
+      };
     }
   }
 
-  @override
-  onError(DioError err) async {
-    // 错误状态不缓存
-  }
-
-  @override
-  onResponse(Response response) async {
-    // 如果启用缓存，将返回结果保存到缓存
-    if (AppModel.profile.cache.enable) {
-      _saveCache(response);
-    }
-  }
-
-  _saveCache(Response object) {
-    RequestOptions options = object.request;
-    if (options.extra["noCache"] != true &&
-        options.method.toLowerCase() == "get") {
-      // 如果缓存数量超过最大数量限制，则先移除最早的一条记录
-      if (cache.length == AppModel.profile.cache.maxCount) {
-        cache.remove(cache[cache.keys.first]);
-      }
-      String key = options.extra["cacheKey"] ?? options.uri.toString();
-      cache[key] = CacheObject(object);
-    }
-  }
-
-  void delete(String key) {
-    cache.remove(key);
+  // 登录接口，登录成功后返回用户信息
+  Future<User> login(String login, String pwd) async {
+    String basic = 'Basic ' + base64.encode(utf8.encode('$login:$pwd'));
+    var r = await dio.get(
+      "/users/$login",
+      options: _options.merge(headers: {
+        HttpHeaders.authorizationHeader: basic
+      }, extra: {
+        "noCache": true,
+      }),
+    );
+    dio.options.headers[HttpHeaders.authorizationHeader] = basic;
+    Request.netCache.cache.clear();
+    ProfileModel.profile.token = basic;
+    return User.fromJson(r.data);
   }
 }

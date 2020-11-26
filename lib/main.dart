@@ -1,9 +1,8 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:scoped_model/scoped_model.dart';
 
-import 'scoped_models/index.dart';
+import 'scopedModels/index.dart';
 import 'app.dart';
 
 void collectLog(String line) {

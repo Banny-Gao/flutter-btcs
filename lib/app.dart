@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:scoped_model/scoped_model.dart';
 
-import 'scoped_models/index.dart';
-import 'components/toggle_theme_widget.dart';
+import 'scopedModels/index.dart';
+import 'components/ToggleThemeButton.dart';
 
 import 'widgets/widgets.dart';
 
@@ -10,13 +10,25 @@ class OreApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return ScopedModelDescendant<AppModel>(
-      builder: (context, child, model) => MaterialApp(
-        title: 'Ore',
+    return ScopedModelDescendant<AppModel>(builder: (context, child, model) {
+      print(model);
+      final String initialRoute = model.isLogin ? '/' : 'login';
+
+      return MaterialApp(
         theme: model.theme,
-        home: App(),
-      ),
-    );
+        initialRoute: initialRoute,
+        // localizationsDelegates: [
+        //   // 本地化的代理类
+        //   GlobalMaterialLocalizations.delegate,
+        //   GlobalWidgetsLocalizations.delegate,
+        //   GmLocalizationsDelegate()
+        // ],
+        routes: <String, WidgetBuilder>{
+          "/": (context) => App(),
+          "login": (context) => Login(),
+        },
+      );
+    });
   }
 }
 
