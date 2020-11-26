@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:scoped_model/scoped_model.dart';
 
 import 'scopedModels/index.dart';
-import 'components/ToggleThemeButton.dart';
+import 'common/toggleThemeButton.dart';
 
 import 'widgets/widgets.dart';
 
@@ -17,12 +17,6 @@ class OreApp extends StatelessWidget {
       return MaterialApp(
         theme: model.theme,
         initialRoute: initialRoute,
-        // localizationsDelegates: [
-        //   // 本地化的代理类
-        //   GlobalMaterialLocalizations.delegate,
-        //   GlobalWidgetsLocalizations.delegate,
-        //   GmLocalizationsDelegate()
-        // ],
         routes: <String, WidgetBuilder>{
           "/": (context) => App(),
           "login": (context) => Login(),

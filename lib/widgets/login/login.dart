@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
-import './style.dart' as Theme;
-import './bubbleIndicationPainter.dart';
+import '../../common/style.dart' as Theme;
+import 'tabIndicationPainter.dart';
 
 class Login extends StatefulWidget {
   Login({Key key}) : super(key: key);
@@ -57,7 +57,7 @@ class _LoginPageState extends State<Login> with SingleTickerProviderStateMixin {
             decoration: new BoxDecoration(
               gradient: new LinearGradient(colors: [
                 Theme.Colors.whiteGradientEnd,
-                Theme.Colors.whiteGradientStart
+                Theme.Colors.greenGradientEnd
               ], stops: [
                 0.0,
                 1.0
@@ -128,29 +128,24 @@ class _LoginPageState extends State<Login> with SingleTickerProviderStateMixin {
     _pageController = PageController();
   }
 
-  void showInSnackBar(String value) {
-    FocusScope.of(context).requestFocus(new FocusNode());
-    _scaffoldKey.currentState?.removeCurrentSnackBar();
-    _scaffoldKey.currentState.showSnackBar(new SnackBar(
-      content: new Text(
-        value,
-        textAlign: TextAlign.center,
-        style: TextStyle(
-            color: Colors.white,
-            fontSize: 16.0,
-            fontFamily: "WorkSansSemiBold"),
-      ),
-      backgroundColor: Colors.blue,
-      duration: Duration(seconds: 3),
-    ));
-  }
-
   Widget _buildMenuBar(BuildContext context) {
     return Container(
       width: 300.0,
       height: 50.0,
       decoration: BoxDecoration(
-        color: Color(0x552B2B2B),
+        boxShadow: <BoxShadow>[
+          BoxShadow(
+            color: Theme.Colors.blueGradientStart,
+            offset: Offset(0.0, -4.0),
+            blurRadius: 12.5,
+          ),
+          BoxShadow(
+            color: Theme.Colors.blueGradientEnd,
+            offset: Offset(0.0, 4.0),
+            blurRadius: 12.5,
+          ),
+        ],
+        gradient: Theme.Colors.blueGradient,
         borderRadius: BorderRadius.all(Radius.circular(25.0)),
       ),
       child: CustomPaint(
@@ -217,8 +212,8 @@ class _LoginPageState extends State<Login> with SingleTickerProviderStateMixin {
                           decoration: InputDecoration(
                             border: InputBorder.none,
                             icon: FaIcon(
-                              FontAwesomeIcons.envelope,
-                              color: Colors.black,
+                              FontAwesomeIcons.phone,
+                              color: Theme.Colors.primaryFontColor,
                               size: 22.0,
                             ),
                             hintText: "请输入手机号",
@@ -244,9 +239,9 @@ class _LoginPageState extends State<Login> with SingleTickerProviderStateMixin {
                             icon: FaIcon(
                               FontAwesomeIcons.lock,
                               size: 22.0,
-                              color: Colors.black,
+                              color: Theme.Colors.primaryFontColor,
                             ),
-                            hintText: "Password",
+                            hintText: "请输入密码",
                             hintStyle: TextStyle(fontSize: 17.0),
                             suffixIcon: GestureDetector(
                               onTap: _toggleLogin,
@@ -289,16 +284,13 @@ class _LoginPageState extends State<Login> with SingleTickerProviderStateMixin {
                     //shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(5.0))),
                     child: Padding(
                       padding: const EdgeInsets.symmetric(
-                          vertical: 10.0, horizontal: 42.0),
+                          vertical: 10.0, horizontal: 40.0),
                       child: Text(
-                        "LOGIN",
-                        style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 25.0,
-                            fontFamily: "WorkSansBold"),
+                        "登录",
+                        style: TextStyle(color: Colors.white, fontSize: 16.0),
                       ),
                     ),
-                    onPressed: () => showInSnackBar("Login button pressed")),
+                    onPressed: () => {}),
               ),
             ],
           ),
@@ -307,12 +299,9 @@ class _LoginPageState extends State<Login> with SingleTickerProviderStateMixin {
             child: FlatButton(
                 onPressed: () {},
                 child: Text(
-                  "Forgot Password?",
+                  "忘记密码?",
                   style: TextStyle(
-                      decoration: TextDecoration.underline,
-                      color: Colors.white,
-                      fontSize: 16.0,
-                      fontFamily: "WorkSansMedium"),
+                      decoration: TextDecoration.underline, fontSize: 14.0),
                 )),
           ),
         ],
@@ -327,7 +316,6 @@ class _LoginPageState extends State<Login> with SingleTickerProviderStateMixin {
         children: <Widget>[
           Stack(
             alignment: Alignment.topCenter,
-            overflow: Overflow.visible,
             children: <Widget>[
               Card(
                 elevation: 2.0,
@@ -337,117 +325,25 @@ class _LoginPageState extends State<Login> with SingleTickerProviderStateMixin {
                 ),
                 child: Container(
                   width: 300.0,
-                  height: 360.0,
+                  height: 110.0,
                   child: Column(
                     children: <Widget>[
                       Padding(
                         padding: EdgeInsets.only(
                             top: 20.0, bottom: 20.0, left: 25.0, right: 25.0),
                         child: TextField(
-                          focusNode: myFocusNodeName,
-                          controller: signupNameController,
-                          keyboardType: TextInputType.text,
-                          textCapitalization: TextCapitalization.words,
+                          focusNode: myFocusNodePhoneLogin,
+                          controller: loginPhoneController,
+                          keyboardType: TextInputType.phone,
                           style: TextStyle(fontSize: 16.0, color: Colors.black),
                           decoration: InputDecoration(
                             border: InputBorder.none,
                             icon: FaIcon(
-                              FontAwesomeIcons.user,
+                              FontAwesomeIcons.phone,
                               color: Colors.black,
                             ),
-                            hintText: "Name",
+                            hintText: "请输入手机号",
                             hintStyle: TextStyle(fontSize: 16.0),
-                          ),
-                        ),
-                      ),
-                      Container(
-                        width: 250.0,
-                        height: 1.0,
-                        color: Colors.grey[400],
-                      ),
-                      Padding(
-                        padding: EdgeInsets.only(
-                            top: 20.0, bottom: 20.0, left: 25.0, right: 25.0),
-                        child: TextField(
-                          focusNode: myFocusNodeEmail,
-                          controller: signupEmailController,
-                          keyboardType: TextInputType.emailAddress,
-                          style: TextStyle(fontSize: 16.0, color: Colors.black),
-                          decoration: InputDecoration(
-                            border: InputBorder.none,
-                            icon: FaIcon(
-                              FontAwesomeIcons.envelope,
-                              color: Colors.black,
-                            ),
-                            hintText: "Email Address",
-                            hintStyle: TextStyle(fontSize: 16.0),
-                          ),
-                        ),
-                      ),
-                      Container(
-                        width: 250.0,
-                        height: 1.0,
-                        color: Colors.grey[400],
-                      ),
-                      Padding(
-                        padding: EdgeInsets.only(
-                            top: 20.0, bottom: 20.0, left: 25.0, right: 25.0),
-                        child: TextField(
-                          focusNode: myFocusNodePassword,
-                          controller: signupPasswordController,
-                          obscureText: _obscureTextSignup,
-                          style: TextStyle(fontSize: 16.0, color: Colors.black),
-                          decoration: InputDecoration(
-                            border: InputBorder.none,
-                            icon: FaIcon(
-                              FontAwesomeIcons.lock,
-                              color: Colors.black,
-                            ),
-                            hintText: "Password",
-                            hintStyle: TextStyle(fontSize: 16.0),
-                            suffixIcon: GestureDetector(
-                              onTap: _toggleSignup,
-                              child: FaIcon(
-                                _obscureTextSignup
-                                    ? FontAwesomeIcons.eye
-                                    : FontAwesomeIcons.eyeSlash,
-                                size: 15.0,
-                                color: Colors.black,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                      Container(
-                        width: 250.0,
-                        height: 1.0,
-                        color: Colors.grey[400],
-                      ),
-                      Padding(
-                        padding: EdgeInsets.only(
-                            top: 20.0, bottom: 20.0, left: 25.0, right: 25.0),
-                        child: TextField(
-                          controller: signupConfirmPasswordController,
-                          obscureText: _obscureTextSignupConfirm,
-                          style: TextStyle(fontSize: 16.0, color: Colors.black),
-                          decoration: InputDecoration(
-                            border: InputBorder.none,
-                            icon: FaIcon(
-                              FontAwesomeIcons.lock,
-                              color: Colors.black,
-                            ),
-                            hintText: "Confirmation",
-                            hintStyle: TextStyle(fontSize: 16.0),
-                            suffixIcon: GestureDetector(
-                              onTap: _toggleSignupConfirm,
-                              child: FaIcon(
-                                _obscureTextSignupConfirm
-                                    ? FontAwesomeIcons.eye
-                                    : FontAwesomeIcons.eyeSlash,
-                                size: 15.0,
-                                color: Colors.black,
-                              ),
-                            ),
                           ),
                         ),
                       ),
@@ -456,7 +352,7 @@ class _LoginPageState extends State<Login> with SingleTickerProviderStateMixin {
                 ),
               ),
               Container(
-                margin: EdgeInsets.only(top: 340.0),
+                margin: EdgeInsets.only(top: 90.0),
                 decoration: new BoxDecoration(
                   borderRadius: BorderRadius.all(Radius.circular(5.0)),
                   boxShadow: <BoxShadow>[
@@ -479,16 +375,13 @@ class _LoginPageState extends State<Login> with SingleTickerProviderStateMixin {
                     //shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(5.0))),
                     child: Padding(
                       padding: const EdgeInsets.symmetric(
-                          vertical: 10.0, horizontal: 42.0),
+                          vertical: 10.0, horizontal: 20.0),
                       child: Text(
-                        "SIGN UP",
-                        style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 25.0,
-                            fontFamily: "WorkSansBold"),
+                        "获取验证码",
+                        style: TextStyle(color: Colors.white, fontSize: 16.0),
                       ),
                     ),
-                    onPressed: () => showInSnackBar("SignUp button pressed")),
+                    onPressed: () => {}),
               ),
             ],
           ),
