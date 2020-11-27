@@ -5,6 +5,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
 import 'package:dio/adapter.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../scopedModels/index.dart';
 import '../models/index.dart';
@@ -12,6 +13,7 @@ import 'index.dart';
 
 class Request {
   static NetCache netCache = NetCache();
+  SharedPreferences _prefs;
 
   Request([this.context]) {
     _options = Options(extra: {"context": context});
@@ -20,11 +22,7 @@ class Request {
   BuildContext context;
   Options _options;
   static Dio dio = new Dio(BaseOptions(
-    baseUrl: 'https://api.github.com/',
-    headers: {
-      HttpHeaders.acceptHeader: "application/vnd.github.squirrel-girl-preview,"
-          "application/vnd.github.symmetra-preview+json",
-    },
+    baseUrl: 'http://47.94.193.134:9099/api/',
   ));
 
   static void init() {
@@ -39,7 +37,7 @@ class Request {
       (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
           (client) {
         client.findProxy = (uri) {
-          return "PROXY 10.1.10.250:8888";
+          return "PROXY localhost:8888";
         };
         //代理工具会提供一个抓包的自签名证书，会通不过证书校验，所以我们禁用证书校验
         client.badCertificateCallback =

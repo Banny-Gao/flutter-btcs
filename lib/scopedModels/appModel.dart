@@ -3,6 +3,7 @@ import 'dart:core';
 import 'package:scoped_model/scoped_model.dart';
 
 import 'index.dart';
+import '../util/index.dart';
 
 class BaseModel extends Model {}
 
@@ -23,6 +24,6 @@ class AppModel extends Model
     await initProfile();
 
     //初始化网络请求相关配置
-    // Git.init();
+    Request.init();
   }
 }

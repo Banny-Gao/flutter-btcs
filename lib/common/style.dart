@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 
 class Colors {
   static const primaryFontColor = Color.fromARGB(255, 51, 51, 51);
+
   static const Color whiteGradientStart =
       const Color.fromARGB(255, 253, 251, 251);
   static const Color whiteGradientEnd =
