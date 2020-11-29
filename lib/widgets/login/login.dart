@@ -90,10 +90,13 @@ class _LoginPageState extends State<Login> with SingleTickerProviderStateMixin {
     myFocusNodePasswordLogin.addListener(() {
       if (!myFocusNodePasswordLogin.hasFocus) {
         // TextField has lost focus
-        _handlePasswordChanged(
+        final String value = _handlePasswordChanged(
           loginPasswordController.text,
-          _loginPassword,
         );
+
+        setState(() {
+          _loginPassword = value;
+        });
       }
     });
 
@@ -114,27 +117,33 @@ class _LoginPageState extends State<Login> with SingleTickerProviderStateMixin {
     myFocusNodePasswordRegister.addListener(() {
       if (!myFocusNodePasswordRegister.hasFocus) {
         // TextField has lost focus
-        _handlePasswordChanged(
+        final String value = _handlePasswordChanged(
           registerPasswordController.text,
-          _registerPassword,
         );
+
+        setState(() {
+          _registerPassword = value;
+        });
       }
     });
 
     myFocusNodeRepeatPasswordRegister.addListener(() {
-      if (!myFocusNodePasswordRegister.hasFocus) {
+      if (!myFocusNodeRepeatPasswordRegister.hasFocus) {
         // TextField has lost focus
-        final bool isInputValid = _handlePasswordChanged(
+        final String value = _handlePasswordChanged(
           registerPasswordRepeatController.text,
-          _registerPasswordRepeat,
         );
 
-        if (isInputValid && _registerPasswordRepeat != _registerPassword) {
-          Common.Alert.error(Utils.Constants.passwordRepeatErrorText,
-              currentState: _scaffoldKey.currentState);
-          this.setState(() {
-            _registerPasswordRepeat = null;
-          });
+        print('${_registerPasswordRepeat}, ${_registerPassword}');
+
+        if (value != '') {
+          if (value == _registerPassword)
+            setState(() {
+              _registerPasswordRepeat = value;
+            });
+          else
+            Common.Alert.error(Utils.Constants.passwordRepeatErrorText,
+                currentState: _scaffoldKey.currentState);
         }
       }
     });
@@ -274,7 +283,7 @@ class _LoginPageState extends State<Login> with SingleTickerProviderStateMixin {
                 children: <Widget>[
                   Padding(
                     padding:
-                        EdgeInsets.only(top: 20.0, left: 25.0, right: 25.0),
+                        EdgeInsets.only(top: 10.0, left: 25.0, right: 25.0),
                     child: TextField(
                       focusNode: myFocusNodePhoneLogin,
                       controller: loginPhoneController,
@@ -299,7 +308,7 @@ class _LoginPageState extends State<Login> with SingleTickerProviderStateMixin {
                   ),
                   Padding(
                     padding: EdgeInsets.only(
-                        top: 20.0, bottom: 20.0, left: 25.0, right: 25.0),
+                        top: 10.0, bottom: 10.0, left: 25.0, right: 25.0),
                     child: TextField(
                       focusNode: myFocusNodePasswordLogin,
                       controller: loginPasswordController,
@@ -396,7 +405,7 @@ class _LoginPageState extends State<Login> with SingleTickerProviderStateMixin {
                 children: <Widget>[
                   Padding(
                     padding: EdgeInsets.only(
-                        top: 20.0, bottom: 20.0, left: 25.0, right: 25.0),
+                        top: 10.0, bottom: 10.0, left: 25.0, right: 25.0),
                     child: TextField(
                       focusNode: myFocusNodePhoneRegister,
                       controller: registerPhoneController,
@@ -420,7 +429,7 @@ class _LoginPageState extends State<Login> with SingleTickerProviderStateMixin {
                   ),
                   Padding(
                     padding: EdgeInsets.only(
-                        top: 20.0, bottom: 20.0, left: 25.0, right: 25.0),
+                        top: 10.0, bottom: 10.0, left: 25.0, right: 25.0),
                     child: TextField(
                       focusNode: myFocusNodeCodeRegister,
                       controller: registerCodeController,
@@ -457,11 +466,11 @@ class _LoginPageState extends State<Login> with SingleTickerProviderStateMixin {
                   ),
                   Padding(
                     padding: EdgeInsets.only(
-                        top: 20.0, bottom: 20.0, left: 25.0, right: 25.0),
+                        top: 10.0, bottom: 10.0, left: 25.0, right: 25.0),
                     child: TextField(
                       focusNode: myFocusNodePasswordRegister,
                       controller: registerPasswordController,
-                      obscureText: _obscureTextLogin,
+                      obscureText: _obscureTextRegister,
                       style: TextStyle(fontSize: 16.0, color: Colors.black),
                       decoration: InputDecoration(
                           border: InputBorder.none,
@@ -474,9 +483,9 @@ class _LoginPageState extends State<Login> with SingleTickerProviderStateMixin {
                           suffixIcon: Padding(
                             padding: EdgeInsets.only(top: 16.0),
                             child: GestureDetector(
-                              onTap: _toggleLogin,
+                              onTap: _toggleRegisterPassword,
                               child: FaIcon(
-                                _obscureTextLogin
+                                _obscureTextRegister
                                     ? FontAwesomeIcons.eye
                                     : FontAwesomeIcons.eyeSlash,
                                 size: 15.0,
@@ -493,11 +502,11 @@ class _LoginPageState extends State<Login> with SingleTickerProviderStateMixin {
                   ),
                   Padding(
                     padding: EdgeInsets.only(
-                        top: 20.0, bottom: 20.0, left: 25.0, right: 25.0),
+                        top: 10.0, bottom: 10.0, left: 25.0, right: 25.0),
                     child: TextField(
                       focusNode: myFocusNodeRepeatPasswordRegister,
                       controller: registerPasswordRepeatController,
-                      obscureText: _obscureTextLogin,
+                      obscureText: _obscureTextRepeatRegister,
                       style: TextStyle(fontSize: 16.0, color: Colors.black),
                       decoration: InputDecoration(
                           border: InputBorder.none,
@@ -510,9 +519,9 @@ class _LoginPageState extends State<Login> with SingleTickerProviderStateMixin {
                           suffixIcon: Padding(
                             padding: EdgeInsets.only(top: 16.0),
                             child: GestureDetector(
-                              onTap: _toggleLogin,
+                              onTap: _toggleRegisterPasswordRepeat,
                               child: FaIcon(
-                                _obscureTextLogin
+                                _obscureTextRepeatRegister
                                     ? FontAwesomeIcons.eye
                                     : FontAwesomeIcons.eyeSlash,
                                 size: 15.0,
@@ -529,30 +538,20 @@ class _LoginPageState extends State<Login> with SingleTickerProviderStateMixin {
                   ),
                   Padding(
                     padding: EdgeInsets.only(
-                        top: 20.0, bottom: 20.0, left: 25.0, right: 25.0),
+                        top: 10.0, bottom: 10.0, left: 25.0, right: 25.0),
                     child: TextField(
                       focusNode: myFocusNodeInviteRegister,
                       controller: registerInviteController,
                       style: TextStyle(fontSize: 16.0, color: Colors.black),
                       decoration: InputDecoration(
-                          border: InputBorder.none,
-                          icon: FaIcon(
-                            FontAwesomeIcons.lock,
-                            size: 22.0,
-                            color: Common.Colors.primaryFontColor,
-                          ),
-                          labelText: "邀请码",
-                          suffixIcon: Padding(
-                            padding: EdgeInsets.only(top: 16.0),
-                            child: GestureDetector(
-                              onTap: _toggleLogin,
-                              child: FaIcon(
-                                FontAwesomeIcons.comments,
-                                size: 15.0,
-                                color: Colors.black,
-                              ),
-                            ),
-                          )),
+                        border: InputBorder.none,
+                        icon: FaIcon(
+                          FontAwesomeIcons.comments,
+                          size: 22.0,
+                          color: Common.Colors.primaryFontColor,
+                        ),
+                        labelText: "邀请码",
+                      ),
                     ),
                   ),
                 ],
@@ -634,20 +633,31 @@ class _LoginPageState extends State<Login> with SingleTickerProviderStateMixin {
     setState(() => {_phone = value});
   }
 
-  bool _handlePasswordChanged(value, dynamic filed) {
+  String _handlePasswordChanged(value) {
     if (!Utils.Re.passWord.hasMatch(value)) {
       Common.Alert.error(Utils.Constants.passwordErrorText,
           currentState: _scaffoldKey.currentState);
-      return false;
+      return '';
     }
 
-    setState(() => {filed = value});
-    return true;
+    return value;
   }
 
   void _toggleLogin() {
     setState(() {
       _obscureTextLogin = !_obscureTextLogin;
+    });
+  }
+
+  void _toggleRegisterPassword() {
+    setState(() {
+      _obscureTextRegister = !_obscureTextRegister;
+    });
+  }
+
+  void _toggleRegisterPasswordRepeat() {
+    setState(() {
+      _obscureTextRepeatRegister = !_obscureTextRepeatRegister;
     });
   }
 

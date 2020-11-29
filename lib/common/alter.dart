@@ -12,6 +12,7 @@ class Alert {
     c.removeCurrentSnackBar();
     c.showSnackBar(SnackBar(
       backgroundColor: _basicBackgroundColor,
+      duration: Duration(seconds: 1),
       content: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
