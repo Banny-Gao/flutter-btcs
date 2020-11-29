@@ -1,3 +1,4 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -18,11 +19,28 @@ class _LoginPageState extends State<Login> with SingleTickerProviderStateMixin {
 
   final FocusNode myFocusNodePhoneLogin = FocusNode();
   final FocusNode myFocusNodePasswordLogin = FocusNode();
+  final FocusNode myFocusNodePhoneRegister = FocusNode();
+  final FocusNode myFocusNodeCodeRegister = FocusNode();
+  final FocusNode myFocusNodePasswordRegister = FocusNode();
+  final FocusNode myFocusNodeRepeatPasswordRegister = FocusNode();
+  final FocusNode myFocusNodeInviteRegister = FocusNode();
 
   TextEditingController loginPhoneController = new TextEditingController();
   TextEditingController loginPasswordController = new TextEditingController();
+  TextEditingController registerPhoneController = new TextEditingController();
+  TextEditingController registerCodeController = new TextEditingController();
+  TextEditingController registerPasswordController =
+      new TextEditingController();
+  TextEditingController registerPasswordRepeatController =
+      new TextEditingController();
+  TextEditingController registerInviteController = new TextEditingController();
 
   bool _obscureTextLogin = true;
+  bool _obscureTextRegister = true;
+  bool _obscureTextRepeatRegister = true;
+  bool _couldGetRegisterCode = true;
+
+  String _registerCodeText = "获取验证码";
 
   PageController _pageController;
   AnimationController _textStyleController;
@@ -33,7 +51,11 @@ class _LoginPageState extends State<Login> with SingleTickerProviderStateMixin {
   Color _right = Common.Colors.whiteGradientStart;
 
   String _phone;
-  String _password;
+  String _loginPassword;
+  String _registerCode;
+  String _registerPassword;
+  String _registerPasswordRepeat;
+  String _registerInviteCode;
 
   @override
   void initState() {
@@ -61,14 +83,59 @@ class _LoginPageState extends State<Login> with SingleTickerProviderStateMixin {
     myFocusNodePhoneLogin.addListener(() {
       if (!myFocusNodePhoneLogin.hasFocus) {
         // TextField has lost focus
-        handlePhoneChanged(loginPhoneController.text);
+        _handlePhoneChanged(loginPhoneController.text);
       }
     });
 
     myFocusNodePasswordLogin.addListener(() {
       if (!myFocusNodePasswordLogin.hasFocus) {
         // TextField has lost focus
-        handlePasswordChanged(loginPasswordController.text);
+        _handlePasswordChanged(
+          loginPasswordController.text,
+          _loginPassword,
+        );
+      }
+    });
+
+    myFocusNodePhoneRegister.addListener(() {
+      if (!myFocusNodePhoneRegister.hasFocus) {
+        // TextField has lost focus
+        _handlePhoneChanged(registerPhoneController.text);
+      }
+    });
+
+    myFocusNodeCodeRegister.addListener(() {
+      if (!myFocusNodeCodeRegister.hasFocus) {
+        // TextField has lost focus
+        _handleCodeRegisterChanged(registerCodeController.text);
+      }
+    });
+
+    myFocusNodePasswordRegister.addListener(() {
+      if (!myFocusNodePasswordRegister.hasFocus) {
+        // TextField has lost focus
+        _handlePasswordChanged(
+          registerPasswordController.text,
+          _registerPassword,
+        );
+      }
+    });
+
+    myFocusNodeRepeatPasswordRegister.addListener(() {
+      if (!myFocusNodePasswordRegister.hasFocus) {
+        // TextField has lost focus
+        final bool isInputValid = _handlePasswordChanged(
+          registerPasswordRepeatController.text,
+          _registerPasswordRepeat,
+        );
+
+        if (isInputValid && _registerPasswordRepeat != _registerPassword) {
+          Common.Alert.error(Utils.Constants.passwordRepeatErrorText,
+              currentState: _scaffoldKey.currentState);
+          this.setState(() {
+            _registerPasswordRepeat = null;
+          });
+        }
       }
     });
   }
@@ -117,7 +184,7 @@ class _LoginPageState extends State<Login> with SingleTickerProviderStateMixin {
                       ),
                       new ConstrainedBox(
                         constraints: const BoxConstraints.expand(),
-                        child: _buildCodeLogin(context),
+                        child: _buildSignUp(context),
                       ),
                     ],
                   ),
@@ -178,7 +245,7 @@ class _LoginPageState extends State<Login> with SingleTickerProviderStateMixin {
                 child: DefaultTextStyleTransition(
                   style: _textStyleRightAnimation,
                   child: Text(
-                    "短信登录",
+                    "账号注册",
                     style: TextStyle(color: _right, fontSize: 16.0),
                   ),
                 ),
@@ -222,7 +289,7 @@ class _LoginPageState extends State<Login> with SingleTickerProviderStateMixin {
                         ),
                         labelText: "手机号",
                       ),
-                      onSubmitted: handlePhoneChanged,
+                      onSubmitted: _handlePhoneChanged,
                     ),
                   ),
                   Container(
@@ -312,7 +379,7 @@ class _LoginPageState extends State<Login> with SingleTickerProviderStateMixin {
     );
   }
 
-  Widget _buildCodeLogin(BuildContext context) {
+  Widget _buildSignUp(BuildContext context) {
     return Container(
       padding: EdgeInsets.only(top: 23.0),
       child: Column(
@@ -325,15 +392,14 @@ class _LoginPageState extends State<Login> with SingleTickerProviderStateMixin {
             ),
             child: Container(
               width: 300.0,
-              height: 110.0,
               child: Column(
                 children: <Widget>[
                   Padding(
                     padding: EdgeInsets.only(
                         top: 20.0, bottom: 20.0, left: 25.0, right: 25.0),
                     child: TextField(
-                      focusNode: myFocusNodePhoneLogin,
-                      controller: loginPhoneController,
+                      focusNode: myFocusNodePhoneRegister,
+                      controller: registerPhoneController,
                       keyboardType: TextInputType.phone,
                       style: TextStyle(fontSize: 16.0, color: Colors.black),
                       decoration: InputDecoration(
@@ -344,7 +410,149 @@ class _LoginPageState extends State<Login> with SingleTickerProviderStateMixin {
                         ),
                         labelText: "手机号",
                       ),
-                      onSubmitted: handlePhoneChanged,
+                      onSubmitted: _handlePhoneChanged,
+                    ),
+                  ),
+                  Container(
+                    width: 250.0,
+                    height: 1.0,
+                    color: Colors.grey[400],
+                  ),
+                  Padding(
+                    padding: EdgeInsets.only(
+                        top: 20.0, bottom: 20.0, left: 25.0, right: 25.0),
+                    child: TextField(
+                      focusNode: myFocusNodeCodeRegister,
+                      controller: registerCodeController,
+                      style: TextStyle(fontSize: 16.0, color: Colors.black),
+                      onSubmitted: _handleCodeRegisterChanged,
+                      decoration: InputDecoration(
+                        border: InputBorder.none,
+                        icon: FaIcon(
+                          FontAwesomeIcons.shieldAlt,
+                          size: 22.0,
+                          color: Common.Colors.primaryFontColor,
+                        ),
+                        labelText: "验证码",
+                        suffixIcon: Padding(
+                          padding: EdgeInsets.only(top: 16.0),
+                          child: GestureDetector(
+                            onTap: _handleGetRegisterCode,
+                            child: Text(
+                              _registerCodeText,
+                              style: TextStyle(
+                                color: Common.Colors.blueGradientStart,
+                                fontSize: 14.0,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                  Container(
+                    width: 250.0,
+                    height: 1.0,
+                    color: Colors.grey[400],
+                  ),
+                  Padding(
+                    padding: EdgeInsets.only(
+                        top: 20.0, bottom: 20.0, left: 25.0, right: 25.0),
+                    child: TextField(
+                      focusNode: myFocusNodePasswordRegister,
+                      controller: registerPasswordController,
+                      obscureText: _obscureTextLogin,
+                      style: TextStyle(fontSize: 16.0, color: Colors.black),
+                      decoration: InputDecoration(
+                          border: InputBorder.none,
+                          icon: FaIcon(
+                            FontAwesomeIcons.lock,
+                            size: 22.0,
+                            color: Common.Colors.primaryFontColor,
+                          ),
+                          labelText: "密码",
+                          suffixIcon: Padding(
+                            padding: EdgeInsets.only(top: 16.0),
+                            child: GestureDetector(
+                              onTap: _toggleLogin,
+                              child: FaIcon(
+                                _obscureTextLogin
+                                    ? FontAwesomeIcons.eye
+                                    : FontAwesomeIcons.eyeSlash,
+                                size: 15.0,
+                                color: Colors.black,
+                              ),
+                            ),
+                          )),
+                    ),
+                  ),
+                  Container(
+                    width: 250.0,
+                    height: 1.0,
+                    color: Colors.grey[400],
+                  ),
+                  Padding(
+                    padding: EdgeInsets.only(
+                        top: 20.0, bottom: 20.0, left: 25.0, right: 25.0),
+                    child: TextField(
+                      focusNode: myFocusNodeRepeatPasswordRegister,
+                      controller: registerPasswordRepeatController,
+                      obscureText: _obscureTextLogin,
+                      style: TextStyle(fontSize: 16.0, color: Colors.black),
+                      decoration: InputDecoration(
+                          border: InputBorder.none,
+                          icon: FaIcon(
+                            FontAwesomeIcons.lock,
+                            size: 22.0,
+                            color: Common.Colors.primaryFontColor,
+                          ),
+                          labelText: "确认密码",
+                          suffixIcon: Padding(
+                            padding: EdgeInsets.only(top: 16.0),
+                            child: GestureDetector(
+                              onTap: _toggleLogin,
+                              child: FaIcon(
+                                _obscureTextLogin
+                                    ? FontAwesomeIcons.eye
+                                    : FontAwesomeIcons.eyeSlash,
+                                size: 15.0,
+                                color: Colors.black,
+                              ),
+                            ),
+                          )),
+                    ),
+                  ),
+                  Container(
+                    width: 250.0,
+                    height: 1.0,
+                    color: Colors.grey[400],
+                  ),
+                  Padding(
+                    padding: EdgeInsets.only(
+                        top: 20.0, bottom: 20.0, left: 25.0, right: 25.0),
+                    child: TextField(
+                      focusNode: myFocusNodeInviteRegister,
+                      controller: registerInviteController,
+                      style: TextStyle(fontSize: 16.0, color: Colors.black),
+                      decoration: InputDecoration(
+                          border: InputBorder.none,
+                          icon: FaIcon(
+                            FontAwesomeIcons.lock,
+                            size: 22.0,
+                            color: Common.Colors.primaryFontColor,
+                          ),
+                          labelText: "邀请码",
+                          suffixIcon: Padding(
+                            padding: EdgeInsets.only(top: 16.0),
+                            child: GestureDetector(
+                              onTap: _toggleLogin,
+                              child: FaIcon(
+                                FontAwesomeIcons.comments,
+                                size: 15.0,
+                                color: Colors.black,
+                              ),
+                            ),
+                          )),
                     ),
                   ),
                 ],
@@ -352,7 +560,7 @@ class _LoginPageState extends State<Login> with SingleTickerProviderStateMixin {
             ),
           ),
           Container(
-            margin: EdgeInsets.only(top: 90.0),
+            margin: EdgeInsets.only(top: 20.0),
             decoration: new BoxDecoration(
               borderRadius: BorderRadius.all(Radius.circular(5.0)),
               boxShadow: <BoxShadow>[
@@ -377,7 +585,7 @@ class _LoginPageState extends State<Login> with SingleTickerProviderStateMixin {
                   padding: const EdgeInsets.symmetric(
                       vertical: 10.0, horizontal: 20.0),
                   child: Text(
-                    "获取验证码",
+                    "注册",
                     style: TextStyle(color: Colors.white, fontSize: 16.0),
                   ),
                 ),
@@ -406,7 +614,17 @@ class _LoginPageState extends State<Login> with SingleTickerProviderStateMixin {
     _textStyleController.forward();
   }
 
-  void handlePhoneChanged(value) {
+  void _onSignUpButtonPress() {
+    _pageController?.animateToPage(1,
+        duration: Duration(milliseconds: 500), curve: Curves.decelerate);
+  }
+
+  void _onSignInButtonPress() {
+    _pageController.animateToPage(0,
+        duration: Duration(milliseconds: 500), curve: Curves.decelerate);
+  }
+
+  void _handlePhoneChanged(value) {
     if (!Utils.Re.phone.hasMatch(value)) {
       Common.Alert.error(Utils.Constants.phoneErrorText,
           currentState: _scaffoldKey.currentState);
@@ -416,24 +634,15 @@ class _LoginPageState extends State<Login> with SingleTickerProviderStateMixin {
     setState(() => {_phone = value});
   }
 
-  void handlePasswordChanged(value) {
+  bool _handlePasswordChanged(value, dynamic filed) {
     if (!Utils.Re.passWord.hasMatch(value)) {
       Common.Alert.error(Utils.Constants.passwordErrorText,
           currentState: _scaffoldKey.currentState);
-      return;
+      return false;
     }
 
-    setState(() => {_password = value});
-  }
-
-  void _onSignInButtonPress() {
-    _pageController.animateToPage(0,
-        duration: Duration(milliseconds: 500), curve: Curves.decelerate);
-  }
-
-  void _onSignUpButtonPress() {
-    _pageController?.animateToPage(1,
-        duration: Duration(milliseconds: 500), curve: Curves.decelerate);
+    setState(() => {filed = value});
+    return true;
   }
 
   void _toggleLogin() {
@@ -441,4 +650,8 @@ class _LoginPageState extends State<Login> with SingleTickerProviderStateMixin {
       _obscureTextLogin = !_obscureTextLogin;
     });
   }
+
+  void _handleGetRegisterCode() {}
+
+  void _handleCodeRegisterChanged(value) {}
 }
