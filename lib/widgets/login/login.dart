@@ -136,15 +136,17 @@ class _LoginPageState extends State<Login> with SingleTickerProviderStateMixin {
 
         print('${_registerPasswordRepeat}, ${_registerPassword}');
 
-        if (value != '') {
-          if (value == _registerPassword)
-            setState(() {
-              _registerPasswordRepeat = value;
-            });
-          else
-            Common.Alert.error(Utils.Constants.passwordRepeatErrorText,
-                currentState: _scaffoldKey.currentState);
-        }
+        if (value != '' && _validateRepeatPassword(value))
+          setState(() {
+            _registerPasswordRepeat = value;
+          });
+      }
+    });
+
+    myFocusNodeInviteRegister.addListener(() {
+      if (!myFocusNodeInviteRegister.hasFocus) {
+        // TextField has lost focus
+        _handleInviteCodeRegisterChanged(registerInviteController.text);
       }
     });
   }
@@ -543,6 +545,7 @@ class _LoginPageState extends State<Login> with SingleTickerProviderStateMixin {
                       focusNode: myFocusNodeInviteRegister,
                       controller: registerInviteController,
                       style: TextStyle(fontSize: 16.0, color: Colors.black),
+                      onSubmitted: _handleInviteCodeRegisterChanged,
                       decoration: InputDecoration(
                         border: InputBorder.none,
                         icon: FaIcon(
@@ -588,7 +591,7 @@ class _LoginPageState extends State<Login> with SingleTickerProviderStateMixin {
                     style: TextStyle(color: Colors.white, fontSize: 16.0),
                   ),
                 ),
-                onPressed: () => {}),
+                onPressed: _handleSignUp),
           ),
         ],
       ),
@@ -623,23 +626,47 @@ class _LoginPageState extends State<Login> with SingleTickerProviderStateMixin {
         duration: Duration(milliseconds: 500), curve: Curves.decelerate);
   }
 
-  void _handlePhoneChanged(value) {
-    if (!Utils.Re.phone.hasMatch(value)) {
+  bool _validateCode(value) {
+    if (!Utils.Re.number.hasMatch(value)) {
       Common.Alert.error(Utils.Constants.phoneErrorText,
           currentState: _scaffoldKey.currentState);
-      return;
+      return false;
     }
-
-    setState(() => {_phone = value});
   }
 
-  String _handlePasswordChanged(value) {
+  bool _validatePhone(value) {
+    if (!Utils.Re.phone.hasMatch(value)) {
+      print(value);
+      Common.Alert.error(Utils.Constants.phoneErrorText,
+          currentState: _scaffoldKey.currentState);
+      return false;
+    }
+    return true;
+  }
+
+  bool _validatePassword(value) {
     if (!Utils.Re.passWord.hasMatch(value)) {
       Common.Alert.error(Utils.Constants.passwordErrorText,
           currentState: _scaffoldKey.currentState);
-      return '';
+      return false;
     }
+    return true;
+  }
 
+  bool _validateRepeatPassword(value) {
+    if (value == _registerPassword) return true;
+
+    Common.Alert.error(Utils.Constants.passwordRepeatErrorText,
+        currentState: _scaffoldKey.currentState);
+    return false;
+  }
+
+  void _handlePhoneChanged(value) {
+    if (_validatePhone(value)) setState(() => {_phone = value});
+  }
+
+  String _handlePasswordChanged(value) {
+    if (!_validatePassword(value)) return '';
     return value;
   }
 
@@ -663,5 +690,37 @@ class _LoginPageState extends State<Login> with SingleTickerProviderStateMixin {
 
   void _handleGetRegisterCode() {}
 
-  void _handleCodeRegisterChanged(value) {}
+  void _handleCodeRegisterChanged(value) {
+    if (_validateCode(value)) setState(() => {_registerCode = value});
+  }
+
+  void _handleInviteCodeRegisterChanged(value) {
+    setState(() => {_registerInviteCode = value});
+  }
+
+  bool _validateSignUpParams() {
+    return _validatePhone(_phone) &&
+        _validateCode(_registerCode) &&
+        _validatePassword(_registerPassword) &&
+        _validatePassword(_registerPasswordRepeat) &&
+        _validateRepeatPassword(_registerPasswordRepeat);
+  }
+
+  void _handleSignUp() async {
+    // String _phone;
+    // String _registerCode;
+    // String _registerPassword;
+    // String _registerPasswordRepeat;
+    // String _registerInviteCode;
+    final isValidate = _validateSignUpParams();
+    print(isValidate);
+    if (!isValidate) return;
+
+    // Utils.API.signUp(
+    //   phone: _phone,
+    //   code: '666666',
+    //   password: _registerPasswordRepeat,
+    //   inviteCode: _registerInviteCode,
+    // );
+  }
 }

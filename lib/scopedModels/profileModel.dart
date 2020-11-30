@@ -8,6 +8,11 @@ import 'index.dart';
 import '../models/index.dart';
 
 class ProfileModel extends BaseModel {
+  bool _isLogin = false;
+  String _token;
+  bool get isLogin => _isLogin;
+  String get token => _token;
+
   static Profile profile = Profile();
   Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
 
@@ -26,6 +31,13 @@ class ProfileModel extends BaseModel {
       ..enable = true
       ..maxAge = 3600
       ..maxCount = 100;
+
+    _token = profile.token;
+    if (_token != null && _token != "") {
+      _isLogin = true;
+    }
+
+    this.notifyListeners();
   }
 
   Future<Null> saveProfile() async {

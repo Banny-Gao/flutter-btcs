@@ -7,8 +7,7 @@ import '../util/index.dart';
 
 class BaseModel extends Model {}
 
-class AppModel extends Model
-    with BaseModel, UserAuthModel, ThemeModel, ProfileModel
+class AppModel extends Model with BaseModel, ThemeModel, ProfileModel
 //, AppModel
 {
   AppModel() {
@@ -20,7 +19,6 @@ class AppModel extends Model
 
   init() async {
     await initTheme();
-    await initAuth();
     await initProfile();
 
     //初始化网络请求相关配置

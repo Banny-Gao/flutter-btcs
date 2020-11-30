@@ -8,7 +8,6 @@ import 'package:dio/adapter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../scopedModels/index.dart';
-import '../models/index.dart';
 import 'index.dart';
 
 class Request {
@@ -22,15 +21,14 @@ class Request {
   BuildContext context;
   Options _options;
   static Dio dio = new Dio(BaseOptions(
-    baseUrl: 'http://47.94.193.134:9099/api/',
+    baseUrl: 'http://47.93.123.178:9099/',
   ));
 
   static void init() {
     // 添加缓存插件
     dio.interceptors.add(Request.netCache);
     // 设置用户token（可能为null，代表未登录）
-    dio.options.headers[HttpHeaders.authorizationHeader] =
-        ProfileModel.profile.token;
+    dio.options.headers['X-Token'] = ProfileModel.profile.token;
 
     // 在调试模式下需要抓包调试，所以我们使用代理，并禁用HTTPS证书校验
     if (!AppModel.isRelease) {
@@ -44,22 +42,5 @@ class Request {
             (X509Certificate cert, String host, int port) => true;
       };
     }
-  }
-
-  // 登录接口，登录成功后返回用户信息
-  Future<User> login(String login, String pwd) async {
-    String basic = 'Basic ' + base64.encode(utf8.encode('$login:$pwd'));
-    var r = await dio.get(
-      "/users/$login",
-      options: _options.merge(headers: {
-        HttpHeaders.authorizationHeader: basic
-      }, extra: {
-        "noCache": true,
-      }),
-    );
-    dio.options.headers[HttpHeaders.authorizationHeader] = basic;
-    Request.netCache.cache.clear();
-    ProfileModel.profile.token = basic;
-    return User.fromJson(r.data);
   }
 }
