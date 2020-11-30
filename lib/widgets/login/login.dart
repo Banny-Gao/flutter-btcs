@@ -50,12 +50,12 @@ class _LoginPageState extends State<Login> with SingleTickerProviderStateMixin {
   Color _left = Colors.blue[600];
   Color _right = Common.Colors.whiteGradientStart;
 
-  String _phone;
-  String _loginPassword;
-  String _registerCode;
-  String _registerPassword;
-  String _registerPasswordRepeat;
-  String _registerInviteCode;
+  String _phone = '';
+  String _loginPassword = '';
+  String _registerCode = '';
+  String _registerPassword = '';
+  String _registerPasswordRepeat = '';
+  String _registerInviteCode = '';
 
   @override
   void initState() {
@@ -133,8 +133,6 @@ class _LoginPageState extends State<Login> with SingleTickerProviderStateMixin {
         final String value = _handlePasswordChanged(
           registerPasswordRepeatController.text,
         );
-
-        print('${_registerPasswordRepeat}, ${_registerPassword}');
 
         if (value != '' && _validateRepeatPassword(value))
           setState(() {
@@ -580,18 +578,19 @@ class _LoginPageState extends State<Login> with SingleTickerProviderStateMixin {
               gradient: Common.Colors.blueGradient,
             ),
             child: MaterialButton(
-                highlightColor: Colors.transparent,
-                // splashColor: Common.Colors.loginGradientEnd,
-                //shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(5.0))),
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(
-                      vertical: 10.0, horizontal: 20.0),
-                  child: Text(
-                    "注册",
-                    style: TextStyle(color: Colors.white, fontSize: 16.0),
-                  ),
+              highlightColor: Colors.transparent,
+              // splashColor: Common.Colors.loginGradientEnd,
+              //shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(5.0))),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(
+                    vertical: 10.0, horizontal: 20.0),
+                child: Text(
+                  "注册",
+                  style: TextStyle(color: Colors.white, fontSize: 16.0),
                 ),
-                onPressed: _handleSignUp),
+              ),
+              onPressed: _handleSignUp,
+            ),
           ),
         ],
       ),
@@ -628,15 +627,16 @@ class _LoginPageState extends State<Login> with SingleTickerProviderStateMixin {
 
   bool _validateCode(value) {
     if (!Utils.Re.number.hasMatch(value)) {
-      Common.Alert.error(Utils.Constants.phoneErrorText,
+      Common.Alert.error(Utils.Constants.codeErrorText,
           currentState: _scaffoldKey.currentState);
       return false;
     }
+
+    return true;
   }
 
   bool _validatePhone(value) {
     if (!Utils.Re.phone.hasMatch(value)) {
-      print(value);
       Common.Alert.error(Utils.Constants.phoneErrorText,
           currentState: _scaffoldKey.currentState);
       return false;
@@ -698,6 +698,16 @@ class _LoginPageState extends State<Login> with SingleTickerProviderStateMixin {
     setState(() => {_registerInviteCode = value});
   }
 
+  void _blurForms() {
+    myFocusNodePhoneLogin.unfocus();
+    myFocusNodePasswordLogin.unfocus();
+    myFocusNodePhoneRegister.unfocus();
+    myFocusNodeCodeRegister.unfocus();
+    myFocusNodePasswordRegister.unfocus();
+    myFocusNodeRepeatPasswordRegister.unfocus();
+    myFocusNodeInviteRegister.unfocus();
+  }
+
   bool _validateSignUpParams() {
     return _validatePhone(_phone) &&
         _validateCode(_registerCode) &&
@@ -707,20 +717,15 @@ class _LoginPageState extends State<Login> with SingleTickerProviderStateMixin {
   }
 
   void _handleSignUp() async {
-    // String _phone;
-    // String _registerCode;
-    // String _registerPassword;
-    // String _registerPasswordRepeat;
-    // String _registerInviteCode;
+    _blurForms();
     final isValidate = _validateSignUpParams();
-    print(isValidate);
     if (!isValidate) return;
 
-    // Utils.API.signUp(
-    //   phone: _phone,
-    //   code: '666666',
-    //   password: _registerPasswordRepeat,
-    //   inviteCode: _registerInviteCode,
-    // );
+    await Utils.API.signUp(
+      phone: _phone,
+      code: _registerCode,
+      password: _registerPasswordRepeat,
+      inviteCode: _registerInviteCode,
+    );
   }
 }

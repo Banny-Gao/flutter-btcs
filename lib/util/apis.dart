@@ -1,23 +1,24 @@
-import 'package:dio/dio.dart';
 import 'index.dart';
+import 'package:dio/dio.dart';
 import '../scopedModels/index.dart' as ScopedModels;
 import '../models/index.dart' as Models;
 
 Future<Models.User> _signUp({phone, password, code, inviteCode}) async {
   final resp = await Request.dio.post(
     '/front/member/phoneRegister',
-    data: FormData.fromMap({
-      phone: phone,
-      password: password,
-      code: code,
-      inviteCode: inviteCode,
-    }),
+    data: {
+      'phone': phone,
+      'password': password,
+      'code': code,
+      'inviteCode': inviteCode,
+    },
   );
 
   Request.netCache.cache.clear();
-  ScopedModels.ProfileModel.profile.token = resp.data;
 
   print(resp);
+  // ScopedModels.ProfileModel.profile.token = resp.data;
+
   return Models.User.fromJson(resp.data);
 }
 
