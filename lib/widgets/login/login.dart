@@ -745,16 +745,18 @@ class _LoginPageState extends State<Login> with SingleTickerProviderStateMixin {
     final isValidate = _validateSignUpParams();
     if (!isValidate) return;
 
-    final Models.SignUpResponse resp = await Utils.API.signUp(
+    final response = await Utils.API.signUp(
       phone: _phone,
       code: _registerCode,
       password: _registerPasswordRepeat,
       inviteCode: _registerInviteCode,
     );
 
+    final resp = Models.SignUpResponse.fromJson(response);
+
     bool isLogin = resp.code == 200;
 
     model.toggleLogStatus(isLogin,
-        token: resp.data.token, phone: resp.data.phone);
+        token: resp.data?.token, phone: resp.data?.phone);
   }
 }

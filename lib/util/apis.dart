@@ -1,7 +1,6 @@
 import 'package:dio/dio.dart';
 
 import 'index.dart';
-import '../models/index.dart' as Models;
 
 Future _signUp({phone, password, code, inviteCode}) async {
   final resp = await Request.dio.post(
@@ -23,7 +22,7 @@ Future _signUp({phone, password, code, inviteCode}) async {
 
   print('signUp resp: ${resp}');
 
-  return resp.data as Models.SignUpResponse;
+  return resp.data;
 }
 
 class API {
