@@ -43,5 +43,16 @@ class ProfileModel extends BaseModel {
   Future<Null> saveProfile() async {
     final SharedPreferences prefs = await _prefs;
     prefs.setString("profile", jsonEncode(profile.toJson()));
+
+    this.notifyListeners();
+  }
+
+  Future<Null> toggleLogStatus(bool isLogin, {token, phone}) async {
+    _isLogin = isLogin;
+    profile
+      ..token = token ?? ''
+      ..phone = phone ?? '';
+
+    saveProfile();
   }
 }

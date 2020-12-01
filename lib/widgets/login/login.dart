@@ -2,10 +2,13 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:scoped_model/scoped_model.dart';
 
 import 'tabIndicationPainter.dart';
 import '../../common/index.dart' as Common;
 import '../../util/index.dart' as Utils;
+import '../../scopedModels/index.dart' as ScopeModels;
+import '../../models/index.dart' as Models;
 
 class Login extends StatefulWidget {
   Login({Key key}) : super(key: key);
@@ -389,212 +392,233 @@ class _LoginPageState extends State<Login> with SingleTickerProviderStateMixin {
   }
 
   Widget _buildSignUp(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.only(top: 23.0),
-      child: Column(
-        children: <Widget>[
-          Card(
-            elevation: 2.0,
-            color: Colors.white,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(8.0),
-            ),
-            child: Container(
-              width: 300.0,
+    return ScopedModelDescendant<ScopeModels.AppModel>(
+        builder: (context, child, model) => Container(
+              padding: EdgeInsets.only(top: 23.0),
               child: Column(
                 children: <Widget>[
-                  Padding(
-                    padding: EdgeInsets.only(
-                        top: 10.0, bottom: 10.0, left: 25.0, right: 25.0),
-                    child: TextField(
-                      focusNode: myFocusNodePhoneRegister,
-                      controller: registerPhoneController,
-                      keyboardType: TextInputType.phone,
-                      style: TextStyle(fontSize: 16.0, color: Colors.black),
-                      decoration: InputDecoration(
-                        border: InputBorder.none,
-                        icon: FaIcon(
-                          FontAwesomeIcons.phone,
-                          color: Colors.black,
-                        ),
-                        labelText: "手机号",
-                      ),
-                      onSubmitted: _handlePhoneChanged,
+                  Card(
+                    elevation: 2.0,
+                    color: Colors.white,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8.0),
                     ),
-                  ),
-                  Container(
-                    width: 250.0,
-                    height: 1.0,
-                    color: Colors.grey[400],
-                  ),
-                  Padding(
-                    padding: EdgeInsets.only(
-                        top: 10.0, bottom: 10.0, left: 25.0, right: 25.0),
-                    child: TextField(
-                      focusNode: myFocusNodeCodeRegister,
-                      controller: registerCodeController,
-                      style: TextStyle(fontSize: 16.0, color: Colors.black),
-                      onSubmitted: _handleCodeRegisterChanged,
-                      decoration: InputDecoration(
-                        border: InputBorder.none,
-                        icon: FaIcon(
-                          FontAwesomeIcons.shieldAlt,
-                          size: 22.0,
-                          color: Common.Colors.primaryFontColor,
-                        ),
-                        labelText: "验证码",
-                        suffixIcon: Padding(
-                          padding: EdgeInsets.only(top: 16.0),
-                          child: GestureDetector(
-                            onTap: _handleGetRegisterCode,
-                            child: Text(
-                              _registerCodeText,
+                    child: Container(
+                      width: 300.0,
+                      child: Column(
+                        children: <Widget>[
+                          Padding(
+                            padding: EdgeInsets.only(
+                                top: 10.0,
+                                bottom: 10.0,
+                                left: 25.0,
+                                right: 25.0),
+                            child: TextField(
+                              focusNode: myFocusNodePhoneRegister,
+                              controller: registerPhoneController,
+                              keyboardType: TextInputType.phone,
                               style: TextStyle(
-                                color: Common.Colors.blueGradientStart,
-                                fontSize: 14.0,
+                                  fontSize: 16.0, color: Colors.black),
+                              decoration: InputDecoration(
+                                border: InputBorder.none,
+                                icon: FaIcon(
+                                  FontAwesomeIcons.phone,
+                                  color: Colors.black,
+                                ),
+                                labelText: "手机号",
+                              ),
+                              onSubmitted: _handlePhoneChanged,
+                            ),
+                          ),
+                          Container(
+                            width: 250.0,
+                            height: 1.0,
+                            color: Colors.grey[400],
+                          ),
+                          Padding(
+                            padding: EdgeInsets.only(
+                                top: 10.0,
+                                bottom: 10.0,
+                                left: 25.0,
+                                right: 25.0),
+                            child: TextField(
+                              focusNode: myFocusNodeCodeRegister,
+                              controller: registerCodeController,
+                              style: TextStyle(
+                                  fontSize: 16.0, color: Colors.black),
+                              onSubmitted: _handleCodeRegisterChanged,
+                              decoration: InputDecoration(
+                                border: InputBorder.none,
+                                icon: FaIcon(
+                                  FontAwesomeIcons.shieldAlt,
+                                  size: 22.0,
+                                  color: Common.Colors.primaryFontColor,
+                                ),
+                                labelText: "验证码",
+                                suffixIcon: Padding(
+                                  padding: EdgeInsets.only(top: 16.0),
+                                  child: GestureDetector(
+                                    onTap: _handleGetRegisterCode,
+                                    child: Text(
+                                      _registerCodeText,
+                                      style: TextStyle(
+                                        color: Common.Colors.blueGradientStart,
+                                        fontSize: 14.0,
+                                      ),
+                                    ),
+                                  ),
+                                ),
                               ),
                             ),
                           ),
-                        ),
+                          Container(
+                            width: 250.0,
+                            height: 1.0,
+                            color: Colors.grey[400],
+                          ),
+                          Padding(
+                            padding: EdgeInsets.only(
+                                top: 10.0,
+                                bottom: 10.0,
+                                left: 25.0,
+                                right: 25.0),
+                            child: TextField(
+                              focusNode: myFocusNodePasswordRegister,
+                              controller: registerPasswordController,
+                              obscureText: _obscureTextRegister,
+                              style: TextStyle(
+                                  fontSize: 16.0, color: Colors.black),
+                              decoration: InputDecoration(
+                                  border: InputBorder.none,
+                                  icon: FaIcon(
+                                    FontAwesomeIcons.lock,
+                                    size: 22.0,
+                                    color: Common.Colors.primaryFontColor,
+                                  ),
+                                  labelText: "密码",
+                                  suffixIcon: Padding(
+                                    padding: EdgeInsets.only(top: 16.0),
+                                    child: GestureDetector(
+                                      onTap: _toggleRegisterPassword,
+                                      child: FaIcon(
+                                        _obscureTextRegister
+                                            ? FontAwesomeIcons.eye
+                                            : FontAwesomeIcons.eyeSlash,
+                                        size: 15.0,
+                                        color: Colors.black,
+                                      ),
+                                    ),
+                                  )),
+                            ),
+                          ),
+                          Container(
+                            width: 250.0,
+                            height: 1.0,
+                            color: Colors.grey[400],
+                          ),
+                          Padding(
+                            padding: EdgeInsets.only(
+                                top: 10.0,
+                                bottom: 10.0,
+                                left: 25.0,
+                                right: 25.0),
+                            child: TextField(
+                              focusNode: myFocusNodeRepeatPasswordRegister,
+                              controller: registerPasswordRepeatController,
+                              obscureText: _obscureTextRepeatRegister,
+                              style: TextStyle(
+                                  fontSize: 16.0, color: Colors.black),
+                              decoration: InputDecoration(
+                                  border: InputBorder.none,
+                                  icon: FaIcon(
+                                    FontAwesomeIcons.lock,
+                                    size: 22.0,
+                                    color: Common.Colors.primaryFontColor,
+                                  ),
+                                  labelText: "确认密码",
+                                  suffixIcon: Padding(
+                                    padding: EdgeInsets.only(top: 16.0),
+                                    child: GestureDetector(
+                                      onTap: _toggleRegisterPasswordRepeat,
+                                      child: FaIcon(
+                                        _obscureTextRepeatRegister
+                                            ? FontAwesomeIcons.eye
+                                            : FontAwesomeIcons.eyeSlash,
+                                        size: 15.0,
+                                        color: Colors.black,
+                                      ),
+                                    ),
+                                  )),
+                            ),
+                          ),
+                          Container(
+                            width: 250.0,
+                            height: 1.0,
+                            color: Colors.grey[400],
+                          ),
+                          Padding(
+                            padding: EdgeInsets.only(
+                                top: 10.0,
+                                bottom: 10.0,
+                                left: 25.0,
+                                right: 25.0),
+                            child: TextField(
+                              focusNode: myFocusNodeInviteRegister,
+                              controller: registerInviteController,
+                              style: TextStyle(
+                                  fontSize: 16.0, color: Colors.black),
+                              onSubmitted: _handleInviteCodeRegisterChanged,
+                              decoration: InputDecoration(
+                                border: InputBorder.none,
+                                icon: FaIcon(
+                                  FontAwesomeIcons.comments,
+                                  size: 22.0,
+                                  color: Common.Colors.primaryFontColor,
+                                ),
+                                labelText: "邀请码",
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                   ),
                   Container(
-                    width: 250.0,
-                    height: 1.0,
-                    color: Colors.grey[400],
-                  ),
-                  Padding(
-                    padding: EdgeInsets.only(
-                        top: 10.0, bottom: 10.0, left: 25.0, right: 25.0),
-                    child: TextField(
-                      focusNode: myFocusNodePasswordRegister,
-                      controller: registerPasswordController,
-                      obscureText: _obscureTextRegister,
-                      style: TextStyle(fontSize: 16.0, color: Colors.black),
-                      decoration: InputDecoration(
-                          border: InputBorder.none,
-                          icon: FaIcon(
-                            FontAwesomeIcons.lock,
-                            size: 22.0,
-                            color: Common.Colors.primaryFontColor,
-                          ),
-                          labelText: "密码",
-                          suffixIcon: Padding(
-                            padding: EdgeInsets.only(top: 16.0),
-                            child: GestureDetector(
-                              onTap: _toggleRegisterPassword,
-                              child: FaIcon(
-                                _obscureTextRegister
-                                    ? FontAwesomeIcons.eye
-                                    : FontAwesomeIcons.eyeSlash,
-                                size: 15.0,
-                                color: Colors.black,
-                              ),
-                            ),
-                          )),
-                    ),
-                  ),
-                  Container(
-                    width: 250.0,
-                    height: 1.0,
-                    color: Colors.grey[400],
-                  ),
-                  Padding(
-                    padding: EdgeInsets.only(
-                        top: 10.0, bottom: 10.0, left: 25.0, right: 25.0),
-                    child: TextField(
-                      focusNode: myFocusNodeRepeatPasswordRegister,
-                      controller: registerPasswordRepeatController,
-                      obscureText: _obscureTextRepeatRegister,
-                      style: TextStyle(fontSize: 16.0, color: Colors.black),
-                      decoration: InputDecoration(
-                          border: InputBorder.none,
-                          icon: FaIcon(
-                            FontAwesomeIcons.lock,
-                            size: 22.0,
-                            color: Common.Colors.primaryFontColor,
-                          ),
-                          labelText: "确认密码",
-                          suffixIcon: Padding(
-                            padding: EdgeInsets.only(top: 16.0),
-                            child: GestureDetector(
-                              onTap: _toggleRegisterPasswordRepeat,
-                              child: FaIcon(
-                                _obscureTextRepeatRegister
-                                    ? FontAwesomeIcons.eye
-                                    : FontAwesomeIcons.eyeSlash,
-                                size: 15.0,
-                                color: Colors.black,
-                              ),
-                            ),
-                          )),
-                    ),
-                  ),
-                  Container(
-                    width: 250.0,
-                    height: 1.0,
-                    color: Colors.grey[400],
-                  ),
-                  Padding(
-                    padding: EdgeInsets.only(
-                        top: 10.0, bottom: 10.0, left: 25.0, right: 25.0),
-                    child: TextField(
-                      focusNode: myFocusNodeInviteRegister,
-                      controller: registerInviteController,
-                      style: TextStyle(fontSize: 16.0, color: Colors.black),
-                      onSubmitted: _handleInviteCodeRegisterChanged,
-                      decoration: InputDecoration(
-                        border: InputBorder.none,
-                        icon: FaIcon(
-                          FontAwesomeIcons.comments,
-                          size: 22.0,
-                          color: Common.Colors.primaryFontColor,
+                    margin: EdgeInsets.only(top: 20.0),
+                    decoration: new BoxDecoration(
+                      borderRadius: BorderRadius.all(Radius.circular(5.0)),
+                      boxShadow: <BoxShadow>[
+                        BoxShadow(
+                          color: Common.Colors.blueGradientStart,
+                          offset: Offset(1.0, 6.0),
+                          blurRadius: 20.0,
                         ),
-                        labelText: "邀请码",
+                        BoxShadow(
+                          color: Common.Colors.blueGradientEnd,
+                          offset: Offset(1.0, 6.0),
+                          blurRadius: 20.0,
+                        ),
+                      ],
+                      gradient: Common.Colors.blueGradient,
+                    ),
+                    child: MaterialButton(
+                      highlightColor: Colors.transparent,
+                      // splashColor: Common.Colors.loginGradientEnd,
+                      //shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(5.0))),
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 10.0, horizontal: 20.0),
+                        child: Text(
+                          "注册",
+                          style: TextStyle(color: Colors.white, fontSize: 16.0),
+                        ),
                       ),
+                      onPressed: () => _handleSignUp(model),
                     ),
                   ),
                 ],
               ),
-            ),
-          ),
-          Container(
-            margin: EdgeInsets.only(top: 20.0),
-            decoration: new BoxDecoration(
-              borderRadius: BorderRadius.all(Radius.circular(5.0)),
-              boxShadow: <BoxShadow>[
-                BoxShadow(
-                  color: Common.Colors.blueGradientStart,
-                  offset: Offset(1.0, 6.0),
-                  blurRadius: 20.0,
-                ),
-                BoxShadow(
-                  color: Common.Colors.blueGradientEnd,
-                  offset: Offset(1.0, 6.0),
-                  blurRadius: 20.0,
-                ),
-              ],
-              gradient: Common.Colors.blueGradient,
-            ),
-            child: MaterialButton(
-              highlightColor: Colors.transparent,
-              // splashColor: Common.Colors.loginGradientEnd,
-              //shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(5.0))),
-              child: Padding(
-                padding: const EdgeInsets.symmetric(
-                    vertical: 10.0, horizontal: 20.0),
-                child: Text(
-                  "注册",
-                  style: TextStyle(color: Colors.white, fontSize: 16.0),
-                ),
-              ),
-              onPressed: _handleSignUp,
-            ),
-          ),
-        ],
-      ),
-    );
+            ));
   }
 
   @override
@@ -716,16 +740,21 @@ class _LoginPageState extends State<Login> with SingleTickerProviderStateMixin {
         _validateRepeatPassword(_registerPasswordRepeat);
   }
 
-  void _handleSignUp() async {
+  void _handleSignUp(ScopeModels.ProfileModel model) async {
     _blurForms();
     final isValidate = _validateSignUpParams();
     if (!isValidate) return;
 
-    await Utils.API.signUp(
+    final Models.SignUpResponse resp = await Utils.API.signUp(
       phone: _phone,
       code: _registerCode,
       password: _registerPasswordRepeat,
       inviteCode: _registerInviteCode,
     );
+
+    bool isLogin = resp.code == 200;
+
+    model.toggleLogStatus(isLogin,
+        token: resp.data.token, phone: resp.data.phone);
   }
 }

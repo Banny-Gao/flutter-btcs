@@ -1,9 +1,9 @@
-import 'index.dart';
 import 'package:dio/dio.dart';
-import '../scopedModels/index.dart' as ScopedModels;
+
+import 'index.dart';
 import '../models/index.dart' as Models;
 
-Future<Models.User> _signUp({phone, password, code, inviteCode}) async {
+Future _signUp({phone, password, code, inviteCode}) async {
   final resp = await Request.dio.post(
     '/front/member/phoneRegister',
     data: {
@@ -12,14 +12,18 @@ Future<Models.User> _signUp({phone, password, code, inviteCode}) async {
       'code': code,
       'inviteCode': inviteCode,
     },
+    options: Options(
+      extra: {
+        "showLoading": true,
+      },
+    ),
   );
 
   Request.netCache.cache.clear();
 
-  print(resp);
-  // ScopedModels.ProfileModel.profile.token = resp.data;
+  print('signUp resp: ${resp}');
 
-  return Models.User.fromJson(resp.data);
+  return resp.data as Models.SignUpResponse;
 }
 
 class API {

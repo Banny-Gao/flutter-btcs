@@ -9,6 +9,7 @@ class Profile {
 
     User user;
     String token;
+    String phone;
     num theme;
     CacheConfig cache;
     String lastLogin;

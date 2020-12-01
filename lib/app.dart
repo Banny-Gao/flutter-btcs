@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:scoped_model/scoped_model.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 
 import 'scopedModels/index.dart';
 import 'common/toggleThemeButton.dart';
@@ -11,7 +12,6 @@ class OreApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ScopedModelDescendant<AppModel>(builder: (context, child, model) {
-      print(model);
       final String initialRoute = model.isLogin ? '/' : 'login';
 
       return MaterialApp(
@@ -21,6 +21,7 @@ class OreApp extends StatelessWidget {
           "/": (context) => App(),
           "login": (context) => Login(),
         },
+        builder: EasyLoading.init(),
       );
     });
   }
