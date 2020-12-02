@@ -12,11 +12,9 @@ class OreApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ScopedModelDescendant<AppModel>(builder: (context, child, model) {
-      final String initialRoute = model.isLogin ? '/' : 'login';
-
       return MaterialApp(
         theme: model.theme,
-        initialRoute: initialRoute,
+        initialRoute: model.isLogin ? '/' : 'login',
         routes: <String, WidgetBuilder>{
           "/": (context) => App(),
           "login": (context) => Login(),
@@ -39,8 +37,9 @@ class AppState extends State<App> {
 
   @override
   void initState() {
-    super.initState();
     _pageController = PageController();
+
+    super.initState();
   }
 
   @override
@@ -62,7 +61,7 @@ class AppState extends State<App> {
 
   List<Widget> _getMediaList() {
     return <Widget>[
-      Home(),
+      HomePage(),
       GroupBooking(),
       Owner(),
     ];

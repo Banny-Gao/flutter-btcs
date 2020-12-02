@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:scoped_model/scoped_model.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 
 import 'tabIndicationPainter.dart';
 import '../../common/index.dart' as Common;
@@ -55,8 +56,6 @@ class _LoginPageState extends State<Login> with SingleTickerProviderStateMixin {
 
   @override
   void initState() {
-    super.initState();
-
     _textStyleController = AnimationController(
         duration: Duration(milliseconds: 1000), vsync: this);
     _textStyleLeftAnimation = TextStyleTween(
@@ -75,6 +74,8 @@ class _LoginPageState extends State<Login> with SingleTickerProviderStateMixin {
     ]);
 
     _pageController = PageController();
+
+    super.initState();
   }
 
   @override
@@ -461,14 +462,7 @@ class _LoginPageState extends State<Login> with SingleTickerProviderStateMixin {
                                       ),
                                     ),
                                   )),
-                              validator: (v) {
-                                final validError = _validatePassword(v);
-                                if (validError != null) return validError;
-                                final validRepeatError =
-                                    _validatePasswordRepeat(
-                                        v, _signUpPasswordRepeat);
-                                return validRepeatError;
-                              },
+                              validator: _validatePassword,
                               onSaved: (val) {
                                 _signUpPassword = val.trim();
                               },
@@ -517,13 +511,7 @@ class _LoginPageState extends State<Login> with SingleTickerProviderStateMixin {
                                       ),
                                     ),
                                   )),
-                              validator: (v) {
-                                final validError = _validatePassword(v);
-                                if (validError != null) return validError;
-                                final validRepeatError =
-                                    _validatePasswordRepeat(v, _signUpPassword);
-                                return validRepeatError;
-                              },
+                              validator: _validatePassword,
                               onSaved: (val) {
                                 _signUpPasswordRepeat = val.trim();
                               },
@@ -638,12 +626,6 @@ class _LoginPageState extends State<Login> with SingleTickerProviderStateMixin {
         : Utils.Constants.passwordErrorText;
   }
 
-  String _validatePasswordRepeat(value, repeatValue) {
-    return value == repeatValue
-        ? null
-        : Utils.Constants.passwordRepeatErrorText;
-  }
-
   void _handleGetRegisterCode() {}
 
   void _handleSignUp(model) async {
@@ -651,6 +633,11 @@ class _LoginPageState extends State<Login> with SingleTickerProviderStateMixin {
     if (!_signUpForm.validate()) return;
 
     _signUpForm.save();
+
+    if (_signUpPassword != _signUpPasswordRepeat) {
+      EasyLoading.showError(Utils.Constants.passwordRepeatErrorText);
+      return;
+    }
 
     final response = await Utils.API.signUp(
       phone: _phone,

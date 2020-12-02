@@ -20,7 +20,7 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   AppModel model = AppModel();
-  model.init();
+  await model.init();
 
   FlutterError.onError = (FlutterErrorDetails details) {
     reportErrorAndLog(details);

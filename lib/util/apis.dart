@@ -42,7 +42,20 @@ Future _passwordSignIn({phone, password}) async {
   return resp.data;
 }
 
+Future _getSlides({pageNum = 1, pageSize = 3}) async {
+  final resp = await Request.dio.get(
+    '/front/slideshow/list',
+    queryParameters: {
+      'pageNum': pageNum,
+      'pageSize': pageSize,
+    },
+  );
+
+  return resp.data;
+}
+
 class API {
   static final signUp = _signUp;
   static final passwordSignIn = _passwordSignIn;
+  static final getSlides = _getSlides;
 }
