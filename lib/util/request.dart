@@ -9,11 +9,33 @@ import '../scopedModels/index.dart';
 import '../models/index.dart';
 import 'index.dart';
 
-class RequestInterceptor extends Interceptor {
+class RequestInterceptor extends LogInterceptor {
+  RequestInterceptor() : super(requestBody: true, responseBody: true);
+
   bool _isLoading = false;
+
+  void _printKV(String key, Object v) {
+    logPrint('$key: $v');
+  }
+
+  void _printAll(msg) {
+    msg.toString().split('\n').forEach(logPrint);
+  }
 
   @override
   Future onRequest(dynamic options) {
+    logPrint('*** Request ***');
+    _printKV('uri', options.uri);
+
+    if (requestHeader) {
+      logPrint('headers:');
+      options.headers.forEach((key, v) => _printKV(' $key', v));
+    }
+    if (requestBody) {
+      logPrint('data:');
+      _printAll(options.data);
+    }
+
     final extra = RequestExtraOptions.fromJson(options.extra);
     if (extra.showLoading) {
       _isLoading = true;
@@ -24,6 +46,18 @@ class RequestInterceptor extends Interceptor {
 
   @override
   Future onResponse(dynamic response) {
+    _printKV('uri', response.request?.uri);
+    if (responseHeader) {
+      _printKV('statusCode', response.statusCode);
+      if (response.isRedirect == true) {
+        _printKV('redirect', response.realUri);
+      }
+    }
+    if (responseBody) {
+      logPrint('Response Text:');
+      _printAll(response.toString());
+    }
+
     final resp = ResponseBasic.fromJson(response.data);
     if (_isLoading) {
       EasyLoading.dismiss();

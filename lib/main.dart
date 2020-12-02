@@ -19,12 +19,15 @@ FlutterErrorDetails makeDetails(Object obj, StackTrace stack) {
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
+  AppModel model = AppModel();
+  model.init();
+
   FlutterError.onError = (FlutterErrorDetails details) {
     reportErrorAndLog(details);
   };
 
   runZoned(
-    () => runApp(ScopedModel<AppModel>(model: AppModel(), child: OreApp())),
+    () => runApp(ScopedModel<AppModel>(model: model, child: OreApp())),
     zoneSpecification: ZoneSpecification(
       print: (Zone self, ZoneDelegate parent, Zone zone, String line) {
         collectLog(line); // 收集日志

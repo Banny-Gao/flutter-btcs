@@ -10,9 +10,7 @@ class BaseModel extends Model {}
 class AppModel extends Model with BaseModel, ThemeModel, ProfileModel
 //, AppModel
 {
-  AppModel() {
-    init();
-  }
+  AppModel() {}
 
   // 是否为release版
   static bool get isRelease => bool.fromEnvironment("dart.vm.product");
@@ -21,7 +19,8 @@ class AppModel extends Model with BaseModel, ThemeModel, ProfileModel
     await initTheme();
     await initProfile();
 
-    //初始化网络请求相关配置
     Request.init();
+
+    print('-------- AppModel initialized');
   }
 }

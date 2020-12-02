@@ -31,20 +31,21 @@ class ProfileModel extends BaseModel {
       ..enable = true
       ..maxAge = 3600
       ..maxCount = 100;
-
+    profile.token = '';
     _token = profile.token;
     if (_token != null && _token != "") {
       _isLogin = true;
     }
 
-    this.notifyListeners();
+    print('----- ProfileModel initialized');
+    print('profile: ${profile.toJson()}');
   }
 
   Future<Null> saveProfile() async {
     final SharedPreferences prefs = await _prefs;
     prefs.setString("profile", jsonEncode(profile.toJson()));
 
-    this.notifyListeners();
+    notifyListeners();
   }
 
   Future<Null> toggleLogStatus(bool isLogin, {token, phone}) async {
@@ -52,7 +53,6 @@ class ProfileModel extends BaseModel {
     profile
       ..token = token ?? ''
       ..phone = phone ?? '';
-
     saveProfile();
   }
 }

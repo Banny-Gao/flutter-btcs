@@ -1,16 +1,17 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'signUpResponseData.dart';
+part of 'userSignResponseData.dart';
 
 // **************************************************************************
 // JsonSerializableGenerator
 // **************************************************************************
 
-SignUpResponseData _$SignUpResponseDataFromJson(Map<String, dynamic> json) {
-  return SignUpResponseData()
+UserSignResponseData _$UserSignResponseDataFromJson(Map<String, dynamic> json) {
+  return UserSignResponseData()
     ..token = json['token'] as String
     ..phone = json['phone'] as String;
 }
 
-Map<String, dynamic> _$SignUpResponseDataToJson(SignUpResponseData instance) =>
+Map<String, dynamic> _$UserSignResponseDataToJson(
+        UserSignResponseData instance) =>
     <String, dynamic>{'token': instance.token, 'phone': instance.phone};

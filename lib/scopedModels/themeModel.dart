@@ -26,5 +26,7 @@ class ThemeModel extends BaseModel {
   Future<Null> initTheme() async {
     final SharedPreferences prefs = await _prefs;
     _currentTheme = prefs.getInt(_THEME_KEY) ?? 0;
+
+    print('--------- ThemeModel initialized');
   }
 }
