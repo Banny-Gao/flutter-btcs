@@ -13,29 +13,10 @@ class RequestInterceptor extends LogInterceptor {
 
   bool _isLoading = false;
 
-  void _printKV(String key, Object v) {
-    logPrint('$key: $v');
-  }
-
-  void _printAll(msg) {
-    msg.toString().split('\n').forEach(logPrint);
-  }
-
   @override
   Future onRequest(dynamic options) {
-    logPrint('*** Request ***');
-    _printKV('uri', options.uri);
-
-    if (requestHeader) {
-      logPrint('headers:');
-      options.headers.forEach((key, v) => _printKV(' $key', v));
-    }
-    if (requestBody) {
-      logPrint('data:');
-      _printAll(options.data);
-    }
-
     final extra = RequestExtraOptions.fromJson(options.extra);
+
     if (extra.showLoading != null) {
       _isLoading = true;
       EasyLoading.show();
@@ -45,19 +26,8 @@ class RequestInterceptor extends LogInterceptor {
 
   @override
   Future onResponse(dynamic response) {
-    _printKV('uri', response.request?.uri);
-    if (responseHeader) {
-      _printKV('statusCode', response.statusCode);
-      if (response.isRedirect == true) {
-        _printKV('redirect', response.realUri);
-      }
-    }
-    if (responseBody) {
-      logPrint('Response Text:');
-      _printAll(response.toString());
-    }
-
     final resp = ResponseBasic.fromJson(response.data);
+
     if (_isLoading) {
       EasyLoading.dismiss();
     }
@@ -96,7 +66,7 @@ class Request {
 
   static void init() {
     // 添加缓存插件
-    // dio.interceptors.add(Request.netCache);
+    dio.interceptors.add(Request.netCache);
     // 设置用户token（可能为null，代表未登录）
     dio.options.headers['X-Token'] = ProfileModel.profile.token;
     dio.options.headers[HttpHeaders.contentTypeHeader] = 'application/json';

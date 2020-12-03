@@ -1,3 +1,6 @@
+export 'bulletins.dart' ; 
+export 'bulletinsResponse.dart' ; 
+export 'bulletinsResponseData.dart' ; 
 export 'cacheConfig.dart' ; 
 export 'pagesLimit.dart' ; 
 export 'profile.dart' ; 
