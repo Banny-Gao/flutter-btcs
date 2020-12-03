@@ -6,11 +6,13 @@ import 'scopedModels/index.dart';
 import 'common/toggleThemeButton.dart';
 
 import 'widgets/widgets.dart';
+import './util/index.dart' as Utils;
 
 class OreApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
+    Utils.Request.setContext(context);
     return ScopedModelDescendant<AppModel>(builder: (context, child, model) {
       return MaterialApp(
         theme: model.theme,
@@ -43,40 +45,6 @@ class AppState extends State<App> {
   }
 
   @override
-  void dispose() {
-    super.dispose();
-    _pageController.dispose();
-  }
-
-  void _navigationTapped(int page) {
-    _pageController.animateToPage(page,
-        duration: const Duration(milliseconds: 300), curve: Curves.ease);
-  }
-
-  void _onPageChanged(int index) {
-    setState(() {
-      _page = index;
-    });
-  }
-
-  List<Widget> _getMediaList() {
-    return <Widget>[
-      HomePage(),
-      GroupBooking(),
-      Owner(),
-    ];
-  }
-
-  List<BottomNavigationBarItem> _getNavBarItems() {
-    return [
-      BottomNavigationBarItem(icon: Icon(Icons.home), label: '首页'),
-      BottomNavigationBarItem(
-          icon: Icon(Icons.monetization_on_outlined), label: '拼团'),
-      BottomNavigationBarItem(icon: Icon(Icons.account_circle), label: '我的'),
-    ];
-  }
-
-  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
@@ -97,5 +65,39 @@ class AppState extends State<App> {
         currentIndex: _page,
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _pageController.dispose();
+  }
+
+  void _navigationTapped(int page) {
+    _pageController.animateToPage(page,
+        duration: const Duration(milliseconds: 300), curve: Curves.ease);
+  }
+
+  void _onPageChanged(int index) {
+    setState(() {
+      _page = index;
+    });
+  }
+
+  List<Widget> _getMediaList() {
+    return <Widget>[
+      Home(),
+      GroupBooking(),
+      Owner(),
+    ];
+  }
+
+  List<BottomNavigationBarItem> _getNavBarItems() {
+    return [
+      BottomNavigationBarItem(icon: Icon(Icons.home), label: '首页'),
+      BottomNavigationBarItem(
+          icon: Icon(Icons.monetization_on_outlined), label: '拼团'),
+      BottomNavigationBarItem(icon: Icon(Icons.account_circle), label: '我的'),
+    ];
   }
 }

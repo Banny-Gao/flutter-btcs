@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:flutter/material.dart';
 
 import 'package:dio/dio.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
@@ -64,6 +65,7 @@ class RequestInterceptor extends LogInterceptor {
     switch (resp.code) {
       case 401:
         // logout
+        Navigator.of(Request.context).pushReplacementNamed('/');
         break;
       case 200:
         break;
@@ -90,11 +92,17 @@ class Request {
   ))
     ..interceptors.add(RequestInterceptor());
 
+  static BuildContext context;
+
   static void init() {
     // 添加缓存插件
     // dio.interceptors.add(Request.netCache);
     // 设置用户token（可能为null，代表未登录）
     dio.options.headers['X-Token'] = ProfileModel.profile.token;
     dio.options.headers[HttpHeaders.contentTypeHeader] = 'application/json';
+  }
+
+  static void setContext(BuildContext c) {
+    context = c;
   }
 }
