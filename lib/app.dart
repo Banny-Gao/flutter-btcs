@@ -1,29 +1,30 @@
 import 'package:flutter/material.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import 'scopedModels/index.dart';
 import 'common/toggleThemeButton.dart';
 
-import 'widgets/widgets.dart';
+import 'widgets/index.dart';
 import './util/index.dart' as Utils;
+import 'routes.dart';
 
 class OreApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     Utils.Request.setContext(context);
-    return ScopedModelDescendant<AppModel>(builder: (context, child, model) {
-      return MaterialApp(
-        theme: model.theme,
-        initialRoute: model.isLogin ? '/' : 'login',
-        routes: <String, WidgetBuilder>{
-          "/": (context) => App(),
-          "login": (context) => Login(),
-        },
-        builder: EasyLoading.init(),
-      );
-    });
+    return ScopedModelDescendant<AppModel>(
+      builder: (context, child, model) {
+        return MaterialApp(
+          theme: model.theme,
+          initialRoute: model.isLogin ? '/' : 'login',
+          routes: routes,
+          builder: EasyLoading.init(),
+        );
+      },
+    );
   }
 }
 
@@ -46,23 +47,32 @@ class AppState extends State<App> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        actions: <Widget>[
-          ToggleThemeButton(),
-        ],
-        title: Text('$_appBarTitle'),
-      ),
-      body: PageView(
-        children: _getMediaList(),
-        pageSnapping: true,
-        controller: _pageController,
-        onPageChanged: _onPageChanged,
-      ),
-      bottomNavigationBar: BottomNavigationBar(
-        items: _getNavBarItems(),
-        onTap: _navigationTapped,
-        currentIndex: _page,
+    return MediaQuery.removePadding(
+      context: context,
+      removeBottom: true,
+      child: Scaffold(
+        appBar: AppBar(
+          actions: <Widget>[
+            ToggleThemeButton(),
+          ],
+          title: Text('$_appBarTitle'),
+        ),
+        body: PageView(
+          children: _getMediaList(),
+          pageSnapping: true,
+          controller: _pageController,
+          onPageChanged: _onPageChanged,
+        ),
+        bottomNavigationBar: BottomNavigationBar(
+          items: _getNavBarItems(),
+          onTap: _navigationTapped,
+          currentIndex: _page,
+          showSelectedLabels: false,
+          showUnselectedLabels: false,
+          type: BottomNavigationBarType.shifting,
+          selectedItemColor: Theme.of(context).primaryColorDark,
+          unselectedItemColor: Theme.of(context).primaryColorLight,
+        ),
       ),
     );
   }
@@ -94,10 +104,24 @@ class AppState extends State<App> {
 
   List<BottomNavigationBarItem> _getNavBarItems() {
     return [
-      BottomNavigationBarItem(icon: Icon(Icons.home), label: '首页'),
       BottomNavigationBarItem(
-          icon: Icon(Icons.monetization_on_outlined), label: '拼团'),
-      BottomNavigationBarItem(icon: Icon(Icons.account_circle), label: '我的'),
+        icon: Icon(
+          FontAwesomeIcons.home,
+        ),
+        label: '首页',
+      ),
+      BottomNavigationBarItem(
+        icon: Icon(
+          FontAwesomeIcons.commentDollar,
+        ),
+        label: '拼团',
+      ),
+      BottomNavigationBarItem(
+        icon: Icon(
+          FontAwesomeIcons.userTie,
+        ),
+        label: '我的',
+      ),
     ];
   }
 }
