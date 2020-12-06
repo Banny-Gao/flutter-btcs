@@ -31,7 +31,9 @@ class ProfileModel extends BaseModel {
       ..enable = true
       ..maxAge = 3600
       ..maxCount = 100;
+    profile.token = null;
     _token = profile.token;
+
     if (_token != null && _token != "") {
       _isLogin = true;
     }

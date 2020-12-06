@@ -7,6 +7,9 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:webview_flutter/webview_flutter.dart';
+import 'package:graphic/graphic.dart' as graphic;
+
+import '../data.dart';
 
 import '../../scopedModels/index.dart';
 import '../../models/index.dart' as Models;
@@ -156,11 +159,36 @@ class _HomeState extends State<Home> {
   }
 
   Widget buildCharts() {
-    return TextButton(
-      child: Text('查看图表'),
-      onPressed: () {
-        Navigator.pushNamed(context, '/lineGraph');
-      },
+    return Container(
+      width: 350,
+      height: 300,
+      child: graphic.Chart(
+        data: lineData,
+        scales: {
+          'Date': graphic.CatScale(
+            accessor: (map) => map['Date'] as String,
+            range: [0, 1],
+            tickCount: 5,
+          ),
+          'Close': graphic.LinearScale(
+            accessor: (map) => map['Close'] as num,
+            nice: true,
+            min: 100,
+          )
+        },
+        geoms: [
+          graphic.LineGeom(
+            position: graphic.PositionAttr(field: 'Date*Close'),
+            shape: graphic.ShapeAttr(
+                values: [graphic.BasicLineShape(smooth: true)]),
+            size: graphic.SizeAttr(values: [0.5]),
+          ),
+        ],
+        axes: {
+          'Date': graphic.Defaults.horizontalAxis,
+          'Close': graphic.Defaults.verticalAxis,
+        },
+      ),
     );
   }
 

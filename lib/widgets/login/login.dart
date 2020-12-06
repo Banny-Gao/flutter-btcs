@@ -316,13 +316,32 @@ class _LoginPageState extends State<Login> with SingleTickerProviderStateMixin {
             ),
             Padding(
               padding: EdgeInsets.only(top: 16.0),
-              child: FlatButton(
-                  onPressed: () {},
-                  child: Text(
-                    "忘记密码?",
-                    style: TextStyle(
-                        decoration: TextDecoration.underline, fontSize: 14.0),
-                  )),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  FlatButton(
+                    onPressed: () {},
+                    child: Text(
+                      "短信登录?",
+                      style: TextStyle(
+                        fontSize: 12.0,
+                        color: Colors.black54,
+                      ),
+                    ),
+                  ),
+                  FlatButton(
+                    onPressed: () {},
+                    child: Text(
+                      "忘记密码?",
+                      style: TextStyle(
+                        fontSize: 12.0,
+                        color: Colors.black54,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ),
           ],
         ),
