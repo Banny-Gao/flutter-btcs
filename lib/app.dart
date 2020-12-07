@@ -11,15 +11,19 @@ import './util/index.dart' as Utils;
 import 'routes.dart';
 
 class OreApp extends StatelessWidget {
+  BuildContext _rootContext;
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    Utils.Request.setContext(context);
+    _rootContext = context;
+    ;
+    Utils.Request.setContext(_rootContext);
+
     return ScopedModelDescendant<AppModel>(
       builder: (context, child, model) {
         return MaterialApp(
           theme: model.theme,
-          initialRoute: model.isLogin ? '/' : 'login',
+          initialRoute: model.isLogin ? '/' : '/login',
           routes: routes,
           builder: EasyLoading.init(),
         );
@@ -47,34 +51,37 @@ class AppState extends State<App> {
 
   @override
   Widget build(BuildContext context) {
-    return MediaQuery.removePadding(
-      context: context,
-      removeBottom: true,
-      child: Scaffold(
-        appBar: AppBar(
-          actions: <Widget>[
-            ToggleThemeButton(),
-          ],
-          title: Text('$_appBarTitle'),
+    return ScopedModelDescendant<AppModel>(builder: (context, child, model) {
+      model.initRouter(context);
+      return MediaQuery.removePadding(
+        context: context,
+        removeBottom: true,
+        child: Scaffold(
+          appBar: AppBar(
+            actions: <Widget>[
+              ToggleThemeButton(),
+            ],
+            title: Text('$_appBarTitle'),
+          ),
+          body: PageView(
+            children: _getMediaList(),
+            pageSnapping: true,
+            controller: _pageController,
+            onPageChanged: _onPageChanged,
+          ),
+          bottomNavigationBar: BottomNavigationBar(
+            items: _getNavBarItems(),
+            onTap: _navigationTapped,
+            currentIndex: _page,
+            showSelectedLabels: false,
+            showUnselectedLabels: false,
+            type: BottomNavigationBarType.shifting,
+            selectedItemColor: Theme.of(context).primaryColorDark,
+            unselectedItemColor: Theme.of(context).primaryColorLight,
+          ),
         ),
-        body: PageView(
-          children: _getMediaList(),
-          pageSnapping: true,
-          controller: _pageController,
-          onPageChanged: _onPageChanged,
-        ),
-        bottomNavigationBar: BottomNavigationBar(
-          items: _getNavBarItems(),
-          onTap: _navigationTapped,
-          currentIndex: _page,
-          showSelectedLabels: false,
-          showUnselectedLabels: false,
-          type: BottomNavigationBarType.shifting,
-          selectedItemColor: Theme.of(context).primaryColorDark,
-          unselectedItemColor: Theme.of(context).primaryColorLight,
-        ),
-      ),
-    );
+      );
+    });
   }
 
   @override

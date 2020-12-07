@@ -7,7 +7,8 @@ import '../util/index.dart';
 
 class BaseModel extends Model {}
 
-class AppModel extends Model with BaseModel, ThemeModel, ProfileModel
+class AppModel extends Model
+    with BaseModel, ThemeModel, ProfileModel, RouterModel
 //, AppModel
 {
   AppModel() {}

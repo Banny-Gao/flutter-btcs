@@ -1,5 +1,4 @@
 import 'dart:io';
-import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:scoped_model/scoped_model.dart';
@@ -43,7 +42,7 @@ class _HomeState extends State<Home> {
       return ListView(
         children: <Widget>[
           buildBanners(),
-          buildBulletins(),
+          buildBulletins(model),
           buildCharts(),
         ],
       );
@@ -57,12 +56,7 @@ class _HomeState extends State<Home> {
       child: new Swiper(
         itemBuilder: (BuildContext context, int index) {
           return Padding(
-            padding: EdgeInsets.only(
-              top: 10.0,
-              bottom: 10.0,
-              left: 20.0,
-              right: 20.0,
-            ),
+            padding: EdgeInsets.all(10.0),
             child: DecoratedBox(
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(10.0),
@@ -89,13 +83,13 @@ class _HomeState extends State<Home> {
         // pagination: new SwiperPagination(),
         autoplay: true,
         autoplayDelay: 5000,
-        // viewportFraction: 0.84,
-        // scale: 0.9,
+        viewportFraction: 0.80,
+        scale: 0.84,
       ),
     );
   }
 
-  Widget buildBulletins() {
+  Widget buildBulletins(RouterModel model) {
     return Container(
       margin: EdgeInsets.only(top: 20.0),
       height: 40.0,
@@ -147,7 +141,10 @@ class _HomeState extends State<Home> {
                   autoplayDelay: 10000,
                   scrollDirection: Axis.vertical,
                   onTap: (index) {
-                    _getBulletin(_bulletins[index]);
+                    _getBulletin(
+                      _bulletins[index],
+                      model,
+                    );
                   },
                 ),
               ),
@@ -231,34 +228,14 @@ class _HomeState extends State<Home> {
     });
   }
 
-  _getBulletin(Models.Bulletins bullet) {
-    final html = '''
-              <!DOCTYPE html>
-              <html lang="en">
-              <head>
-                <meta charset="UTF-8">
-                <meta name="viewport" content="width=device-width, initial-scale=1.0">
-                <title>${bullet.title}</title>
-              </head>
-              <body>
-                ${bullet.content}
-              </body>
-              </html>
-        ''';
-    final String contentBase64 =
-        base64Encode(const Utf8Encoder().convert(html));
-    print(bullet.title);
-
-    Navigator.push<void>(
-      context,
-      new MaterialPageRoute(
-        fullscreenDialog: true,
-        builder: (context) => WebView(
-          initialUrl: 'data:text/html;base64,${contentBase64}',
-          gestureNavigationEnabled: true,
-          javascriptMode: JavascriptMode.unrestricted,
-        ),
-      ),
+  _getBulletin(Models.Bulletins bullet, RouterModel model) {
+    final Map<String, String> arguments = {
+      'title': bullet.title,
+      'content': bullet.content,
+    };
+    model.pushNamed(
+      routeName: '/contentPreview',
+      arguments: arguments,
     );
   }
 }
