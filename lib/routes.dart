@@ -6,8 +6,6 @@ import './app.dart';
 final routes = {
   '/': (context) => App(),
   '/login': (context) => Login(),
-  '/groupBooking': (context) => GroupBooking(),
-  '/owner': (context) => Owner(),
   // ignore: top_level_function_literal_block
   '/contentPreview': (context) {
     final Map<String, String> args = ModalRoute.of(context).settings.arguments;
@@ -15,3 +13,10 @@ final routes = {
     return ContentPreview(title: args['title'], content: args['content']);
   },
 };
+
+class GlobalRoute {
+  static GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
+
+  NavigatorState get navigatorState => GlobalRoute.navigatorKey.currentState;
+  BuildContext get currentContext => GlobalRoute.navigatorKey.currentContext;
+}

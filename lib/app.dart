@@ -10,13 +10,13 @@ import 'widgets/index.dart';
 import './util/index.dart' as Utils;
 import 'routes.dart';
 
+// ignore: must_be_immutable
 class OreApp extends StatelessWidget {
   BuildContext _rootContext;
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     _rootContext = context;
-    ;
     Utils.Request.setContext(_rootContext);
 
     return ScopedModelDescendant<AppModel>(
@@ -26,6 +26,7 @@ class OreApp extends StatelessWidget {
           initialRoute: model.isLogin ? '/' : '/login',
           routes: routes,
           builder: EasyLoading.init(),
+          navigatorKey: GlobalRoute.navigatorKey,
         );
       },
     );
@@ -52,7 +53,6 @@ class AppState extends State<App> {
   @override
   Widget build(BuildContext context) {
     return ScopedModelDescendant<AppModel>(builder: (context, child, model) {
-      model.initRouter(context);
       return MediaQuery.removePadding(
         context: context,
         removeBottom: true,
@@ -63,19 +63,21 @@ class AppState extends State<App> {
             ],
             title: Text('$_appBarTitle'),
           ),
-          body: PageView(
-            children: _getMediaList(),
-            pageSnapping: true,
-            controller: _pageController,
-            onPageChanged: _onPageChanged,
+          body: DecoratedBox(
+            decoration: BoxDecoration(
+              color: Theme.of(context).scaffoldBackgroundColor,
+            ),
+            child: PageView(
+              children: _getMediaList(),
+              pageSnapping: true,
+              controller: _pageController,
+              onPageChanged: _onPageChanged,
+            ),
           ),
           bottomNavigationBar: BottomNavigationBar(
             items: _getNavBarItems(),
             onTap: _navigationTapped,
             currentIndex: _page,
-            showSelectedLabels: false,
-            showUnselectedLabels: false,
-            type: BottomNavigationBarType.shifting,
             selectedItemColor: Theme.of(context).primaryColorDark,
             unselectedItemColor: Theme.of(context).primaryColorLight,
           ),
@@ -104,7 +106,8 @@ class AppState extends State<App> {
   List<Widget> _getMediaList() {
     return <Widget>[
       Home(),
-      GroupBooking(),
+      OreMachines(),
+      Earnings(),
       Owner(),
     ];
   }
@@ -119,9 +122,15 @@ class AppState extends State<App> {
       ),
       BottomNavigationBarItem(
         icon: Icon(
+          FontAwesomeIcons.shoppingCart,
+        ),
+        label: '矿机',
+      ),
+      BottomNavigationBarItem(
+        icon: Icon(
           FontAwesomeIcons.commentDollar,
         ),
-        label: '拼团',
+        label: '收益',
       ),
       BottomNavigationBarItem(
         icon: Icon(

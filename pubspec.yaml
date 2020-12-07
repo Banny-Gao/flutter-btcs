@@ -25,6 +25,8 @@ dependencies:
   graphic: ^0.2.1
   flutter_echarts: ^1.5.0
 
+  google_fonts: ^1.1.1
+
 
 dev_dependencies:
   flutter_test:

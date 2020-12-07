@@ -13,6 +13,7 @@ import '../data.dart';
 import '../../scopedModels/index.dart';
 import '../../models/index.dart' as Models;
 import '../../util/index.dart' as Utils;
+import '../../routes.dart';
 
 class Home extends StatefulWidget {
   Home({Key, key}) : super(key: key);
@@ -21,9 +22,11 @@ class Home extends StatefulWidget {
   State<StatefulWidget> createState() => _HomeState();
 }
 
-class _HomeState extends State<Home> {
+class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin {
   List<Models.Slides> _imgList = [];
   List<Models.Bulletins> _bulletins = [];
+
+  get wantKeepAlive => true;
 
   @override
   void initState() {
@@ -42,8 +45,9 @@ class _HomeState extends State<Home> {
       return ListView(
         children: <Widget>[
           buildBanners(),
-          buildBulletins(model),
-          buildCharts(),
+          buildBulletins(),
+          buildCoinPirceCharts(),
+          buildhashrateCharts(),
         ],
       );
     });
@@ -89,7 +93,7 @@ class _HomeState extends State<Home> {
     );
   }
 
-  Widget buildBulletins(RouterModel model) {
+  Widget buildBulletins() {
     return Container(
       margin: EdgeInsets.only(top: 20.0),
       height: 40.0,
@@ -100,8 +104,8 @@ class _HomeState extends State<Home> {
           children: <Widget>[
             Icon(
               FontAwesomeIcons.bullhorn,
-              color: Colors.red[400],
-              size: 16.0,
+              color: Theme.of(context).primaryColor,
+              size: 12.0,
             ),
             Flexible(
               flex: 1,
@@ -121,7 +125,7 @@ class _HomeState extends State<Home> {
                               overflow: TextOverflow.ellipsis,
                               style: TextStyle(
                                 color: Colors.black,
-                                fontSize: 16.0,
+                                fontSize: 14.0,
                                 fontWeight: FontWeight.w600,
                               ),
                             ),
@@ -141,10 +145,7 @@ class _HomeState extends State<Home> {
                   autoplayDelay: 10000,
                   scrollDirection: Axis.vertical,
                   onTap: (index) {
-                    _getBulletin(
-                      _bulletins[index],
-                      model,
-                    );
+                    _getBulletin(_bulletins[index]);
                   },
                 ),
               ),
@@ -155,36 +156,103 @@ class _HomeState extends State<Home> {
     );
   }
 
-  Widget buildCharts() {
+  Widget buildTitle(title) {
+    return Text(
+      title,
+      style: TextStyle(
+        color: Theme.of(context).hintColor,
+        fontSize: 14.0,
+        fontWeight: FontWeight.w500,
+      ),
+    );
+  }
+
+  Widget buildCoinPirceCharts() {
     return Container(
-      width: 350,
-      height: 300,
-      child: graphic.Chart(
-        data: lineData,
-        scales: {
-          'Date': graphic.CatScale(
-            accessor: (map) => map['Date'] as String,
-            range: [0, 1],
-            tickCount: 5,
-          ),
-          'Close': graphic.LinearScale(
-            accessor: (map) => map['Close'] as num,
-            nice: true,
-            min: 100,
-          )
-        },
-        geoms: [
-          graphic.LineGeom(
-            position: graphic.PositionAttr(field: 'Date*Close'),
-            shape: graphic.ShapeAttr(
-                values: [graphic.BasicLineShape(smooth: true)]),
-            size: graphic.SizeAttr(values: [0.5]),
-          ),
-        ],
-        axes: {
-          'Date': graphic.Defaults.horizontalAxis,
-          'Close': graphic.Defaults.verticalAxis,
-        },
+      margin: EdgeInsets.only(top: 20.0),
+      child: Padding(
+        padding: EdgeInsets.all(10.0),
+        child: Column(
+          children: [
+            buildTitle('FireCoin价格'),
+            Container(
+              width: MediaQuery.of(context).size.width,
+              height: 240.0,
+              child: graphic.Chart(
+                data: lineData,
+                scales: {
+                  'Date': graphic.CatScale(
+                    accessor: (map) => map['Date'] as String,
+                    range: [0, 1],
+                    tickCount: 5,
+                  ),
+                  'Close': graphic.LinearScale(
+                    accessor: (map) => map['Close'] as num,
+                    nice: true,
+                    min: 100,
+                  )
+                },
+                geoms: [
+                  graphic.LineGeom(
+                    position: graphic.PositionAttr(field: 'Date*Close'),
+                    shape: graphic.ShapeAttr(
+                        values: [graphic.BasicLineShape(smooth: true)]),
+                    size: graphic.SizeAttr(values: [0.5]),
+                  ),
+                ],
+                axes: {
+                  'Date': graphic.Defaults.horizontalAxis,
+                  'Close': graphic.Defaults.verticalAxis,
+                },
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget buildhashrateCharts() {
+    return Container(
+      margin: EdgeInsets.only(top: 20.0),
+      child: Padding(
+        padding: EdgeInsets.all(10.0),
+        child: Column(
+          children: [
+            buildTitle('矿池算力'),
+            Container(
+              width: MediaQuery.of(context).size.width,
+              height: 240.0,
+              child: graphic.Chart(
+                data: lineData,
+                scales: {
+                  'Date': graphic.CatScale(
+                    accessor: (map) => map['Date'] as String,
+                    range: [0, 1],
+                    tickCount: 5,
+                  ),
+                  'Close': graphic.LinearScale(
+                    accessor: (map) => map['Close'] as num,
+                    nice: true,
+                    min: 100,
+                  )
+                },
+                geoms: [
+                  graphic.LineGeom(
+                    position: graphic.PositionAttr(field: 'Date*Close'),
+                    shape: graphic.ShapeAttr(
+                        values: [graphic.BasicLineShape(smooth: true)]),
+                    size: graphic.SizeAttr(values: [0.5]),
+                  ),
+                ],
+                axes: {
+                  'Date': graphic.Defaults.horizontalAxis,
+                  'Close': graphic.Defaults.verticalAxis,
+                },
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -228,13 +296,13 @@ class _HomeState extends State<Home> {
     });
   }
 
-  _getBulletin(Models.Bulletins bullet, RouterModel model) {
+  _getBulletin(Models.Bulletins bullet) {
     final Map<String, String> arguments = {
       'title': bullet.title,
       'content': bullet.content,
     };
-    model.pushNamed(
-      routeName: '/contentPreview',
+    Navigator.of(GlobalRoute.navigatorKey.currentContext).pushNamed(
+      '/contentPreview',
       arguments: arguments,
     );
   }

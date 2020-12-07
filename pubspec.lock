@@ -268,6 +268,13 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "1.2.0"
+  google_fonts:
+    dependency: "direct main"
+    description:
+      name: google_fonts
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "1.1.1"
   graphic:
     dependency: "direct main"
     description:

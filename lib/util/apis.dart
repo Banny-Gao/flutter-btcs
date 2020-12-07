@@ -2,6 +2,26 @@ import 'package:dio/dio.dart';
 
 import 'index.dart';
 
+// 类型 1:更换手机绑定 2.更新 3.注册,4.手机号登陆，5.密码修改
+Future _getCode(phone, type) async {
+  final resp = await Request.dio.get(
+    '/front/member/sendNote',
+    queryParameters: {
+      'phone': phone,
+      'type': type,
+    },
+    options: Options(
+      extra: {
+        "showLoading": true,
+      },
+    ),
+  );
+
+  Request.netCache.cache.clear();
+
+  return resp.data;
+}
+
 // 注册
 Future _signUp({phone, password, code, inviteCode}) async {
   final resp = await Request.dio.post(
@@ -57,7 +77,7 @@ Future _getSlides({pageNum = 1, pageSize = 3}) async {
   return resp.data;
 }
 
-// 首页公共列表
+// 首页公告列表
 Future _getBulletins({pageNum = 1, pageSize = 3}) async {
   final resp = await Request.dio.get(
     '/front/bulletin/list',
@@ -75,4 +95,5 @@ class API {
   static final passwordSignIn = _passwordSignIn;
   static final getSlides = _getSlides;
   static final getBulletins = _getBulletins;
+  static final getCode = _getCode;
 }

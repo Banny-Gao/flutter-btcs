@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -23,6 +25,8 @@ class _LoginPageState extends State<Login> with SingleTickerProviderStateMixin {
   final _signUpKey = GlobalKey<FormState>();
   final _signInKey = GlobalKey<FormState>();
 
+  FocusNode _phoneFocusNode = FocusNode();
+
   TextEditingController _signInPhoneController = new TextEditingController();
   TextEditingController _signInPasswordController = new TextEditingController();
   TextEditingController _signUpPhoneController = new TextEditingController();
@@ -36,8 +40,8 @@ class _LoginPageState extends State<Login> with SingleTickerProviderStateMixin {
   bool _signUpObscureText = true;
   bool _signUpObscureTextRepeat = true;
 
-  bool _couldGetSignUpCode = true;
-  String _signUpCodeText = "获取验证码";
+  Timer _timer;
+  var countdownTime = 0;
 
   PageController _pageController;
   AnimationController _textStyleController;
@@ -68,6 +72,21 @@ class _LoginPageState extends State<Login> with SingleTickerProviderStateMixin {
       end: TextStyle(color: _left),
     ).animate(_textStyleController);
 
+    _phoneFocusNode.addListener(() {
+      if (!_phoneFocusNode.hasFocus) {
+        final value = _signUpPhoneController.text;
+        if (Utils.Re.phone.hasMatch(value.trim())) {
+          setState(() {
+            _phone = value;
+          });
+        } else {
+          setState(() {
+            _phone = '';
+          });
+        }
+      }
+    });
+
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.portraitUp,
       DeviceOrientation.portraitDown,
@@ -85,6 +104,7 @@ class _LoginPageState extends State<Login> with SingleTickerProviderStateMixin {
       body: NotificationListener<OverscrollIndicatorNotification>(
         onNotification: (overscroll) {
           overscroll.disallowGlow();
+          return false;
         },
         child: SingleChildScrollView(
           child: Container(
@@ -372,7 +392,19 @@ class _LoginPageState extends State<Login> with SingleTickerProviderStateMixin {
                                 right: 25.0),
                             child: TextFormField(
                               autofocus: true,
+                              focusNode: _phoneFocusNode,
                               controller: _signUpPhoneController,
+                              onChanged: (value) {
+                                if (Utils.Re.phone.hasMatch(value.trim())) {
+                                  setState(() {
+                                    _phone = value;
+                                  });
+                                } else {
+                                  setState(() {
+                                    _phone = '';
+                                  });
+                                }
+                              },
                               keyboardType: TextInputType.phone,
                               style: TextStyle(
                                   fontSize: 16.0, color: Colors.black),
@@ -415,16 +447,18 @@ class _LoginPageState extends State<Login> with SingleTickerProviderStateMixin {
                                   ),
                                   labelText: "验证码",
                                   suffixIcon: Padding(
-                                    padding: EdgeInsets.only(top: 16.0),
-                                    child: GestureDetector(
-                                      onTap: _handleGetRegisterCode,
+                                    padding: EdgeInsets.all(10.0),
+                                    child: RaisedButton(
+                                      onPressed: Utils.Re.phone.hasMatch(
+                                                _phone.trim(),
+                                              ) &&
+                                              countdownTime == 0
+                                          ? _handleGetRegisterCode
+                                          : null,
                                       child: Text(
-                                        _signUpCodeText,
-                                        style: TextStyle(
-                                          color:
-                                              Common.Colors.blueGradientStart,
-                                          fontSize: 14.0,
-                                        ),
+                                        countdownTime > 0
+                                            ? '${countdownTime}s后重新获取'
+                                            : '获取验证码',
                                       ),
                                     ),
                                   ),
@@ -611,6 +645,10 @@ class _LoginPageState extends State<Login> with SingleTickerProviderStateMixin {
   void dispose() {
     _pageController?.dispose();
     _textStyleController?.dispose();
+
+    if (_timer != null) {
+      _timer.cancel();
+    }
     super.dispose();
   }
 
@@ -645,7 +683,32 @@ class _LoginPageState extends State<Login> with SingleTickerProviderStateMixin {
         : Utils.Constants.passwordErrorText;
   }
 
-  void _handleGetRegisterCode() {}
+  void _handleGetRegisterCode() async {
+    final response = await Utils.API.getCode(_phone, 3);
+    if (response.data['code'] != 200) {
+      EasyLoading.showError(response.data['message']);
+      return;
+    }
+
+    EasyLoading.showSuccess(Utils.Constants.signUpCodeSendSuccess);
+    if (countdownTime == 0) {
+      startCountdown();
+    }
+  }
+
+  startCountdown() {
+    countdownTime = 60;
+    final call = (timer) {
+      setState(() {
+        if (countdownTime < 1) {
+          _timer.cancel();
+        } else {
+          countdownTime -= 1;
+        }
+      });
+    };
+    _timer = Timer.periodic(Duration(seconds: 1), call);
+  }
 
   void _handleSignUp(model) async {
     final _signUpForm = _signUpKey.currentState;
