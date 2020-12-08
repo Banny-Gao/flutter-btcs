@@ -122,15 +122,15 @@ class AppState extends State<App> {
       ),
       BottomNavigationBarItem(
         icon: Icon(
-          FontAwesomeIcons.shoppingCart,
+          FontAwesomeIcons.hamburger,
         ),
-        label: '矿机',
+        label: '拼团',
       ),
       BottomNavigationBarItem(
         icon: Icon(
           FontAwesomeIcons.commentDollar,
         ),
-        label: '收益',
+        label: '资产',
       ),
       BottomNavigationBarItem(
         icon: Icon(
