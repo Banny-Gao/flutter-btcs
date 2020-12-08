@@ -211,7 +211,7 @@ Future _getHelp(id) async {
 
 // 获取用户信息
 Future _getUserInfo() async {
-  final resp = await Request.dio.get('/front/member/memberInfo');
+  final resp = await Request.dio.post('/front/member/memberInfo');
 
   return resp.data;
 }

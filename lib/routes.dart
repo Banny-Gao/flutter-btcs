@@ -12,6 +12,7 @@ final routes = {
 
     return ContentPreview(title: args['title'], content: args['content']);
   },
+  '/editUser': (context) => EditUser(),
 };
 
 class GlobalRoute {

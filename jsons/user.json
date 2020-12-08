@@ -1,6 +1,10 @@
 {
-  "id": "",
-  "name": "",
-  "phone": "",
-  "avatar_url": ""
+  "autoStatus": 0,
+  "inviteCode": "",
+  "memberAvatar": "",
+  "memberName": "",
+  "memberPhone": "",
+  "memberSex": "",
+  "passwdState": 0,
+  "payPwdState": 0
 }

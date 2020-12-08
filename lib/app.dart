@@ -57,12 +57,12 @@ class AppState extends State<App> {
         context: context,
         removeBottom: true,
         child: Scaffold(
-          appBar: AppBar(
-            actions: <Widget>[
-              ToggleThemeButton(),
-            ],
-            title: Text('$_appBarTitle'),
-          ),
+          // appBar: AppBar(
+          //   actions: <Widget>[
+          //     ToggleThemeButton(),
+          //   ],
+          //   title: Text('$_appBarTitle'),
+          // ),
           body: DecoratedBox(
             decoration: BoxDecoration(
               color: Theme.of(context).scaffoldBackgroundColor,

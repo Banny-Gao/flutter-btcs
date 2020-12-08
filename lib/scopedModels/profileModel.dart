@@ -41,6 +41,11 @@ class ProfileModel extends BaseModel {
     print('profile: ${profile.toJson()}');
   }
 
+  static holdProfile() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setString("profile", jsonEncode(profile.toJson()));
+  }
+
   Future<Null> saveProfile() async {
     final SharedPreferences prefs = await _prefs;
     prefs.setString("profile", jsonEncode(profile.toJson()));
