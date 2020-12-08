@@ -685,10 +685,8 @@ class _LoginPageState extends State<Login> with SingleTickerProviderStateMixin {
 
   void _handleGetRegisterCode() async {
     final response = await Utils.API.getCode(_phone, 3);
-    if (response.data['code'] != 200) {
-      EasyLoading.showError(response.data['message']);
-      return;
-    }
+    final resp = Models.ResponseBasic.fromJson(response);
+    if (resp.code != 200) return;
 
     EasyLoading.showSuccess(Utils.Constants.signUpCodeSendSuccess);
     if (countdownTime == 0) {

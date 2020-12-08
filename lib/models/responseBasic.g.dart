@@ -9,7 +9,9 @@ part of 'responseBasic.dart';
 ResponseBasic _$ResponseBasicFromJson(Map<String, dynamic> json) {
   return ResponseBasic()
     ..code = json['code'] as num
-    ..data = json['data'] as Map<String, dynamic>
+    ..data = json['data'] == null
+        ? null
+        : Data.fromJson(json['data'] as Map<String, dynamic>)
     ..message = json['message'] as String;
 }
 
