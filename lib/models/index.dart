@@ -10,6 +10,8 @@ export 'responseBasic.dart' ;
 export 'slides.dart' ; 
 export 'slidesResponse.dart' ; 
 export 'slidesResponseData.dart' ; 
+export 'uploadResponse.dart' ; 
+export 'uploadResponseData.dart' ; 
 export 'user.dart' ; 
 export 'userInfoReponse.dart' ; 
 export 'userSignResponse.dart' ; 

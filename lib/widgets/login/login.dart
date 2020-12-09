@@ -466,7 +466,7 @@ class _LoginPageState extends State<Login> with SingleTickerProviderStateMixin {
                                 validator: (val) {
                                   return Utils.Re.number.hasMatch(val.trim())
                                       ? null
-                                      : Utils.Constants.codeErrorText;
+                                      : Utils.Tips.codeErrorText;
                                 },
                                 onSaved: (val) {
                                   _signUpCode = val.trim();
@@ -674,13 +674,13 @@ class _LoginPageState extends State<Login> with SingleTickerProviderStateMixin {
   String _validatePhone(String value) {
     return Utils.Re.phone.hasMatch(value.trim())
         ? null
-        : Utils.Constants.phoneErrorText;
+        : Utils.Tips.phoneErrorText;
   }
 
   String _validatePassword(String value) {
     return Utils.Re.passWord.hasMatch(value.trim())
         ? null
-        : Utils.Constants.passwordErrorText;
+        : Utils.Tips.passwordErrorText;
   }
 
   void _handleGetRegisterCode() async {
@@ -688,7 +688,7 @@ class _LoginPageState extends State<Login> with SingleTickerProviderStateMixin {
     final resp = Models.ResponseBasic.fromJson(response);
     if (resp.code != 200) return;
 
-    EasyLoading.showSuccess(Utils.Constants.signUpCodeSendSuccess);
+    EasyLoading.showSuccess(Utils.Tips.signUpCodeSendSuccess);
     if (countdownTime == 0) {
       startCountdown();
     }
@@ -715,7 +715,7 @@ class _LoginPageState extends State<Login> with SingleTickerProviderStateMixin {
     _signUpForm.save();
 
     if (_signUpPassword != _signUpPasswordRepeat) {
-      EasyLoading.showError(Utils.Constants.passwordRepeatErrorText);
+      EasyLoading.showError(Utils.Tips.passwordRepeatErrorText);
       return;
     }
 

@@ -4,9 +4,9 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'index.dart';
 
 void showProgress(received, total) {
-  if (total != -1) {
-    EasyLoading.showProgress(received / total, status: 'progress');
-  }
+  final percent = (received / total);
+  print(percent);
+  percent < 1 ? EasyLoading.showProgress(percent) : EasyLoading.dismiss();
 }
 
 // 类型 1:更换手机绑定 2.更新 3.注册,4.手机号登陆，5.密码修改
@@ -425,14 +425,12 @@ Future _getDeal(type) async {
 }
 
 Future _upload(path, fileName) async {
-  Future<FormData> getFormData() async => FormData.fromMap(
-        {
-          "file": await MultipartFile.fromFile(
-            path,
-            filename: fileName,
-          ),
-        },
-      );
+  Future<FormData> getFormData() async => FormData.fromMap({
+        "file": await MultipartFile.fromFile(
+          path,
+          filename: fileName,
+        ),
+      });
 
   final resp = await Request.dio.post(
     '/front/oss/upload',

@@ -58,7 +58,7 @@ class Request {
 
   static Dio dio = new Dio(BaseOptions(
     // baseUrl: 'http://5r29og8.hn3.mofasuidao.cn/api',
-    baseUrl: 'http://47.93.123.178:9099/api',
+    baseUrl: BaseUrl,
   ))
     ..interceptors.add(RequestInterceptor());
 

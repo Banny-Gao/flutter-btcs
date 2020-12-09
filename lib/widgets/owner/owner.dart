@@ -20,42 +20,44 @@ class _OwnerState extends State<Owner> with AutomaticKeepAliveClientMixin {
   List tabs = [
     {
       'title': '实名认证',
-      'type': 'auth',
+      'key': 'auth',
+      'path': '/auth',
       'icon': FontAwesomeIcons.accessibleIcon,
     },
     {
       'title': '帮助中心',
-      'type': 'link',
+      'key': 'helps',
       'path': '/helps',
       'icon': FontAwesomeIcons.hireAHelper,
     },
     {
       'title': '钱包',
-      'type': 'link',
+      'key': 'walletAddresses',
       'path': '/walletAddresses',
       'icon': FontAwesomeIcons.wallet,
     },
     {
       'title': '修改登录密码',
-      'type': 'link',
+      'key': 'changePassword',
       'path': '/changePassword',
       'icon': FontAwesomeIcons.lock,
     },
     {
-      'title': '修改支付密码',
-      'type': 'link',
+      'title': '设置/修改支付密码',
+      'key': 'changePaymentPassword',
       'path': '/changePaymentPassword',
       'icon': FontAwesomeIcons.lock,
     },
     {
       'title': '修改手机号',
-      'type': 'link',
+      'key': 'changePhone',
       'path': '/changePhone',
       'icon': FontAwesomeIcons.phone,
     },
     {
       'title': '公司简介',
-      'type': 'about',
+      'key': 'about',
+      'path': '/about',
       'icon': FontAwesomeIcons.smileWink,
     },
   ];
@@ -84,10 +86,24 @@ class _OwnerState extends State<Owner> with AutomaticKeepAliveClientMixin {
             backgroundColor: Colors.transparent,
             iconTheme: IconThemeData(color: Colors.transparent),
             stretch: true,
+            actions: [
+              RawMaterialButton(
+                child: Text(
+                  '退出登录',
+                  style: TextStyle(
+                    color: Theme.of(context).bottomAppBarColor,
+                  ),
+                ),
+                onPressed: () {
+                  model.toggleLogStatus(false);
+                  Navigator.of(context).popAndPushNamed('/login');
+                },
+              ),
+            ],
             flexibleSpace: FlexibleSpaceBar(
               stretchModes: [StretchMode.blurBackground],
-              background: ClipRRect(
-                borderRadius: BorderRadius.all(Radius.circular(0)),
+              background: Card(
+                shadowColor: Colors.black54,
                 child: Container(
                   decoration: BoxDecoration(
                     gradient: LinearGradient(
@@ -231,40 +247,40 @@ class _OwnerState extends State<Owner> with AutomaticKeepAliveClientMixin {
 
   getTabRight(index) {
     final tab = tabs[index];
-    Widget component = Container();
-    Widget icon = Icon(
-      FontAwesomeIcons.chevronRight,
-      size: 12.0,
-      color: Colors.grey[400],
-    );
+    String text;
 
-    switch (tab['type']) {
+    switch (tab['key']) {
       case 'auth':
-        {
-          String text = user.autoStatus != null
-              ? ['未认证', '待审核', '审核拒绝', '已认证'][user.autoStatus]
-              : '';
-          component = Row(
-            children: [
-              Padding(
-                padding: EdgeInsets.only(right: 10.0),
-                child: Text(
-                  text,
-                  style: TextStyle(
-                    color: Theme.of(context).primaryColor,
-                    fontSize: 12.0,
-                  ),
-                ),
-              ),
-              icon,
-            ],
-          );
-        }
+        text = user.autoStatus != null ? Utils.AuthStates[user.autoStatus] : '';
         break;
-      case 'about':
+      case 'changePaymentPassword':
+        text = user.payPwdState != null
+            ? Utils.PaymentPasswordStates[user.payPwdState]
+            : '';
+        break;
       default:
-        component = icon;
+        text = '';
     }
+
+    Widget component = Row(
+      children: [
+        Text(
+          text,
+          style: TextStyle(
+            color: Theme.of(context).primaryColor,
+            fontSize: 12.0,
+          ),
+        ),
+        Padding(
+          padding: EdgeInsets.only(left: 10.0),
+          child: Icon(
+            FontAwesomeIcons.chevronRight,
+            size: 12.0,
+            color: Colors.grey[400],
+          ),
+        ),
+      ],
+    );
 
     return component;
   }
