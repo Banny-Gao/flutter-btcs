@@ -61,6 +61,7 @@ class _OwnerState extends State<Owner> with AutomaticKeepAliveClientMixin {
       'icon': FontAwesomeIcons.smileWink,
     },
   ];
+  String _companyAbout = '';
 
   get wantKeepAlive => true;
 
@@ -285,12 +286,29 @@ class _OwnerState extends State<Owner> with AutomaticKeepAliveClientMixin {
     return component;
   }
 
-  handleTab(index) {}
+  handleTab(index) {
+    final tab = tabs[index];
+
+    switch (tab['key']) {
+      case 'about':
+        Navigator.of(context).pushNamed(
+          '/contentPreview',
+          arguments: {
+            'title': '公司简介',
+            'content': _companyAbout,
+          },
+        );
+        break;
+      default:
+        Navigator.of(context).pushNamed(tab['path']);
+    }
+  }
 
   _getData() async {
     EasyLoading.show();
     try {
       await _getUserInfo();
+      await _getAbout();
     } finally {
       EasyLoading.dismiss();
     }
@@ -307,6 +325,16 @@ class _OwnerState extends State<Owner> with AutomaticKeepAliveClientMixin {
 
     setState(() {
       user = resp.data;
+    });
+  }
+
+  _getAbout() async {
+    final response = await Utils.API.getDeal(4);
+    final resp = Models.DealResponse.fromJson(response);
+    if (resp.code != 200) return;
+
+    setState(() {
+      _companyAbout = resp.data?.content;
     });
   }
 }

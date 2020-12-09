@@ -2,8 +2,5 @@
   "user": "$user",
   "token": "",
   "phone": "",
-  "theme": 5678,
-  "cache": "$cacheConfig",
-  "lastLogin": "",
-  "locale": ""
+  "cache": "$cacheConfig"
 }

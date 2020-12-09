@@ -1,3 +1,4 @@
 {
-  "showLoading": false
+  "showLoading": false,
+  "useResponseInterceptor": true
 }

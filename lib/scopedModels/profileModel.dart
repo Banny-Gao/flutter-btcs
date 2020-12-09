@@ -55,10 +55,10 @@ class ProfileModel extends BaseModel {
 
   Future<Null> toggleLogStatus(bool isLogin, {token, phone}) async {
     _isLogin = isLogin;
-    _token = token ?? '';
+    _token = token ?? null;
     profile
-      ..token = token ?? ''
-      ..phone = phone ?? '';
+      ..token = token ?? null
+      ..phone = phone ?? null;
 
     await saveProfile();
   }

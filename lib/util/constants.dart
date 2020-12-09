@@ -1,4 +1,4 @@
-final BaseUrl = "http://47.93.123.178:9099/api";
+final BaseUrl = "http://47.93.123.178:9099/api/";
 
 class Tips {
   static const codeErrorText = "验证码格式有误";

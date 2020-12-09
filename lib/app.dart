@@ -16,9 +16,6 @@ class OreApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    _rootContext = context;
-    Utils.Request.setContext(_rootContext);
-
     return ScopedModelDescendant<AppModel>(
       builder: (context, child, model) {
         return MaterialApp(
@@ -106,7 +103,7 @@ class AppState extends State<App> {
   List<Widget> _getMediaList() {
     return <Widget>[
       Home(),
-      OreMachines(),
+      Groups(),
       Earnings(),
       Owner(),
     ];

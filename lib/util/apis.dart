@@ -217,7 +217,7 @@ Future _getUserInfo() async {
 }
 
 // 修改用户信息
-Future _changeUserInfo({memberAvatar, memberName}) async {
+Future _changeUserInfo({String memberAvatar, String memberName}) async {
   final resp = await Request.dio.post(
     '/front/member/update/info',
     data: {
@@ -227,6 +227,7 @@ Future _changeUserInfo({memberAvatar, memberName}) async {
     options: Options(
       extra: {
         "showLoading": true,
+        'useResponseInterceptor': false,
       },
     ),
   );

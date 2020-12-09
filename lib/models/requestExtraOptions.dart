@@ -7,6 +7,7 @@ class RequestExtraOptions {
     RequestExtraOptions();
 
     bool showLoading;
+    bool useResponseInterceptor;
     
     factory RequestExtraOptions.fromJson(Map<String,dynamic> json) => _$RequestExtraOptionsFromJson(json);
     Map<String, dynamic> toJson() => _$RequestExtraOptionsToJson(this);

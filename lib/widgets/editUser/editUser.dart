@@ -1,9 +1,6 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:path/path.dart' as p;
 
@@ -59,7 +56,9 @@ class _EditUser extends State<EditUser> {
                   fontSize: 16.0,
                 ),
               ),
-              onPressed: _handleSave,
+              onPressed: () {
+                _handleSave(model);
+              },
             )
           ],
         ),
@@ -106,6 +105,9 @@ class _EditUser extends State<EditUser> {
                         onTap: getImageBottomSheet,
                         controller: _avatarUrlController,
                         readOnly: true,
+                        onSaved: (v) {
+                          _avatarUrl = v;
+                        },
                       ),
                     ),
                   ),
@@ -179,8 +181,10 @@ class _EditUser extends State<EditUser> {
 
     if (pickedFile == null) return;
 
-    final response =
-        await Utils.API.upload(pickedFile.path, p.basename(pickedFile.path));
+    final response = await Utils.API.upload(
+      pickedFile.path,
+      p.basename(pickedFile.path),
+    );
     final resp = Models.UploadResponse.fromJson(response);
 
     if (resp.code != 200) return;
@@ -192,5 +196,26 @@ class _EditUser extends State<EditUser> {
     });
   }
 
-  _handleSave() async {}
+  _handleSave(AppModel model) async {
+    final _userForm = _editKey.currentState;
+
+    if (!_userForm.validate()) return;
+    _userForm.save();
+
+    final response = await Utils.API.changeUserInfo(
+      memberAvatar: _avatarUrl,
+      memberName: _userName,
+    );
+    final resp = Models.ChangeUserInfoResponse.fromJson(response);
+
+    if (resp.code != 200) return;
+
+    ProfileModel.profile.user
+      ..memberAvatar = _avatarUrl
+      ..memberName = _userName;
+
+    model.saveProfile();
+
+    Navigator.of(context).pop();
+  }
 }

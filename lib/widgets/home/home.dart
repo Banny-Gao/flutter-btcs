@@ -56,7 +56,7 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin {
   Widget buildBanners() {
     return Container(
       margin: EdgeInsets.only(top: 10.0),
-      height: 200.0,
+      height: 160.0,
       child: new Swiper(
         itemBuilder: (BuildContext context, int index) {
           return Padding(
