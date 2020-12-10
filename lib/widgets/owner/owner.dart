@@ -27,7 +27,7 @@ class _OwnerState extends State<Owner> with AutomaticKeepAliveClientMixin {
     {
       'title': '帮助中心',
       'key': 'helps',
-      'path': '/helps',
+      'path': '/helpClassifications',
       'icon': FontAwesomeIcons.hireAHelper,
     },
     {

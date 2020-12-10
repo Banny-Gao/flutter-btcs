@@ -13,7 +13,13 @@ final routes = {
     return ContentPreview(title: args['title'], content: args['content']);
   },
   '/editUser': (context) => EditUser(),
-  '/helps': (context) => Helps(),
+  '/helpClassifications': (context) => HelpClassifications(),
+  // ignore: top_level_function_literal_block
+  '/helps': (context) {
+    final Map<String, dynamic> args = ModalRoute.of(context).settings.arguments;
+
+    return Helps(id: args['id'], title: args['title']);
+  },
 };
 
 class GlobalRoute {
