@@ -20,6 +20,7 @@ final routes = {
 
     return Helps(id: args['id'], title: args['title']);
   },
+  '/walletAddresses': (context) => WalletAddresses()
 };
 
 class GlobalRoute {

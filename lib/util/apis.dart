@@ -323,7 +323,7 @@ Future _chagePaymentPassword({code, phone, newPassword}) async {
 // 获取钱包地址列表
 Future _getWalletAddresses({pageNum = 1, pageSize = 3}) async {
   final resp = await Request.dio.get(
-    '/front/walletAddress/list',
+    '/front/walletAddress/listAll',
     queryParameters: {
       'pageNum': pageNum,
       'pageSize': pageSize,

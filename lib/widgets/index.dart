@@ -7,3 +7,4 @@ export 'contentPreview/contentPreview.dart';
 export 'editUser/editUser.dart';
 export 'helps/helpClassifications.dart';
 export 'helps/helps.dart';
+export 'walletAddresses/walletAddresses.dart';

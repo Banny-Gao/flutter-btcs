@@ -323,9 +323,10 @@ class _OwnerState extends State<Owner> with AutomaticKeepAliveClientMixin {
     ProfileModel.profile.user = resp.data;
     ProfileModel.holdProfile();
 
-    setState(() {
-      user = resp.data;
-    });
+    if (mounted)
+      setState(() {
+        user = resp.data;
+      });
   }
 
   _getAbout() async {
@@ -333,8 +334,9 @@ class _OwnerState extends State<Owner> with AutomaticKeepAliveClientMixin {
     final resp = Models.DealResponse.fromJson(response);
     if (resp.code != 200) return;
 
-    setState(() {
-      _companyAbout = resp.data?.content;
-    });
+    if (mounted)
+      setState(() {
+        _companyAbout = resp.data?.content;
+      });
   }
 }

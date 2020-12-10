@@ -6,20 +6,20 @@ import '../../scopedModels/index.dart';
 import '../../models/index.dart' as Models;
 import '../../util/index.dart' as Utils;
 
-class HelpClassifications extends StatefulWidget {
-  HelpClassifications({Key key}) : super(key: key);
+class WalletAddresses extends StatefulWidget {
+  WalletAddresses({Key key}) : super(key: key);
 
   @override
-  _HelpClassifications createState() => _HelpClassifications();
+  _WalletAddresses createState() => _WalletAddresses();
 }
 
-class _HelpClassifications extends State<HelpClassifications> {
+class _WalletAddresses extends State<WalletAddresses> {
   final num pageSize = 10;
   num pageNum = 1;
   bool isCompleted = false;
   bool isLoading = false;
 
-  List<Models.HelpClassifications> helpClassifications = [];
+  List<Models.WalletAddress> walletAddresses = [];
 
   ScrollController _scrollController = new ScrollController();
 
@@ -45,20 +45,20 @@ class _HelpClassifications extends State<HelpClassifications> {
     return ScopedModelDescendant<AppModel>(
       builder: (context, child, model) => Scaffold(
         appBar: AppBar(
-          title: Text('帮助中心'),
+          title: Text('我的钱包'),
         ),
         body: RefreshIndicator(
           onRefresh: () async {
             pageNum = 1;
-            helpClassifications = [];
+            walletAddresses = [];
             _getData();
           },
           child: ListView.custom(
             controller: _scrollController,
-            itemExtent: 140.0,
+            itemExtent: 80.0,
             childrenDelegate: SliverChildBuilderDelegate(
               (BuildContext context, index) => buildListItem(index),
-              childCount: helpClassifications.length + 1,
+              childCount: walletAddresses.length + 1,
             ),
           ),
         ),
@@ -67,45 +67,31 @@ class _HelpClassifications extends State<HelpClassifications> {
   }
 
   Widget buildListItem(index) {
-    if (index == helpClassifications.length) {
+    if (index == walletAddresses.length) {
       return isCompleted
           ? Container(
               height: 50.0,
               alignment: Alignment.center,
               padding: EdgeInsets.all(16.0),
               child: Text(
-                helpClassifications.length == 0 ? "暂无数据" : "没有更多了",
+                walletAddresses.length == 0 ? "暂无数据" : "没有更多了",
                 style: TextStyle(color: Colors.grey),
               ),
             )
           : Container();
     }
     return Container(
-      height: 140.0,
+      height: 80.0,
       child: Padding(
-        padding: EdgeInsets.fromLTRB(40.0, 20.0, 40.0, 20.0),
+        padding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
         child: Card(
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(10.0),
           ),
           shadowColor: Theme.of(context).primaryColor,
           child: InkWell(
-            onTap: () {
-              Navigator.of(context).pushNamed('/helps', arguments: {
-                'id': helpClassifications[index].id,
-                'title': helpClassifications[index].classifyTitle,
-              });
-            },
-            child: Center(
-              child: Text(
-                helpClassifications[index].classifyTitle,
-                style: TextStyle(
-                  fontSize: 20.0,
-                  fontWeight: FontWeight.w600,
-                  color: Theme.of(context).hintColor,
-                ),
-              ),
-            ),
+            onTap: () {},
+            child: Center(),
             // color: Colors.primaries[index % Colors.primaries.length],
           ),
         ),
@@ -116,27 +102,26 @@ class _HelpClassifications extends State<HelpClassifications> {
   _getData() async {
     EasyLoading.show();
     try {
-      await _getHelpClassifications();
+      await _getWalletAddresses();
     } finally {
       EasyLoading.dismiss();
     }
   }
 
-  _getHelpClassifications() async {
-    final response = await Utils.API.getHelpClassifications(
+  _getWalletAddresses() async {
+    final response = await Utils.API.getWalletAddresses(
       pageNum: pageNum,
       pageSize: pageSize,
     );
-    final resp = Models.HelpClassificationsResponse.fromJson(response);
+    final resp = Models.WalletAddressesResponse.fromJson(response);
 
     if (resp.code != 200) return;
 
-    List<Models.HelpClassifications> list = resp.data.list;
+    List<Models.WalletAddress> list = resp.data.list;
     if (list.length != 0) {
-      Iterable<Models.HelpClassifications> more =
-          helpClassifications.followedBy(list);
+      Iterable<Models.WalletAddress> more = walletAddresses.followedBy(list);
       setState(() {
-        helpClassifications = more.toList();
+        walletAddresses = more.toList();
       });
     } else {
       setState(() {

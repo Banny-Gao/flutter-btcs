@@ -25,3 +25,6 @@ export 'user.dart' ;
 export 'userInfoReponse.dart' ; 
 export 'userSignResponse.dart' ; 
 export 'userSignResponseData.dart' ; 
+export 'walletAddress.dart' ; 
+export 'walletAddressesResponse.dart' ; 
+export 'walletAddressesResponseData.dart' ; 

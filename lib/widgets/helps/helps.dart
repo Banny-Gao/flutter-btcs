@@ -60,13 +60,10 @@ class _Helps extends State<Helps> {
             helps = [];
             _getData();
           },
-          child: ListView.separated(
+          child: ListView.builder(
             controller: _scrollController,
             itemCount: helps.length + 1,
             itemBuilder: buildListItem,
-            separatorBuilder: (BuildContext context, index) => Divider(
-              height: 1.0,
-            ),
           ),
         ),
       ),
@@ -87,34 +84,36 @@ class _Helps extends State<Helps> {
             )
           : Container();
     }
-    return InkWell(
-      onTap: () {
-        Navigator.of(context).pushNamed(
-          '/contentPreview',
-          arguments: {
-            'title': helps[index].title,
-            'content': helps[index].content,
-          },
-        );
-      },
-      child: Padding(
-        padding: EdgeInsets.all(20.0),
-        child: Row(
-          children: [
-            Expanded(
-              child: Text(
-                helps[index].title,
-                style: TextStyle(
-                  color: Theme.of(context).hintColor,
+    return Card(
+      child: InkWell(
+        onTap: () {
+          Navigator.of(context).pushNamed(
+            '/contentPreview',
+            arguments: {
+              'title': helps[index].title,
+              'content': helps[index].content,
+            },
+          );
+        },
+        child: Padding(
+          padding: EdgeInsets.all(20.0),
+          child: Row(
+            children: [
+              Expanded(
+                child: Text(
+                  helps[index].title,
+                  style: TextStyle(
+                    color: Theme.of(context).hintColor,
+                  ),
                 ),
               ),
-            ),
-            Icon(
-              FontAwesomeIcons.chevronRight,
-              size: 12.0,
-              color: Colors.grey[400],
-            ),
-          ],
+              Icon(
+                FontAwesomeIcons.chevronRight,
+                size: 12.0,
+                color: Colors.grey[400],
+              ),
+            ],
+          ),
         ),
       ),
     );
