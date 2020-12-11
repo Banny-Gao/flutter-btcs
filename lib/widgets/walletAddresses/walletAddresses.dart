@@ -6,6 +6,8 @@ import '../../scopedModels/index.dart';
 import '../../models/index.dart' as Models;
 import '../../util/index.dart' as Utils;
 
+import 'newWalletAddress.dart';
+
 class WalletAddresses extends StatefulWidget {
   WalletAddresses({Key key}) : super(key: key);
 
@@ -46,6 +48,18 @@ class _WalletAddresses extends State<WalletAddresses> {
       builder: (context, child, model) => Scaffold(
         appBar: AppBar(
           title: Text('我的钱包'),
+          actions: [
+            FlatButton(
+              onPressed: _showPopUpNewAddress,
+              child: Text(
+                '新建地址',
+                style: TextStyle(
+                  fontSize: 14.0,
+                  color: Theme.of(context).bottomAppBarColor,
+                ),
+              ),
+            ),
+          ],
         ),
         body: RefreshIndicator(
           onRefresh: () async {
@@ -128,5 +142,12 @@ class _WalletAddresses extends State<WalletAddresses> {
         isCompleted = true;
       });
     }
+  }
+
+  _showPopUpNewAddress() {
+    Navigator.of(context).push(MaterialPageRoute(
+      fullscreenDialog: true,
+      builder: (context) => NewWalletAddress(),
+    ));
   }
 }
