@@ -7,6 +7,7 @@ class Tips {
   static String passwordRepeatErrorText = "两次密码输入不一致";
   static String signUpCodeSendSuccess = "短信发送成功，请注意查收";
   static String userNameErrorText = "昵称不能为空";
+  static String choiceCoinEmpty = "请选择币种";
 }
 
 List AuthStates = ['未认证', '待审核', '审核拒绝', '已认证'];

@@ -142,7 +142,12 @@ Future _getBulletins({pageNum = 1, pageSize = 3}) async {
 Future _getCoinTypes() async {
   final resp = await Request.dio.get(
     '/front/currency/list',
+    options: Options(extra: {
+      'useResponseInterceptor': false,
+    }),
   );
+
+  Request.netCache.cache.clear();
 
   return resp.data;
 }
@@ -334,13 +339,16 @@ Future _getWalletAddresses({pageNum = 1, pageSize = 3}) async {
 }
 
 // 添加钱包地址
-Future _addWalletAddress(address, currencyId) async {
-  final resp = await Request.dio.get(
+Future _addWalletAddress({address, currencyId}) async {
+  final resp = await Request.dio.post(
     '/front/walletAddress/add',
-    queryParameters: {
+    data: {
       'address': address,
       'currencyId': currencyId,
     },
+    options: Options(extra: {
+      'useResponseInterceptor': false,
+    }),
   );
 
   Request.netCache.cache.clear();

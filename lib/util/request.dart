@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 
 import 'package:dio/dio.dart';
+import 'package:dio/adapter.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 
 import '../scopedModels/index.dart';
@@ -78,5 +79,19 @@ class Request {
     // 添加缓存插件
     dio.interceptors.add(Request.netCache);
     dio.options.headers[HttpHeaders.contentTypeHeader] = 'application/json';
+
+    // https 证书校验
+    // String PEM = "XXXXX"; // certificate content
+    // (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
+    //     (client) {
+    //   client.badCertificateCallback =
+    //       (X509Certificate cert, String host, int port) {
+    //     if (cert.pem == PEM) {
+    //       // Verify the certificate
+    //       return true;
+    //     }
+    //     return false;
+    //   };
+    // };
   }
 }
