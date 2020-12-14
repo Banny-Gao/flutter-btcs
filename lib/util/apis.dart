@@ -360,12 +360,17 @@ Future _addWalletAddress({address, currencyId}) async {
 Future _updateWalletAddress({address, currencyId, id, memberId}) async {
   final resp = await Request.dio.post(
     '/front/walletAddress/update',
-    queryParameters: {
+    data: {
       'address': address,
       'currencyId': currencyId,
       'id': id,
       'memberId': memberId,
     },
+    options: Options(
+      extra: {
+        'useResponseInterceptor': false,
+      },
+    ),
   );
 
   Request.netCache.cache.clear();

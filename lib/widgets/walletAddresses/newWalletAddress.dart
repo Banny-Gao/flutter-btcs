@@ -6,8 +6,10 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:scoped_model/scoped_model.dart';
 
 import 'coins.dart';
+import '../../scopedModels/index.dart';
 import '../../models/index.dart' as Models;
 import '../../util/index.dart' as Utils;
 
@@ -34,7 +36,6 @@ class _NewWalletAddress extends State<NewWalletAddress> {
   final _walletAddressFormKey = GlobalKey<FormState>();
 
   TextEditingController _walletAddressController = TextEditingController();
-  List<Models.Coin> coins = [];
 
   num coinChoicedId;
   String coinChoicedIdTitle;
@@ -43,46 +44,42 @@ class _NewWalletAddress extends State<NewWalletAddress> {
 
   @override
   void initState() {
-    if (widget.addressId != null) {
-      Future.delayed(Duration.zero).then((value) async {
-        await _getIcons();
-
-        final coin = _getCoinById(widget.currencyId);
-
-        setState(() {
-          walletAddress = widget.address;
-          _walletAddressController.text = widget.address;
-          coinChoicedId = coin?.currencyId;
-          coinChoicedIdTitle = coin?.currencyName;
-          coinChoicedIconPath = coin?.iconPath;
-        });
-      });
-    }
-
     super.initState();
   }
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('新建地址'),
-      ),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding:
-              EdgeInsets.only(left: 20.0, right: 20.0, top: 40.0, bottom: 40.0),
-          child: Column(
-            children: [
-              buildCoinType(context),
-              buildCoinAddress(context),
-              buildButton(context),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
+  Widget build(BuildContext context) => ScopedModelDescendant<AppModel>(
+        builder: (context, child, model) {
+          if (widget.addressId != null) {
+            final coin = _getCoinById(model.coins, widget.currencyId);
+
+            walletAddress = widget.address;
+            _walletAddressController.text = widget.address;
+            coinChoicedId = coin?.currencyId;
+            coinChoicedIdTitle = coin?.currencyName;
+            coinChoicedIconPath = coin?.iconPath;
+          }
+
+          return Scaffold(
+            appBar: AppBar(
+              title: Text('新建地址'),
+            ),
+            body: SingleChildScrollView(
+              child: Padding(
+                padding: EdgeInsets.only(
+                    left: 20.0, right: 20.0, top: 40.0, bottom: 40.0),
+                child: Column(
+                  children: [
+                    buildCoinType(context),
+                    buildCoinAddress(context),
+                    buildButton(context),
+                  ],
+                ),
+              ),
+            ),
+          );
+        },
+      );
 
   Widget buildCoinType(BuildContext context) {
     return Card(
@@ -254,6 +251,7 @@ class _NewWalletAddress extends State<NewWalletAddress> {
   _handleNewWalletAddress() async {
     if (coinChoicedId == null) {
       EasyLoading.showError(Utils.Tips.choiceCoinEmpty);
+      return;
     }
     final _walletAddressForm = _walletAddressFormKey.currentState;
     if (!_walletAddressForm.validate()) return;
@@ -284,19 +282,7 @@ class _NewWalletAddress extends State<NewWalletAddress> {
     Navigator.of(context).pop();
   }
 
-  Future<Null> _getIcons() async {
-    final response = await Utils.API.getCoinTypes();
-    final resp = Models.CoinsResponse.fromJson(response);
-
-    if (resp.code != 200) {
-      EasyLoading.showError(resp.message);
-      return;
-    }
-
-    coins = resp.data;
-  }
-
-  _getCoinById(id) {
+  _getCoinById(coins, id) {
     final coin = coins.length != 0
         ? coins.singleWhere((coin) => coin.currencyId == id)
         : null;

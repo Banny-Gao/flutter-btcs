@@ -26,7 +26,6 @@ class _WalletAddresses extends State<WalletAddresses> {
   bool isLoading = false;
 
   List<Models.WalletAddress> walletAddresses = [];
-  List<Models.Coin> coins = [];
 
   ScrollController _scrollController = new ScrollController();
 
@@ -44,6 +43,7 @@ class _WalletAddresses extends State<WalletAddresses> {
         _getData();
       }
     });
+
     super.initState();
   }
 
@@ -74,7 +74,7 @@ class _WalletAddresses extends State<WalletAddresses> {
             controller: _scrollController,
             itemExtent: 120.0,
             childrenDelegate: SliverChildBuilderDelegate(
-              (BuildContext context, index) => buildListItem(index),
+              (BuildContext context, index) => buildListItem(model, index),
               childCount: walletAddresses.length + 1,
             ),
           ),
@@ -83,7 +83,7 @@ class _WalletAddresses extends State<WalletAddresses> {
     );
   }
 
-  Widget buildListItem(index) {
+  Widget buildListItem(model, index) {
     if (index == walletAddresses.length) {
       return isCompleted
           ? Container(
@@ -103,7 +103,8 @@ class _WalletAddresses extends State<WalletAddresses> {
           : Container();
     }
 
-    final iconPath = _getIconPathById(walletAddresses[index].currencyId);
+    final iconPath =
+        _getIconPathById(model.coins, walletAddresses[index].currencyId);
 
     return Padding(
       padding: EdgeInsets.fromLTRB(20.0, 8.0, 20.0, 8.0),
@@ -230,23 +231,10 @@ class _WalletAddresses extends State<WalletAddresses> {
   _getData() async {
     EasyLoading.show();
     try {
-      await _getIcons();
       await _getWalletAddresses();
     } finally {
       EasyLoading.dismiss();
     }
-  }
-
-  _getIcons() async {
-    final response = await Utils.API.getCoinTypes();
-    final resp = Models.CoinsResponse.fromJson(response);
-
-    if (resp.code != 200) {
-      EasyLoading.showError(resp.message);
-      return;
-    }
-
-    coins = resp.data;
   }
 
   _getWalletAddresses() async {
@@ -279,7 +267,7 @@ class _WalletAddresses extends State<WalletAddresses> {
     ));
   }
 
-  _getIconPathById(id) {
+  _getIconPathById(coins, id) {
     final coin = coins.length != 0
         ? coins.singleWhere((coin) => coin.currencyId == id)
         : null;

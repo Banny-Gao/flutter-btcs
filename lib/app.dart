@@ -12,8 +12,6 @@ import 'routes.dart';
 
 // ignore: must_be_immutable
 class OreApp extends StatelessWidget {
-  BuildContext _rootContext;
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return ScopedModelDescendant<AppModel>(
@@ -50,6 +48,7 @@ class AppState extends State<App> {
   @override
   Widget build(BuildContext context) {
     return ScopedModelDescendant<AppModel>(builder: (context, child, model) {
+      setGlobalModelRequset(model);
       return MediaQuery.removePadding(
         context: context,
         removeBottom: true,
@@ -98,6 +97,11 @@ class AppState extends State<App> {
     setState(() {
       _page = index;
     });
+  }
+
+  setGlobalModelRequset(model) async {
+    await Future.delayed(Duration.zero);
+    model.getCoins();
   }
 
   List<Widget> _getMediaList() {

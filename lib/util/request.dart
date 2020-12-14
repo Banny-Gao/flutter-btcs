@@ -10,6 +10,13 @@ import '../models/index.dart';
 import '../routes.dart';
 import 'index.dart';
 
+final getBaseRequest = () => Dio(BaseOptions(
+      // baseUrl: 'http://5r29og8.hn3.mofasuidao.cn/api',
+      baseUrl: BaseUrl,
+      connectTimeout: 10000,
+      receiveTimeout: 10000,
+    ));
+
 class RequestInterceptor extends LogInterceptor {
   RequestInterceptor() : super(requestBody: true, responseBody: true);
 
@@ -67,17 +74,12 @@ class RequestInterceptor extends LogInterceptor {
 class Request {
   static NetCache netCache = NetCache();
 
-  static Dio dio = new Dio(BaseOptions(
-    // baseUrl: 'http://5r29og8.hn3.mofasuidao.cn/api',
-    baseUrl: BaseUrl,
-    connectTimeout: 10000,
-    receiveTimeout: 10000,
-  ))
-    ..interceptors.add(RequestInterceptor());
+  static Dio dio = getBaseRequest();
 
-  static void init() {
+  static Future<void> init() {
     // 添加缓存插件
     dio.interceptors.add(Request.netCache);
+    dio.interceptors.add(RequestInterceptor());
     dio.options.headers[HttpHeaders.contentTypeHeader] = 'application/json';
 
     // https 证书校验
