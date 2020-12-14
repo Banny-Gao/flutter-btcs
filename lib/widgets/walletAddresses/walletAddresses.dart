@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 
 import '../../scopedModels/index.dart';
 import '../../models/index.dart' as Models;
@@ -71,7 +72,7 @@ class _WalletAddresses extends State<WalletAddresses> {
           },
           child: ListView.custom(
             controller: _scrollController,
-            itemExtent: 80.0,
+            itemExtent: 120.0,
             childrenDelegate: SliverChildBuilderDelegate(
               (BuildContext context, index) => buildListItem(index),
               childCount: walletAddresses.length + 1,
@@ -104,39 +105,118 @@ class _WalletAddresses extends State<WalletAddresses> {
 
     final iconPath = _getIconPathById(walletAddresses[index].currencyId);
 
-    return Container(
-      height: 80.0,
-      child: Padding(
-        padding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
+    return Padding(
+      padding: EdgeInsets.fromLTRB(20.0, 8.0, 20.0, 8.0),
+      child: Slidable(
+        actionPane: SlidableStrechActionPane(),
+        actionExtentRatio: 0.25,
         child: Card(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(10.0),
-          ),
           shadowColor: Theme.of(context).primaryColor,
-          child: InkWell(
-            onTap: () {},
-            child: Column(
-              children: [
-                Row(
+          child: OverflowBox(
+            child: InkWell(
+              onTap: () {
+                _showPopUpNewAddress(walletAddress: walletAddresses[index]);
+              },
+              child: Padding(
+                padding: EdgeInsets.all(12.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.start,
                   children: [
-                    iconPath != null
-                        ? Image.network(
-                            iconPath,
-                            width: 24.0,
-                            height: 24.0,
-                            fit: BoxFit.fill,
-                          )
-                        : Icon(
-                            FontAwesomeIcons.btc,
-                            color: Colors.primaries[
-                                Random().nextInt(17) % Colors.primaries.length],
+                    Row(
+                      children: [
+                        iconPath != null
+                            ? Image.network(
+                                iconPath,
+                                width: 24.0,
+                                height: 24.0,
+                                fit: BoxFit.fill,
+                              )
+                            : Icon(
+                                FontAwesomeIcons.btc,
+                                color: Colors.primaries[Random().nextInt(17) %
+                                    Colors.primaries.length],
+                              ),
+                        Padding(
+                          padding: EdgeInsets.only(left: 12.0),
+                          child: Text(
+                            walletAddresses[index].currencyName,
+                            style: TextStyle(
+                              fontSize: 16.0,
+                            ),
                           ),
+                        ),
+                      ],
+                    ),
+                    Padding(
+                      padding: EdgeInsets.only(top: 16.0),
+                      child: DecoratedBox(
+                        decoration: BoxDecoration(
+                          color: Colors.grey[200],
+                          borderRadius: BorderRadius.circular(4.0),
+                        ),
+                        child: Padding(
+                          padding: EdgeInsets.all(6.0),
+                          child: Row(
+                            children: [
+                              Expanded(
+                                child: Text(
+                                  walletAddresses[index].address,
+                                  style: TextStyle(
+                                    color: Colors.grey,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
                   ],
                 ),
-              ],
+              ),
             ),
           ),
         ),
+        secondaryActions: <Widget>[
+          IconSlideAction(
+            caption: '编辑',
+            color: Theme.of(context).primaryColorDark,
+            icon: FontAwesomeIcons.edit,
+            onTap: () {
+              _showPopUpNewAddress(walletAddress: walletAddresses[index]);
+            },
+          ),
+          IconSlideAction(
+            caption: '删除',
+            color: Colors.red,
+            icon: FontAwesomeIcons.trashAlt,
+            onTap: () {
+              showDialog(
+                context: context,
+                builder: (context) {
+                  return AlertDialog(
+                    title: Text('提示'),
+                    content: Text('确认删除吗？'),
+                    actions: <Widget>[
+                      FlatButton(
+                        child: Text('取消'),
+                        onPressed: () => Navigator.of(context).pop(),
+                      ),
+                      FlatButton(
+                        child: Text('删除'),
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                          _handleDeleteWalletAddress(walletAddresses[index].id);
+                        },
+                      ),
+                    ],
+                  );
+                },
+              );
+            },
+          ),
+        ],
       ),
     );
   }
@@ -187,11 +267,15 @@ class _WalletAddresses extends State<WalletAddresses> {
     });
   }
 
-  _showPopUpNewAddress() {
+  _showPopUpNewAddress({walletAddress}) {
     Navigator.of(context).push(MaterialPageRoute(
       fullscreenDialog: true,
-      builder: (context) =>
-          NewWalletAddress(refreshWalletAddresses: _refreshAddresses),
+      builder: (context) => NewWalletAddress(
+          refreshWalletAddresses: _refreshAddresses,
+          currencyId: walletAddress?.currencyId,
+          address: walletAddress?.address,
+          addressId: walletAddress?.id,
+          memberId: walletAddress?.memberId),
     ));
   }
 
@@ -200,5 +284,17 @@ class _WalletAddresses extends State<WalletAddresses> {
         ? coins.singleWhere((coin) => coin.currencyId == id)
         : null;
     return coin != null ? coin.iconPath : null;
+  }
+
+  _handleDeleteWalletAddress(id) async {
+    final response = await Utils.API.deleteWalletAddress(id);
+    final resp = Models.DeleteWalletAddressResponse.fromJson(response);
+
+    if (resp.code != 200) {
+      EasyLoading.showError(resp.message);
+      return;
+    }
+
+    _refreshAddresses();
   }
 }

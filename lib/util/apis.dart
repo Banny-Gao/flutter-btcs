@@ -357,7 +357,7 @@ Future _addWalletAddress({address, currencyId}) async {
 }
 
 // 更新钱包地址
-Future _updateWalletAddress(address, currencyId, id, memberId) async {
+Future _updateWalletAddress({address, currencyId, id, memberId}) async {
   final resp = await Request.dio.post(
     '/front/walletAddress/update',
     queryParameters: {
@@ -375,7 +375,12 @@ Future _updateWalletAddress(address, currencyId, id, memberId) async {
 
 // 删除钱包地址
 Future _deleteWalletAddress(id) async {
-  final resp = await Request.dio.post('/front/walletAddress/delete/${id}');
+  final resp = await Request.dio.get(
+    '/front/walletAddress/delete/${id}',
+    options: Options(extra: {
+      'useResponseInterceptor': false,
+    }),
+  );
 
   Request.netCache.cache.clear();
 

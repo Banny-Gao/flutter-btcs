@@ -13,9 +13,17 @@ import '../../util/index.dart' as Utils;
 
 class NewWalletAddress extends StatefulWidget {
   final Function refreshWalletAddresses;
+  final currencyId;
+  final addressId;
+  final address;
+  final memberId;
   NewWalletAddress({
     Key key,
     @required this.refreshWalletAddresses,
+    this.currencyId,
+    this.addressId,
+    this.address,
+    this.memberId,
   }) : super(key: key);
 
   @override
@@ -26,6 +34,7 @@ class _NewWalletAddress extends State<NewWalletAddress> {
   final _walletAddressFormKey = GlobalKey<FormState>();
 
   TextEditingController _walletAddressController = TextEditingController();
+  List<Models.Coin> coins = [];
 
   num coinChoicedId;
   String coinChoicedIdTitle;
@@ -34,6 +43,22 @@ class _NewWalletAddress extends State<NewWalletAddress> {
 
   @override
   void initState() {
+    if (widget.addressId != null) {
+      Future.delayed(Duration.zero).then((value) async {
+        await _getIcons();
+
+        final coin = _getCoinById(widget.currencyId);
+
+        setState(() {
+          walletAddress = widget.address;
+          _walletAddressController.text = widget.address;
+          coinChoicedId = coin?.currencyId;
+          coinChoicedIdTitle = coin?.currencyName;
+          coinChoicedIconPath = coin?.iconPath;
+        });
+      });
+    }
+
     super.initState();
   }
 
@@ -234,15 +259,47 @@ class _NewWalletAddress extends State<NewWalletAddress> {
     if (!_walletAddressForm.validate()) return;
     _walletAddressForm.save();
 
-    final response = await Utils.API.addWalletAddress(
-      address: walletAddress,
-      currencyId: coinChoicedId,
-    );
-    final resp = Models.AddWalletAddressesResponse.fromJson(response);
+    dynamic response;
+    dynamic resp;
+
+    if (widget.addressId != null) {
+      response = await Utils.API.updateWalletAddress(
+        address: walletAddress,
+        currencyId: coinChoicedId,
+        id: widget.addressId,
+        memberId: widget.memberId,
+      );
+      resp = Models.UpdateWalletAddressResponse.fromJson(response);
+    } else {
+      response = await Utils.API.addWalletAddress(
+        address: walletAddress,
+        currencyId: coinChoicedId,
+      );
+      resp = Models.AddWalletAddressesResponse.fromJson(response);
+    }
 
     if (resp.code != 200) return;
 
     widget.refreshWalletAddresses();
     Navigator.of(context).pop();
+  }
+
+  Future<Null> _getIcons() async {
+    final response = await Utils.API.getCoinTypes();
+    final resp = Models.CoinsResponse.fromJson(response);
+
+    if (resp.code != 200) {
+      EasyLoading.showError(resp.message);
+      return;
+    }
+
+    coins = resp.data;
+  }
+
+  _getCoinById(id) {
+    final coin = coins.length != 0
+        ? coins.singleWhere((coin) => coin.currencyId == id)
+        : null;
+    return coin != null ? coin : null;
   }
 }
