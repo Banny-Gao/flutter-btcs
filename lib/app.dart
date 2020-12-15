@@ -16,6 +16,7 @@ class OreApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return ScopedModelDescendant<AppModel>(
       builder: (context, child, model) {
+        setGlobalModelRequset(model);
         return MaterialApp(
           theme: model.theme,
           initialRoute: model.isLogin ? '/' : '/login',
@@ -25,6 +26,11 @@ class OreApp extends StatelessWidget {
         );
       },
     );
+  }
+
+  setGlobalModelRequset(model) async {
+    await Future.delayed(Duration.zero);
+    model.getCoins();
   }
 }
 
@@ -48,7 +54,6 @@ class AppState extends State<App> {
   @override
   Widget build(BuildContext context) {
     return ScopedModelDescendant<AppModel>(builder: (context, child, model) {
-      setGlobalModelRequset(model);
       return MediaQuery.removePadding(
         context: context,
         removeBottom: true,
@@ -97,11 +102,6 @@ class AppState extends State<App> {
     setState(() {
       _page = index;
     });
-  }
-
-  setGlobalModelRequset(model) async {
-    await Future.delayed(Duration.zero);
-    model.getCoins();
   }
 
   List<Widget> _getMediaList() {

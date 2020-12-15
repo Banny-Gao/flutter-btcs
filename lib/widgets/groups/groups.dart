@@ -1,6 +1,9 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../scopedModels/index.dart';
 import '../../models/index.dart' as Models;
@@ -8,24 +11,65 @@ import '../../util/index.dart' as Utils;
 
 class StickyTabBarDelegate extends SliverPersistentHeaderDelegate {
   final TabBar child;
+  final String coverImgUrl;
+  final double collapsedHeight;
+  final double expandedHeight;
 
-  StickyTabBarDelegate({@required this.child});
+  StickyTabBarDelegate({
+    @required this.child,
+    this.coverImgUrl,
+    this.collapsedHeight = 0,
+    this.expandedHeight = 0,
+  });
 
   @override
-  Widget build(
-      BuildContext context, double shrinkOffset, bool overlapsContent) {
-    return this.child;
-  }
+  double get maxExtent => child.preferredSize.height + expandedHeight;
 
   @override
-  double get maxExtent => this.child.preferredSize.height;
-
-  @override
-  double get minExtent => this.child.preferredSize.height;
+  double get minExtent => child.preferredSize.height + collapsedHeight;
 
   @override
   bool shouldRebuild(SliverPersistentHeaderDelegate oldDelegate) {
     return true;
+  }
+
+  Color makeStickyHeaderBgColor(shrinkOffset) {
+    final int alpha =
+        (shrinkOffset / (maxExtent - minExtent) * 255).clamp(0, 255).toInt();
+    return Color.fromARGB(alpha, 255, 255, 255);
+  }
+
+  @override
+  Widget build(
+      BuildContext context, double shrinkOffset, bool overlapsContent) {
+    return Container(
+      height: maxExtent,
+      width: MediaQuery.of(context).size.width,
+      child: Stack(
+        // fit: StackFit.expand,
+        children: <Widget>[
+          coverImgUrl != null
+              ? Container(
+                  width: MediaQuery.of(context).size.width,
+                  height: expandedHeight,
+                  child: Image.network(
+                    coverImgUrl,
+                    fit: BoxFit.fill,
+                  ),
+                )
+              : Container(),
+          Positioned(
+            left: 0,
+            right: 0,
+            bottom: 0,
+            child: Container(
+              color: makeStickyHeaderBgColor(shrinkOffset),
+              child: this.child,
+            ),
+          ),
+        ],
+      ),
+    );
   }
 }
 
@@ -33,20 +77,18 @@ class Groups extends StatefulWidget {
   Groups({Key key}) : super(key: key);
 
   @override
-  _Group createState() => _Group();
+  _GroupsState createState() => _GroupsState();
 }
 
-class _Group extends State<Groups>
+class _GroupsState extends State<Groups>
     with AutomaticKeepAliveClientMixin, SingleTickerProviderStateMixin {
   final num pageSize = 10;
 
-  List groups = [];
-  List tabs = AppModel.coinList;
-  List tabViewQueries;
+  List<Models.Coin> tabs = AppModel.coinList;
+  List tabGroups;
 
   int selectedIndex = 0;
 
-  List<ScrollController> _scrollControllers;
   TabController _tabController;
 
   get wantKeepAlive => true;
@@ -55,28 +97,7 @@ class _Group extends State<Groups>
   void initState() {
     if (tabs.length == 0) return;
 
-    tabViewQueries = tabs
-        .map((tab) => ({
-              'pageNum': 1,
-              'isCompleted': false,
-              'isLoading': false,
-            }))
-        .toList();
-
-    _scrollControllers =
-        tabs.map<ScrollController>((tab) => new ScrollController()).toList();
-
-    _scrollControllers.forEach((_scrollController) {
-      final tabViewQuery = tabViewQueries[selectedIndex];
-      _scrollController.addListener(() {
-        if (_scrollController.position.pixels ==
-                _scrollController.position.maxScrollExtent &&
-            !tabViewQuery.isCompleted) {
-          tabViewQuery.pageNum++;
-          _getData();
-        }
-      });
-    });
+    tabGroups = tabs.map((tab) => List<Models.Group>()).toList();
 
     _tabController = TabController(
       length: tabs.length,
@@ -84,7 +105,10 @@ class _Group extends State<Groups>
     );
 
     _tabController.addListener(() {
-      setState(() => selectedIndex = _tabController.index);
+      final index = _tabController.index;
+      setState(() => selectedIndex = index);
+
+      if (tabGroups[index].length == 0) _getData();
     });
 
     Future.delayed(Duration.zero).then((value) {
@@ -102,45 +126,47 @@ class _Group extends State<Groups>
         appBar: AppBar(
           title: Text('拼团活动'),
         ),
-        body: RefreshIndicator(
-          onRefresh: () async {
-            _refreshGroups();
-          },
-          child: CustomScrollView(
-            slivers: <Widget>[
-              // SliverAppBar(
-              //   pinned: true,
-              //   elevation: 0,
-              //   expandedHeight: 250,
-              //   flexibleSpace: FlexibleSpaceBar(
-              //     title: Text('Sliver-sticky效果'),
-              //     background: Image.network(
-              //       'http://img1.mukewang.com/5c18cf540001ac8206000338.jpg',
-              //       fit: BoxFit.cover,
-              //     ),
-              //   ),
-              // ),
-              SliverPersistentHeader(
-                pinned: true,
-                delegate: StickyTabBarDelegate(
-                  child: TabBar(
-                    isScrollable: true,
-                    labelColor: Colors.black,
-                    controller: _tabController,
-                    tabs: tabs
-                        .map<Widget>((coin) => Text(coin.currencyName))
-                        .toList(),
-                  ),
-                ),
-              ),
-              SliverFillRemaining(
-                child: TabBarView(
+        body: CustomScrollView(
+          slivers: <Widget>[
+            SliverPersistentHeader(
+              pinned: true,
+              delegate: StickyTabBarDelegate(
+                expandedHeight: 160.0,
+                coverImgUrl:
+                    'https://cdn.pixabay.com/photo/2019/09/06/17/04/china-4456845__340.jpg',
+                child: TabBar(
+                  isScrollable: true,
+                  labelColor: Colors.black,
                   controller: _tabController,
-                  children: getTabViews(),
+                  tabs: tabs
+                      .map<Widget>(
+                        (coin) => Tab(
+                          icon: coin.iconPath != null
+                              ? Image.network(
+                                  coin.iconPath,
+                                  width: 24.0,
+                                  height: 24.0,
+                                  fit: BoxFit.fill,
+                                )
+                              : Icon(
+                                  FontAwesomeIcons.btc,
+                                  color: Colors.primaries[Random().nextInt(17) %
+                                      Colors.primaries.length],
+                                ),
+                          child: Text(coin.currencyName),
+                        ),
+                      )
+                      .toList(),
                 ),
               ),
-            ],
-          ),
+            ),
+            SliverFillRemaining(
+              child: TabBarView(
+                controller: _tabController,
+                children: getTabViews(),
+              ),
+            ),
+          ],
         ),
       );
     });
@@ -150,27 +176,54 @@ class _Group extends State<Groups>
   void dispose() {
     super.dispose();
     _tabController.dispose();
-    _scrollControllers.forEach((_scrollController) {
-      _scrollController.dispose();
-    });
   }
 
-  Widget buildGridItem(index) {}
+  List<Widget> getTabViews() => tabGroups
+      .map<Widget>(
+        (tabGroup) => RefreshIndicator(
+          onRefresh: () async {
+            _refreshGroups();
+          },
+          child: GridView.custom(
+            padding: EdgeInsets.all(0),
+            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 2,
+            ),
+            childrenDelegate: SliverChildBuilderDelegate(
+              (BuildContext context, index) => buildGridItem(index),
+              childCount: tabGroup.length,
+            ),
+          ),
+        ),
+      )
+      .toList();
+
+  Widget buildGridItem(index) {
+    return Container(
+      height: 80.0,
+      color: Colors.primaries[index % Colors.primaries.length],
+    );
+  }
 
   _refreshGroups() {}
 
-  _getData() {}
+  _getData() async {
+    final coin = tabs[selectedIndex];
 
-  List<Widget> getTabViews() => tabs.map<Widget>((tab) {
-        return GridView.custom(
-          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 2,
-          ),
-          controller: _scrollControllers[selectedIndex],
-          childrenDelegate: SliverChildBuilderDelegate(
-            (BuildContext context, index) => buildGridItem(index),
-            childCount: groups.length + 1,
-          ),
-        );
-      }).toList();
+    EasyLoading.show();
+    try {
+      final response = await Utils.API.getGroups(currencyId: coin.currencyId);
+      final resp = Models.GroupsResponse.fromJson(response);
+
+      if (resp.code != 200) throw resp;
+
+      setState(() {
+        tabGroups[selectedIndex] = resp.data;
+      });
+    } catch (error) {
+      EasyLoading.showError(error.message);
+    } finally {
+      EasyLoading.dismiss();
+    }
+  }
 }

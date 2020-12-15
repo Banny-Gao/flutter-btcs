@@ -43,6 +43,6 @@ class AppModel extends Model with BaseModel, ThemeModel, ProfileModel
     }
 
     coins = resp.data;
-    coinList = response.data;
+    coinList = resp.data;
   }
 }

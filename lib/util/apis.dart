@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 
 import 'index.dart';
@@ -162,12 +163,15 @@ Future _getCoinAssets(currencyId) async {
 }
 
 // 拼团列表
-Future _getGroups(currencyId) async {
+Future _getGroups({@required currencyId}) async {
   final resp = await Request.dio.get(
     '/front/group/list',
     queryParameters: {
       'currencyId': currencyId,
     },
+    options: Options(extra: {
+      'useResponseInterceptor': false,
+    }),
   );
 
   return resp.data;
