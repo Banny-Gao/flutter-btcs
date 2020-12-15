@@ -131,9 +131,9 @@ class _GroupsState extends State<Groups>
             SliverPersistentHeader(
               pinned: true,
               delegate: StickyTabBarDelegate(
-                expandedHeight: 160.0,
-                coverImgUrl:
-                    'https://cdn.pixabay.com/photo/2019/09/06/17/04/china-4456845__340.jpg',
+                // expandedHeight: 160.0,
+                // coverImgUrl:
+                //     'https://cdn.pixabay.com/photo/2019/09/06/17/04/china-4456845__340.jpg',
                 child: TabBar(
                   isScrollable: true,
                   labelColor: Colors.black,
@@ -182,30 +182,93 @@ class _GroupsState extends State<Groups>
       .map<Widget>(
         (tabGroup) => RefreshIndicator(
           onRefresh: () async {
-            _refreshGroups();
+            _getData();
           },
-          child: GridView.custom(
-            padding: EdgeInsets.all(0),
-            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 2,
-            ),
-            childrenDelegate: SliverChildBuilderDelegate(
-              (BuildContext context, index) => buildGridItem(index),
-              childCount: tabGroup.length,
-            ),
+          child: ListView.builder(
+            padding: EdgeInsets.all(10.0),
+            itemBuilder: (BuildContext context, index) =>
+                buildGridItem(tabGroup[index]),
+            itemCount: tabGroup.length,
+            itemExtent: 280.0,
           ),
         ),
       )
       .toList();
 
-  Widget buildGridItem(index) {
-    return Container(
-      height: 80.0,
-      color: Colors.primaries[index % Colors.primaries.length],
+  Widget buildGridItem(Models.Group group) {
+    print(group.producImg);
+    return InkWell(
+      onTap: () {},
+      child: Card(
+        child: Column(
+          children: [
+            Padding(
+              padding: EdgeInsets.all(8.0),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      group.groupName,
+                      style: TextStyle(
+                        fontSize: 18.0,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.only(left: 10.0),
+                    child: getGroupState(group.groupState),
+                  )
+                ],
+              ),
+            ),
+            Divider(height: 0),
+            Expanded(
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Image.network(group.producImg, fit: BoxFit.fill),
+                  ),
+                  Flexible(
+                    child: Column(
+                      children: [
+                        Padding(
+                          padding: EdgeInsets.only(
+                              left: 10.0, right: 10.0, top: 6.0, bottom: 6.0),
+                          child: Row(
+                            children: [
+                              Expanded(
+                                child: Text(
+                                  '算力',
+                                  style: TextStyle(
+                                    fontSize: 10.0,
+                                    color: Colors.black45,
+                                  ),
+                                ),
+                              ),
+                              Text(
+                                group.hashrate,
+                                style: TextStyle(
+                                  color: Theme.of(context).primaryColor,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Flexible(
+              child: Column(),
+            )
+          ],
+        ),
+      ),
     );
   }
-
-  _refreshGroups() {}
 
   _getData() async {
     final coin = tabs[selectedIndex];
@@ -225,5 +288,32 @@ class _GroupsState extends State<Groups>
     } finally {
       EasyLoading.dismiss();
     }
+  }
+
+  String constructTime(int seconds) {
+    int day = seconds ~/ 3600 ~/ 24;
+    int hour = seconds ~/ 3600 % 24;
+    int minute = seconds % 3600 ~/ 60;
+    int second = seconds % 60;
+    return formatTime(day) +
+        "天" +
+        formatTime(hour) +
+        "小时" +
+        formatTime(minute) +
+        "分" +
+        formatTime(second) +
+        "秒";
+  }
+
+  String formatTime(int timeNum) {
+    return timeNum < 10 ? "0" + timeNum.toString() : timeNum.toString();
+  }
+
+  Widget getGroupState(state) {
+    Color color = state == 4 ? Colors.grey[400] : Colors.red[400];
+    return Text(
+      Utils.GroupState[state - 1],
+      style: TextStyle(color: color, fontSize: 12.0),
+    );
   }
 }
