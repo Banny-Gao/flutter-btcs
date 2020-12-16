@@ -6,7 +6,7 @@ part 'group.g.dart';
 class Group {
     Group();
 
-    num activityDayL;
+    num activityDay;
     String beginTime;
     String carePattern;
     num countDownTime;

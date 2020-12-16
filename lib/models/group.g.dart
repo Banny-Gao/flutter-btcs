@@ -8,7 +8,7 @@ part of 'group.dart';
 
 Group _$GroupFromJson(Map<String, dynamic> json) {
   return Group()
-    ..activityDayL = json['activityDayL'] as num
+    ..activityDay = json['activityDay'] as num
     ..beginTime = json['beginTime'] as String
     ..carePattern = json['carePattern'] as String
     ..countDownTime = json['countDownTime'] as num
@@ -35,7 +35,7 @@ Group _$GroupFromJson(Map<String, dynamic> json) {
 }
 
 Map<String, dynamic> _$GroupToJson(Group instance) => <String, dynamic>{
-      'activityDayL': instance.activityDayL,
+      'activityDay': instance.activityDay,
       'beginTime': instance.beginTime,
       'carePattern': instance.carePattern,
       'countDownTime': instance.countDownTime,

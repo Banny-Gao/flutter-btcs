@@ -13,4 +13,4 @@ class Tips {
 List AuthStates = ['未认证', '待审核', '审核拒绝', '已认证'];
 List PaymentPasswordStates = ['未设置', '已设置'];
 
-List GroupState = ['等待开始', '拼团中', '拼团结束', '已售空'];
+List GroupState = ['距拼团开始: ', '距拼团结束: ', '拼团结束', '已售空'];

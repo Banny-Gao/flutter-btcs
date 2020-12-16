@@ -159,6 +159,8 @@ Future _getCoinAssets(currencyId) async {
     'front/assets/detail/${currencyId}',
   );
 
+  Request.netCache.cache.clear();
+
   return resp.data;
 }
 
@@ -173,6 +175,8 @@ Future _getGroups({@required currencyId}) async {
       'useResponseInterceptor': false,
     }),
   );
+
+  Request.netCache.cache.clear();
 
   return resp.data;
 }

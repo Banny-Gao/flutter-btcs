@@ -1,4 +1,5 @@
 import 'dart:math';
+import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:scoped_model/scoped_model.dart';
@@ -91,6 +92,9 @@ class _GroupsState extends State<Groups>
 
   TabController _tabController;
 
+  Timer _timer;
+  List<Function> timerFns = [];
+
   get wantKeepAlive => true;
 
   @override
@@ -114,6 +118,13 @@ class _GroupsState extends State<Groups>
     Future.delayed(Duration.zero).then((value) {
       _getData();
     });
+
+    final call = (timer) {
+      timerFns.forEach((fn) {
+        fn();
+      });
+    };
+    _timer = Timer.periodic(Duration(seconds: 1), call);
 
     super.initState();
   }
@@ -176,6 +187,10 @@ class _GroupsState extends State<Groups>
   void dispose() {
     super.dispose();
     _tabController.dispose();
+
+    if (_timer != null) {
+      _timer.cancel();
+    }
   }
 
   List<Widget> getTabViews() => tabGroups
@@ -202,42 +217,59 @@ class _GroupsState extends State<Groups>
 
   Widget buildGridItem(Models.Group group) {
     final Map<String, dynamic> map = {
+      '挖矿天数': group.activityDay,
+      // '托管模式': group.carePattern,
+      // '每日电费': group.electricMoney,
       '算力': group.hashrate,
       '机器型号': group.lcd,
       '矿场运维名称': group.mineFieldName,
-      '管理费用比例(%)': group.manageFee,
-      '拼团总共台数': group.platformTotal,
+      // '管理费用比例(%)': group.manageFee,
+      // '拼团总共台数': group.platformTotal,
       '机器功耗W:': group.power,
-      '已出售台数': group.sellPlatform,
-      '分期期数': group.stagingTime,
-      '分期付款比例': group.theRatio,
+      // '已出售台数': group.sellPlatform,
+      // '分期期数': group.stagingTime,
+      // '分期付款比例': group.theRatio,
       '每日大约生产值(参考值)': group.yieldOutput,
     };
 
     var children = <Widget>[
-      Image.network(group.producImg, fit: BoxFit.fill),
+      Container(
+        height: 120.0,
+        child: Stack(
+          fit: StackFit.expand,
+          children: [
+            Hero(
+              tag: group.id,
+              child: Image.network(group.producImg, fit: BoxFit.fill),
+            ),
+            Material(
+              type: MaterialType.transparency,
+              child: InkWell(
+                onTap: () {},
+              ),
+            ),
+          ],
+        ),
+      ),
       Divider(height: 0),
       Padding(
         padding: EdgeInsets.all(8.0),
-        child: Text(
-          group.groupName,
-          style: TextStyle(
-            fontSize: 18.0,
-            fontWeight: FontWeight.w600,
+        child: ConstrainedBox(
+          constraints: BoxConstraints(
+            maxHeight: 48.0,
+          ),
+          child: Text(
+            group.groupName,
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
+            style: TextStyle(
+              fontSize: 18.0,
+              fontWeight: FontWeight.w600,
+            ),
           ),
         ),
-        // Row(
-        //   children: [
-        //     Expanded(
-        //       child:
-        //     ),
-        //     Padding(
-        //       padding: EdgeInsets.only(left: 10.0),
-        //       child: getGroupState(group.groupState),
-        //     )
-        //   ],
-        // ),
       ),
+      Expanded(child: Container()),
     ];
     children.addAll(
       map.keys.map<Widget>(
@@ -259,6 +291,7 @@ class _GroupsState extends State<Groups>
                 '${map[key]}',
                 style: TextStyle(
                   color: Theme.of(context).primaryColor,
+                  fontSize: 12.0,
                 ),
               ),
             ],
@@ -267,13 +300,14 @@ class _GroupsState extends State<Groups>
       ),
     );
 
-    return InkWell(
-      onTap: () {},
-      child: Card(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: children,
-        ),
+    children.addAll([
+      getGroupState(group.groupState, group.countDownTime),
+    ]);
+
+    return Card(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: children,
       ),
     );
   }
@@ -290,6 +324,12 @@ class _GroupsState extends State<Groups>
 
       setState(() {
         tabGroups[selectedIndex] = resp.data;
+
+        timerFns.addAll(resp.data.map<Function>((group) => () {
+              setState(() {
+                group.countDownTime -= 1000;
+              });
+            }));
       });
     } catch (error) {
       EasyLoading.showError(error.message);
@@ -303,25 +343,70 @@ class _GroupsState extends State<Groups>
     int hour = seconds ~/ 3600 % 24;
     int minute = seconds % 3600 ~/ 60;
     int second = seconds % 60;
-    return formatTime(day) +
-        "天" +
-        formatTime(hour) +
-        "小时" +
-        formatTime(minute) +
-        "分" +
-        formatTime(second) +
-        "秒";
+    return formatTime(day, '天') +
+        formatTime(hour, '小时', true) +
+        formatTime(minute, '分', true) +
+        formatTime(second, '秒', true);
   }
 
-  String formatTime(int timeNum) {
-    return timeNum < 10 ? "0" + timeNum.toString() : timeNum.toString();
-  }
+  String formatTime(int timeNum, String unit, [bool showUnit = false]) =>
+      timeNum != 0 || showUnit ? timeNum.toString() + unit : '';
 
-  Widget getGroupState(state) {
-    Color color = state == 4 ? Colors.grey[400] : Colors.red[400];
-    return Text(
+  Widget getGroupState(state, countDownTime) {
+    TextStyle basicStyle = TextStyle(
+      fontSize: 10.0,
+      color: Colors.black45,
+    );
+    TextStyle activeStyle = TextStyle(
+      fontSize: 12.0,
+      color: Colors.red[400],
+    );
+
+    Widget component = Container();
+    Widget label = Text(
       Utils.GroupState[state - 1],
-      style: TextStyle(color: color, fontSize: 12.0),
+      style: basicStyle,
+    );
+
+    switch (state) {
+      case 1:
+      case 2:
+        component = Text(
+          constructTime(countDownTime ~/ 1000),
+          style: activeStyle,
+        );
+        break;
+      case 3:
+      case 4:
+        component = Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(2.0),
+            border: Border.all(color: Colors.grey[400]),
+          ),
+          child: Padding(
+            padding: EdgeInsets.fromLTRB(8.0, 2.0, 8.0, 2.0),
+            child: Text(
+              Utils.GroupState[state - 1],
+              style: TextStyle(
+                fontSize: 12.0,
+                color: Colors.grey[400],
+              ),
+            ),
+          ),
+        );
+        label = Container();
+        break;
+    }
+    return Padding(
+      padding: EdgeInsets.fromLTRB(10.0, 0, 10.0, 10.0),
+      child: Row(
+        children: [
+          Expanded(
+            child: label,
+          ),
+          component,
+        ],
+      ),
     );
   }
 }
