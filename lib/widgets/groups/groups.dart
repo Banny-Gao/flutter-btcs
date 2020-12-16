@@ -193,125 +193,6 @@ class _GroupsState extends State<Groups>
     }
   }
 
-  List<Widget> getTabViews() => tabGroups
-      .map<Widget>(
-        (tabGroup) => RefreshIndicator(
-          onRefresh: () async {
-            _getData();
-          },
-          child: GridView.custom(
-            cacheExtent: 200.0,
-            padding: EdgeInsets.all(10.0),
-            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 2,
-              childAspectRatio: 0.4,
-            ),
-            childrenDelegate: SliverChildBuilderDelegate(
-              (BuildContext context, index) => buildGridItem(tabGroup[index]),
-              childCount: tabGroup.length,
-            ),
-          ),
-        ),
-      )
-      .toList();
-
-  Widget buildGridItem(Models.Group group) {
-    final Map<String, dynamic> map = {
-      '挖矿天数': group.activityDay,
-      // '托管模式': group.carePattern,
-      // '每日电费': group.electricMoney,
-      '算力': group.hashrate,
-      '机器型号': group.lcd,
-      '矿场运维名称': group.mineFieldName,
-      // '管理费用比例(%)': group.manageFee,
-      // '拼团总共台数': group.platformTotal,
-      '机器功耗W:': group.power,
-      // '已出售台数': group.sellPlatform,
-      // '分期期数': group.stagingTime,
-      // '分期付款比例': group.theRatio,
-      '每日大约生产值(参考值)': group.yieldOutput,
-    };
-
-    var children = <Widget>[
-      Container(
-        height: 120.0,
-        child: Stack(
-          fit: StackFit.expand,
-          children: [
-            Hero(
-              tag: group.id,
-              child: Image.network(group.producImg, fit: BoxFit.fill),
-            ),
-            Material(
-              type: MaterialType.transparency,
-              child: InkWell(
-                onTap: () {},
-              ),
-            ),
-          ],
-        ),
-      ),
-      Divider(height: 0),
-      Padding(
-        padding: EdgeInsets.all(8.0),
-        child: ConstrainedBox(
-          constraints: BoxConstraints(
-            maxHeight: 48.0,
-          ),
-          child: Text(
-            group.groupName,
-            maxLines: 2,
-            overflow: TextOverflow.ellipsis,
-            style: TextStyle(
-              fontSize: 18.0,
-              fontWeight: FontWeight.w600,
-            ),
-          ),
-        ),
-      ),
-      Expanded(child: Container()),
-    ];
-    children.addAll(
-      map.keys.map<Widget>(
-        (key) => Padding(
-          padding:
-              EdgeInsets.only(left: 10.0, right: 10.0, top: 6.0, bottom: 6.0),
-          child: Row(
-            children: [
-              Expanded(
-                child: Text(
-                  '$key',
-                  style: TextStyle(
-                    fontSize: 10.0,
-                    color: Colors.black45,
-                  ),
-                ),
-              ),
-              Text(
-                '${map[key]}',
-                style: TextStyle(
-                  color: Theme.of(context).primaryColor,
-                  fontSize: 12.0,
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-
-    children.addAll([
-      getGroupState(group.groupState, group.countDownTime),
-    ]);
-
-    return Card(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: children,
-      ),
-    );
-  }
-
   _getData() async {
     final coin = tabs[selectedIndex];
 
@@ -338,6 +219,120 @@ class _GroupsState extends State<Groups>
     }
   }
 
+  List<Widget> getTabViews() => tabGroups
+      .map<Widget>(
+        (tabGroup) => RefreshIndicator(
+          onRefresh: () async {
+            _getData();
+          },
+          child: GridView.custom(
+            padding: EdgeInsets.all(10.0),
+            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 2,
+              childAspectRatio: 0.54,
+            ),
+            childrenDelegate: SliverChildBuilderDelegate(
+              (BuildContext context, index) => buildGridItem(tabGroup[index]),
+              childCount: tabGroup.length,
+            ),
+          ),
+        ),
+      )
+      .toList();
+
+  Widget buildGridItem(Models.Group group) {
+    final Map<String, dynamic> map = {
+      '矿场名称': group.mineFieldName,
+      '机器型号': group.lcd,
+      '周期': '${group.activityDay}天',
+      // '托管模式': group.carePattern,
+      // '每日电费': group.electricMoney,
+      '算力': '${group.hashrate}TH/s',
+      // '管理费用比例(%)': group.manageFee,
+      // '拼团总共台数': group.platformTotal,
+      '功耗:': '${group.power}W',
+      // '已出售台数': group.sellPlatform,
+      // '分期期数': group.stagingTime,
+      // '分期付款比例': group.theRatio,
+      '静态收益': '${group.yieldOutput}${group.currencyName}/天',
+    };
+
+    List<Widget> children = <Widget>[
+      Container(
+        height: 120.0,
+        child: Stack(
+          fit: StackFit.expand,
+          children: [
+            Hero(
+              tag: group.id,
+              child: Image.network(group.producImg, fit: BoxFit.fill),
+            ),
+            Material(
+              type: MaterialType.transparency,
+              child: InkWell(
+                onTap: () {},
+              ),
+            ),
+          ],
+        ),
+      ),
+      Divider(height: 0),
+      Padding(
+        padding: EdgeInsets.fromLTRB(10.0, 4.0, 10.0, 4.0),
+        child: Text(
+          group.groupName,
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+          style: TextStyle(
+            fontSize: 14.0,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+      ),
+      Expanded(child: Container()),
+    ];
+    children.addAll(
+      map.keys.map<Widget>(
+        (key) => Padding(
+          padding: EdgeInsets.fromLTRB(10.0, 0, 10.0, 4.0),
+          child: Row(
+            children: [
+              Expanded(
+                child: Text(
+                  '$key',
+                  style: TextStyle(
+                    fontSize: 10.0,
+                    color: Colors.black45,
+                  ),
+                ),
+              ),
+              Text(
+                '${map[key]}',
+                style: TextStyle(
+                  color: Colors.black54,
+                  fontSize: 10.0,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+
+    children.addAll([
+      buildSold(group),
+      buildGroupState(group.groupState, group.countDownTime),
+      buildGroupCheckout(group),
+    ]);
+
+    return Card(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: children,
+      ),
+    );
+  }
+
   String constructTime(int seconds) {
     int day = seconds ~/ 3600 ~/ 24;
     int hour = seconds ~/ 3600 % 24;
@@ -352,7 +347,7 @@ class _GroupsState extends State<Groups>
   String formatTime(int timeNum, String unit, [bool showUnit = false]) =>
       timeNum != 0 || showUnit ? timeNum.toString() + unit : '';
 
-  Widget getGroupState(state, countDownTime) {
+  Widget buildGroupState(state, countDownTime) {
     TextStyle basicStyle = TextStyle(
       fontSize: 10.0,
       color: Colors.black45,
@@ -378,35 +373,117 @@ class _GroupsState extends State<Groups>
         break;
       case 3:
       case 4:
-        component = Container(
+        label = Container(
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(2.0),
-            border: Border.all(color: Colors.grey[400]),
+            borderRadius: BorderRadius.circular(4.0),
+            border: Border.all(color: Colors.black45),
           ),
           child: Padding(
-            padding: EdgeInsets.fromLTRB(8.0, 2.0, 8.0, 2.0),
-            child: Text(
-              Utils.GroupState[state - 1],
-              style: TextStyle(
-                fontSize: 12.0,
-                color: Colors.grey[400],
+            padding: EdgeInsets.fromLTRB(8.0, 4.0, 8.0, 4.0),
+            child: Align(
+              child: Text(
+                Utils.GroupState[state - 1],
+                style: TextStyle(
+                  fontSize: 12.0,
+                  color: Colors.black45,
+                ),
               ),
             ),
           ),
         );
-        label = Container();
+        component = Container();
         break;
     }
-    return Padding(
-      padding: EdgeInsets.fromLTRB(10.0, 0, 10.0, 10.0),
-      child: Row(
-        children: [
-          Expanded(
-            child: label,
-          ),
-          component,
-        ],
+    return ConstrainedBox(
+      constraints: BoxConstraints(
+        minHeight: 30.0,
+      ),
+      child: Padding(
+        padding: EdgeInsets.fromLTRB(10.0, 0, 10.0, 0),
+        child: Row(
+          children: [
+            Expanded(
+              child: label,
+            ),
+            component,
+          ],
+        ),
       ),
     );
   }
+
+  Widget buildGroupCheckout(Models.Group group) {
+    return Padding(
+      padding: EdgeInsets.fromLTRB(10.0, 0, 10.0, 0),
+      child: Row(children: [
+        Expanded(
+          child: RichText(
+            text: TextSpan(
+              children: [
+                TextSpan(
+                  text: '${group.realityMoney}${group.currencyName}',
+                  style: TextStyle(
+                    fontSize: 10.0,
+                    color: Colors.black45,
+                    decoration: TextDecoration.lineThrough,
+                  ),
+                ),
+                TextSpan(
+                  text: ' ${group.discountMoney}${group.currencyName}',
+                  style: TextStyle(
+                    color: Colors.red[400],
+                    fontSize: 12.0,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+        IconButton(
+          icon: Icon(FontAwesomeIcons.users),
+          color: Colors.red[400],
+          iconSize: 20.0,
+          tooltip: '立即拼团',
+          padding: EdgeInsets.all(0),
+          onPressed: group.groupState == 2
+              ? () {
+                  checkoutGroup(group);
+                }
+              : null,
+        ),
+      ]),
+    );
+  }
+
+  Widget buildSold(Models.Group group) {
+    final double soldPercent = group.sellPlatform / group.platformTotal;
+
+    return Padding(
+      padding: EdgeInsets.fromLTRB(10.0, 0, 10.0, 10.0),
+      child: group.groupState != 1
+          ? Row(
+              children: [
+                Expanded(
+                  child: LinearProgressIndicator(
+                    value: soldPercent,
+                    valueColor: AlwaysStoppedAnimation<Color>(Colors.red[400]),
+                  ),
+                ),
+                Padding(
+                  padding: EdgeInsets.only(left: 10.0),
+                  child: Text(
+                    '已售${soldPercent}%',
+                    style: TextStyle(
+                      color: Colors.black54,
+                      fontSize: 10.0,
+                    ),
+                  ),
+                ),
+              ],
+            )
+          : Container(),
+    );
+  }
+
+  checkoutGroup(group) async {}
 }
