@@ -184,87 +184,95 @@ class _GroupsState extends State<Groups>
           onRefresh: () async {
             _getData();
           },
-          child: ListView.builder(
+          child: GridView.custom(
+            cacheExtent: 200.0,
             padding: EdgeInsets.all(10.0),
-            itemBuilder: (BuildContext context, index) =>
-                buildGridItem(tabGroup[index]),
-            itemCount: tabGroup.length,
-            itemExtent: 280.0,
+            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 2,
+              childAspectRatio: 0.4,
+            ),
+            childrenDelegate: SliverChildBuilderDelegate(
+              (BuildContext context, index) => buildGridItem(tabGroup[index]),
+              childCount: tabGroup.length,
+            ),
           ),
         ),
       )
       .toList();
 
   Widget buildGridItem(Models.Group group) {
-    print(group.producImg);
+    final Map<String, dynamic> map = {
+      '算力': group.hashrate,
+      '机器型号': group.lcd,
+      '矿场运维名称': group.mineFieldName,
+      '管理费用比例(%)': group.manageFee,
+      '拼团总共台数': group.platformTotal,
+      '机器功耗W:': group.power,
+      '已出售台数': group.sellPlatform,
+      '分期期数': group.stagingTime,
+      '分期付款比例': group.theRatio,
+      '每日大约生产值(参考值)': group.yieldOutput,
+    };
+
+    var children = <Widget>[
+      Image.network(group.producImg, fit: BoxFit.fill),
+      Divider(height: 0),
+      Padding(
+        padding: EdgeInsets.all(8.0),
+        child: Text(
+          group.groupName,
+          style: TextStyle(
+            fontSize: 18.0,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+        // Row(
+        //   children: [
+        //     Expanded(
+        //       child:
+        //     ),
+        //     Padding(
+        //       padding: EdgeInsets.only(left: 10.0),
+        //       child: getGroupState(group.groupState),
+        //     )
+        //   ],
+        // ),
+      ),
+    ];
+    children.addAll(
+      map.keys.map<Widget>(
+        (key) => Padding(
+          padding:
+              EdgeInsets.only(left: 10.0, right: 10.0, top: 6.0, bottom: 6.0),
+          child: Row(
+            children: [
+              Expanded(
+                child: Text(
+                  '$key',
+                  style: TextStyle(
+                    fontSize: 10.0,
+                    color: Colors.black45,
+                  ),
+                ),
+              ),
+              Text(
+                '${map[key]}',
+                style: TextStyle(
+                  color: Theme.of(context).primaryColor,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+
     return InkWell(
       onTap: () {},
       child: Card(
         child: Column(
-          children: [
-            Padding(
-              padding: EdgeInsets.all(8.0),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: Text(
-                      group.groupName,
-                      style: TextStyle(
-                        fontSize: 18.0,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                  ),
-                  Padding(
-                    padding: EdgeInsets.only(left: 10.0),
-                    child: getGroupState(group.groupState),
-                  )
-                ],
-              ),
-            ),
-            Divider(height: 0),
-            Expanded(
-              child: Row(
-                children: [
-                  Expanded(
-                    child: Image.network(group.producImg, fit: BoxFit.fill),
-                  ),
-                  Flexible(
-                    child: Column(
-                      children: [
-                        Padding(
-                          padding: EdgeInsets.only(
-                              left: 10.0, right: 10.0, top: 6.0, bottom: 6.0),
-                          child: Row(
-                            children: [
-                              Expanded(
-                                child: Text(
-                                  '算力',
-                                  style: TextStyle(
-                                    fontSize: 10.0,
-                                    color: Colors.black45,
-                                  ),
-                                ),
-                              ),
-                              Text(
-                                group.hashrate,
-                                style: TextStyle(
-                                  color: Theme.of(context).primaryColor,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            Flexible(
-              child: Column(),
-            )
-          ],
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: children,
         ),
       ),
     );
