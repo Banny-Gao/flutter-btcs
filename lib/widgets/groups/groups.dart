@@ -10,69 +10,9 @@ import '../../scopedModels/index.dart';
 import '../../models/index.dart' as Models;
 import '../../util/index.dart' as Utils;
 
-class StickyTabBarDelegate extends SliverPersistentHeaderDelegate {
-  final TabBar child;
-  final String coverImgUrl;
-  final double collapsedHeight;
-  final double expandedHeight;
-
-  StickyTabBarDelegate({
-    @required this.child,
-    this.coverImgUrl,
-    this.collapsedHeight = 0,
-    this.expandedHeight = 0,
-  });
-
-  @override
-  double get maxExtent => child.preferredSize.height + expandedHeight;
-
-  @override
-  double get minExtent => child.preferredSize.height + collapsedHeight;
-
-  @override
-  bool shouldRebuild(SliverPersistentHeaderDelegate oldDelegate) {
-    return true;
-  }
-
-  Color makeStickyHeaderBgColor(shrinkOffset) {
-    final int alpha =
-        (shrinkOffset / (maxExtent - minExtent) * 255).clamp(0, 255).toInt();
-    return Color.fromARGB(alpha, 255, 255, 255);
-  }
-
-  @override
-  Widget build(
-      BuildContext context, double shrinkOffset, bool overlapsContent) {
-    return Container(
-      height: maxExtent,
-      width: MediaQuery.of(context).size.width,
-      child: Stack(
-        // fit: StackFit.expand,
-        children: <Widget>[
-          coverImgUrl != null
-              ? Container(
-                  width: MediaQuery.of(context).size.width,
-                  height: expandedHeight,
-                  child: Image.network(
-                    coverImgUrl,
-                    fit: BoxFit.fill,
-                  ),
-                )
-              : Container(),
-          Positioned(
-            left: 0,
-            right: 0,
-            bottom: 0,
-            child: Container(
-              color: makeStickyHeaderBgColor(shrinkOffset),
-              child: this.child,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
+import 'stickyTabBarDelegate.dart';
+import 'groupCheckOutCount.dart';
+import './orderSubmit.dart';
 
 class Groups extends StatefulWidget {
   Groups({Key key}) : super(key: key);
@@ -500,223 +440,48 @@ class _GroupsState extends State<Groups>
 
   checkoutGroup(group) async {
     num max = group.platformTotal - group.sellPlatform;
-    var result = await showDialog(
-        context: context,
-        builder: (context) {
-          double sliderValue = 1;
-          bool useSlider = true;
+    int result = await showDialog(
+      context: context,
+      builder: (context) {
+        bool useSlider = true;
+        double sliderValue = 1;
 
-          int number = 1;
-          Timer timer;
-          TextEditingController textController = TextEditingController();
-          textController.text = '1';
+        int textNumber = 1;
+        Timer timer;
+        TextEditingController textController = TextEditingController();
+        textController.text = '1';
 
-          return StatefulBuilder(
-            builder: (context, state) => AlertDialog(
-              content: Container(
-                height: 88.0,
-                child: Column(
-                  children: [
-                    Expanded(
-                      child: useSlider
-                          ? Slider(
-                              min: 1,
-                              max: max.toDouble(),
-                              value: sliderValue,
-                              label: '${sliderValue.toInt()}',
-                              activeColor: Colors.red[400],
-                              inactiveColor: Colors.red[50],
-                              divisions: max.toInt(),
-                              onChanged: (v) {
-                                state(() {
-                                  sliderValue = v.toInt().toDouble();
-                                });
-                              },
-                            )
-                          : Container(
-                              height: 50.0,
-                              decoration: new BoxDecoration(
-                                shape: BoxShape.rectangle,
-                                borderRadius: BorderRadius.circular(5),
-                                border: Border.all(color: Color(0x33333333)),
-                              ),
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: <Widget>[
-                                  Expanded(
-                                    child: Padding(
-                                      padding: EdgeInsets.only(
-                                        bottom: 6.0,
-                                      ),
-                                      child: TextField(
-                                        textAlign: TextAlign.center,
-                                        controller: textController,
-                                        keyboardType: TextInputType.number,
-                                        decoration: InputDecoration(
-                                          border: InputBorder.none,
-                                        ),
-                                        onChanged: (val) {
-                                          num inputVal = int.parse(val.trim());
-                                          state(() {
-                                            if (inputVal > max) inputVal = max;
-                                            number = inputVal;
-                                            textController.text =
-                                                inputVal.toString();
-                                          });
-                                        },
-                                      ),
-                                    ),
-                                  ),
-                                  Row(
-                                    children: <Widget>[
-                                      new GestureDetector(
-                                        child: Container(
-                                          width: 50,
-                                          height: 30,
-                                          child: Icon(Icons.remove),
-                                        ),
-                                        onTap: () {
-                                          state(() {
-                                            if (number <= 1) {
-                                              return;
-                                            }
-                                            number--;
-                                            textController.text =
-                                                number.toString();
-                                          });
-                                        },
-                                        onTapDown: (e) {
-                                          if (timer != null) {
-                                            timer.cancel();
-                                          }
-                                          if (number <= 1) {
-                                            return;
-                                          }
-                                          timer = new Timer.periodic(
-                                              Duration(milliseconds: 100), (e) {
-                                            state(() {
-                                              if (number <= 1) {
-                                                return;
-                                              }
-                                              number--;
-                                              textController.text =
-                                                  number.toString();
-                                            });
-                                          });
-                                        },
-                                        onTapUp: (e) {
-                                          if (timer != null) {
-                                            timer.cancel();
-                                          }
-                                        },
-                                        // 这里防止长按没有抬起手指，而move到了别处，会继续 --
-                                        onTapCancel: () {
-                                          if (timer != null) {
-                                            timer.cancel();
-                                          }
-                                        },
-                                      ),
-                                      new GestureDetector(
-                                        child: Container(
-                                          width: 50,
-                                          height: 30,
-                                          child: Icon(Icons.add),
-                                        ),
-                                        onTap: () {
-                                          state(() {
-                                            if (number >= max) {
-                                              return;
-                                            }
-                                            number++;
-                                            textController.text =
-                                                number.toString();
-                                          });
-                                        },
-                                        onTapDown: (e) {
-                                          if (timer != null) {
-                                            timer.cancel();
-                                          }
-                                          if (number >= max) {
-                                            return;
-                                          }
-                                          timer = new Timer.periodic(
-                                              Duration(milliseconds: 100), (e) {
-                                            state(() {
-                                              if (number >= max) {
-                                                return;
-                                              }
-                                              number++;
-                                              textController.text =
-                                                  number.toString();
-                                            });
-                                          });
-                                        },
-                                        onTapUp: (e) {
-                                          if (timer != null) {
-                                            timer.cancel();
-                                          }
-                                        },
-                                        onTapCancel: () {
-                                          if (timer != null) {
-                                            timer.cancel();
-                                          }
-                                        },
-                                      ),
-                                    ],
-                                  )
-                                ],
-                              ),
-                            ),
-                    ),
-                    Row(
-                      children: [
-                        Text(
-                          '拖动选择',
-                          style: TextStyle(
-                            fontSize: 12.0,
-                            color: Colors.black45,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                        Switch(
-                          value: useSlider,
-                          activeColor: Colors.white,
-                          activeTrackColor: Colors.red[400],
-                          inactiveTrackColor: Theme.of(context).primaryColor,
-                          onChanged: (val) {
-                            state(() {
-                              useSlider = val;
-                            });
-                          },
-                        ),
-                        Text(
-                          '手动输入',
-                          style: TextStyle(
-                            fontSize: 12.0,
-                            color: Colors.black45,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-              actions: <Widget>[
-                FlatButton(
-                  child: Text(
-                    '立即拼团',
-                    style: TextStyle(color: Colors.red[400]),
-                  ),
-                  onPressed: () {
-                    Navigator.of(context).pop(true);
-                  },
-                ),
-              ],
-            ),
-          );
-        });
-    print('$result');
+        return groupCheckOutCount(
+          useSlider: useSlider,
+          sliderValue: sliderValue,
+          textNumber: textNumber,
+          timer: timer,
+          textController: textController,
+          max: max,
+        );
+      },
+    );
+    if (result == null) return;
+
+    EasyLoading.show();
+    try {
+      final response = await Utils.API.submitGroup(
+        id: group.id,
+        number: result,
+      );
+      final resp = Models.SubmitGroupResponse.fromJson(response);
+      if (resp.code != 200) return;
+
+      final Models.SubmitGroupResponseData orderSubmitInfo = resp.data;
+
+      Navigator.of(context).push(
+        MaterialPageRoute(
+            fullscreenDialog: true,
+            builder: (context) =>
+                OrderSubmit(orderSubmitInfo: orderSubmitInfo)),
+      );
+    } finally {
+      EasyLoading.dismiss();
+    }
   }
 }

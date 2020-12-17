@@ -188,6 +188,21 @@ Future _getGroup(id) async {
   return resp.data;
 }
 
+// 生成提交订单
+Future _submitGroup({id, number}) async {
+  final resp = await Request.dio.get(
+    '/front/group/groupBooking',
+    queryParameters: {
+      'id': id,
+      'number': number,
+    },
+  );
+
+  Request.netCache.cache.clear();
+
+  return resp.data;
+}
+
 // 帮助中心分类
 Future _getHelpClassifications({pageNum = 1, pageSize = 3}) async {
   final resp = await Request.dio.get(
@@ -482,6 +497,7 @@ class API {
   static final getCoinAssets = _getCoinAssets;
   static final getGroups = _getGroups;
   static final getGroup = _getGroup;
+  static final submitGroup = _submitGroup;
   static final getHelpClassifications = _getHelpClassifications;
   static final getHelps = _getHelps;
   static final getHelp = _getHelp;
