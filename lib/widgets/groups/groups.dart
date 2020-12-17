@@ -95,6 +95,11 @@ class _GroupsState extends State<Groups>
   Timer _timer;
   List<Function> timerFns = [];
 
+  double gridChildWidth;
+  double gridChildHeight;
+  double gridVerticalPadding;
+  double childAspectRatio = 0.54;
+
   get wantKeepAlive => true;
 
   @override
@@ -132,6 +137,10 @@ class _GroupsState extends State<Groups>
   @override
   // ignore: must_call_super
   Widget build(BuildContext context) {
+    gridChildWidth = (MediaQuery.of(context).size.width / 2) - 20;
+    gridChildHeight = gridChildWidth / childAspectRatio;
+    gridVerticalPadding = gridChildHeight / 100;
+
     return ScopedModelDescendant<AppModel>(builder: (context, child, model) {
       return Scaffold(
         appBar: AppBar(
@@ -144,7 +153,7 @@ class _GroupsState extends State<Groups>
               delegate: StickyTabBarDelegate(
                 // expandedHeight: 160.0,
                 // coverImgUrl:
-                //     'https://cdn.pixabay.com/photo/2019/09/06/17/04/china-4456845__340.jpg',
+                //     'https://cdn.pixabay.com/photo/2020/12/12/20/15/waves-5826473__340.jpg',
                 child: TabBar(
                   isScrollable: true,
                   labelColor: Colors.black,
@@ -226,10 +235,12 @@ class _GroupsState extends State<Groups>
             _getData();
           },
           child: GridView.custom(
-            padding: EdgeInsets.all(10.0),
+            // padding: EdgeInsets.all(10.0),
             gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: 2,
-              childAspectRatio: 0.54,
+              childAspectRatio: childAspectRatio,
+              mainAxisSpacing: 5.0,
+              crossAxisSpacing: 5.0,
             ),
             childrenDelegate: SliverChildBuilderDelegate(
               (BuildContext context, index) => buildGridItem(tabGroup[index]),
@@ -259,7 +270,7 @@ class _GroupsState extends State<Groups>
 
     List<Widget> children = <Widget>[
       Container(
-        height: 120.0,
+        height: gridChildHeight / 3,
         child: Stack(
           fit: StackFit.expand,
           children: [
@@ -278,13 +289,14 @@ class _GroupsState extends State<Groups>
       ),
       Divider(height: 0),
       Padding(
-        padding: EdgeInsets.fromLTRB(10.0, 4.0, 10.0, 4.0),
+        padding: EdgeInsets.fromLTRB(
+            10.0, gridVerticalPadding, 10.0, gridVerticalPadding),
         child: Text(
           group.groupName,
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
           style: TextStyle(
-            fontSize: 14.0,
+            fontSize: gridChildHeight / 30,
             fontWeight: FontWeight.w600,
           ),
         ),
@@ -294,14 +306,14 @@ class _GroupsState extends State<Groups>
     children.addAll(
       map.keys.map<Widget>(
         (key) => Padding(
-          padding: EdgeInsets.fromLTRB(10.0, 0, 10.0, 4.0),
+          padding: EdgeInsets.fromLTRB(10.0, 0, 10.0, gridVerticalPadding),
           child: Row(
             children: [
               Expanded(
                 child: Text(
                   '$key',
                   style: TextStyle(
-                    fontSize: 10.0,
+                    fontSize: gridChildHeight / 35,
                     color: Colors.black45,
                   ),
                 ),
@@ -310,7 +322,7 @@ class _GroupsState extends State<Groups>
                 '${map[key]}',
                 style: TextStyle(
                   color: Colors.black54,
-                  fontSize: 10.0,
+                  fontSize: gridChildHeight / 30,
                 ),
               ),
             ],
@@ -349,11 +361,11 @@ class _GroupsState extends State<Groups>
 
   Widget buildGroupState(state, countDownTime) {
     TextStyle basicStyle = TextStyle(
-      fontSize: 10.0,
+      fontSize: gridChildHeight / 30,
       color: Colors.black45,
     );
     TextStyle activeStyle = TextStyle(
-      fontSize: 12.0,
+      fontSize: gridChildHeight / 35,
       color: Colors.red[400],
     );
 
@@ -379,12 +391,13 @@ class _GroupsState extends State<Groups>
             border: Border.all(color: Colors.black45),
           ),
           child: Padding(
-            padding: EdgeInsets.fromLTRB(8.0, 4.0, 8.0, 4.0),
+            padding: EdgeInsets.fromLTRB(
+                8.0, gridVerticalPadding, 8.0, gridVerticalPadding),
             child: Align(
               child: Text(
                 Utils.GroupState[state - 1],
                 style: TextStyle(
-                  fontSize: 12.0,
+                  fontSize: gridChildHeight / 30,
                   color: Colors.black45,
                 ),
               ),
@@ -396,7 +409,7 @@ class _GroupsState extends State<Groups>
     }
     return ConstrainedBox(
       constraints: BoxConstraints(
-        minHeight: 30.0,
+        minHeight: gridChildHeight / 11.5,
       ),
       child: Padding(
         padding: EdgeInsets.fromLTRB(10.0, 0, 10.0, 0),
@@ -423,7 +436,7 @@ class _GroupsState extends State<Groups>
                 TextSpan(
                   text: '${group.realityMoney}${group.currencyName}',
                   style: TextStyle(
-                    fontSize: 10.0,
+                    fontSize: gridChildHeight / 35,
                     color: Colors.black45,
                     decoration: TextDecoration.lineThrough,
                   ),
@@ -432,7 +445,7 @@ class _GroupsState extends State<Groups>
                   text: ' ${group.discountMoney}${group.currencyName}',
                   style: TextStyle(
                     color: Colors.red[400],
-                    fontSize: 12.0,
+                    fontSize: gridChildHeight / 30,
                   ),
                 ),
               ],
@@ -442,7 +455,7 @@ class _GroupsState extends State<Groups>
         IconButton(
           icon: Icon(FontAwesomeIcons.users),
           color: Colors.red[400],
-          iconSize: 20.0,
+          iconSize: gridChildHeight / 17,
           tooltip: '立即拼团',
           padding: EdgeInsets.all(0),
           onPressed: group.groupState == 2
@@ -459,7 +472,7 @@ class _GroupsState extends State<Groups>
     final double soldPercent = group.sellPlatform / group.platformTotal;
 
     return Padding(
-      padding: EdgeInsets.fromLTRB(10.0, 0, 10.0, 10.0),
+      padding: EdgeInsets.fromLTRB(10.0, 0, 10.0, gridChildHeight / 35),
       child: group.groupState != 1
           ? Row(
               children: [
@@ -475,7 +488,7 @@ class _GroupsState extends State<Groups>
                     '已售${soldPercent}%',
                     style: TextStyle(
                       color: Colors.black54,
-                      fontSize: 10.0,
+                      fontSize: gridChildHeight / 35,
                     ),
                   ),
                 ),
@@ -485,5 +498,225 @@ class _GroupsState extends State<Groups>
     );
   }
 
-  checkoutGroup(group) async {}
+  checkoutGroup(group) async {
+    num max = group.platformTotal - group.sellPlatform;
+    var result = await showDialog(
+        context: context,
+        builder: (context) {
+          double sliderValue = 1;
+          bool useSlider = true;
+
+          int number = 1;
+          Timer timer;
+          TextEditingController textController = TextEditingController();
+          textController.text = '1';
+
+          return StatefulBuilder(
+            builder: (context, state) => AlertDialog(
+              content: Container(
+                height: 88.0,
+                child: Column(
+                  children: [
+                    Expanded(
+                      child: useSlider
+                          ? Slider(
+                              min: 1,
+                              max: max.toDouble(),
+                              value: sliderValue,
+                              label: '${sliderValue.toInt()}',
+                              activeColor: Colors.red[400],
+                              inactiveColor: Colors.red[50],
+                              divisions: max.toInt(),
+                              onChanged: (v) {
+                                state(() {
+                                  sliderValue = v.toInt().toDouble();
+                                });
+                              },
+                            )
+                          : Container(
+                              height: 50.0,
+                              decoration: new BoxDecoration(
+                                shape: BoxShape.rectangle,
+                                borderRadius: BorderRadius.circular(5),
+                                border: Border.all(color: Color(0x33333333)),
+                              ),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: <Widget>[
+                                  Expanded(
+                                    child: Padding(
+                                      padding: EdgeInsets.only(
+                                        bottom: 6.0,
+                                      ),
+                                      child: TextField(
+                                        textAlign: TextAlign.center,
+                                        controller: textController,
+                                        keyboardType: TextInputType.number,
+                                        decoration: InputDecoration(
+                                          border: InputBorder.none,
+                                        ),
+                                        onChanged: (val) {
+                                          num inputVal = int.parse(val.trim());
+                                          state(() {
+                                            if (inputVal > max) inputVal = max;
+                                            number = inputVal;
+                                            textController.text =
+                                                inputVal.toString();
+                                          });
+                                        },
+                                      ),
+                                    ),
+                                  ),
+                                  Row(
+                                    children: <Widget>[
+                                      new GestureDetector(
+                                        child: Container(
+                                          width: 50,
+                                          height: 30,
+                                          child: Icon(Icons.remove),
+                                        ),
+                                        onTap: () {
+                                          state(() {
+                                            if (number <= 1) {
+                                              return;
+                                            }
+                                            number--;
+                                            textController.text =
+                                                number.toString();
+                                          });
+                                        },
+                                        onTapDown: (e) {
+                                          if (timer != null) {
+                                            timer.cancel();
+                                          }
+                                          if (number <= 1) {
+                                            return;
+                                          }
+                                          timer = new Timer.periodic(
+                                              Duration(milliseconds: 100), (e) {
+                                            state(() {
+                                              if (number <= 1) {
+                                                return;
+                                              }
+                                              number--;
+                                              textController.text =
+                                                  number.toString();
+                                            });
+                                          });
+                                        },
+                                        onTapUp: (e) {
+                                          if (timer != null) {
+                                            timer.cancel();
+                                          }
+                                        },
+                                        // 这里防止长按没有抬起手指，而move到了别处，会继续 --
+                                        onTapCancel: () {
+                                          if (timer != null) {
+                                            timer.cancel();
+                                          }
+                                        },
+                                      ),
+                                      new GestureDetector(
+                                        child: Container(
+                                          width: 50,
+                                          height: 30,
+                                          child: Icon(Icons.add),
+                                        ),
+                                        onTap: () {
+                                          state(() {
+                                            if (number >= max) {
+                                              return;
+                                            }
+                                            number++;
+                                            textController.text =
+                                                number.toString();
+                                          });
+                                        },
+                                        onTapDown: (e) {
+                                          if (timer != null) {
+                                            timer.cancel();
+                                          }
+                                          if (number >= max) {
+                                            return;
+                                          }
+                                          timer = new Timer.periodic(
+                                              Duration(milliseconds: 100), (e) {
+                                            state(() {
+                                              if (number >= max) {
+                                                return;
+                                              }
+                                              number++;
+                                              textController.text =
+                                                  number.toString();
+                                            });
+                                          });
+                                        },
+                                        onTapUp: (e) {
+                                          if (timer != null) {
+                                            timer.cancel();
+                                          }
+                                        },
+                                        onTapCancel: () {
+                                          if (timer != null) {
+                                            timer.cancel();
+                                          }
+                                        },
+                                      ),
+                                    ],
+                                  )
+                                ],
+                              ),
+                            ),
+                    ),
+                    Row(
+                      children: [
+                        Text(
+                          '拖动选择',
+                          style: TextStyle(
+                            fontSize: 12.0,
+                            color: Colors.black45,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                        Switch(
+                          value: useSlider,
+                          activeColor: Colors.white,
+                          activeTrackColor: Colors.red[400],
+                          inactiveTrackColor: Theme.of(context).primaryColor,
+                          onChanged: (val) {
+                            state(() {
+                              useSlider = val;
+                            });
+                          },
+                        ),
+                        Text(
+                          '手动输入',
+                          style: TextStyle(
+                            fontSize: 12.0,
+                            color: Colors.black45,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+              actions: <Widget>[
+                FlatButton(
+                  child: Text(
+                    '立即拼团',
+                    style: TextStyle(color: Colors.red[400]),
+                  ),
+                  onPressed: () {
+                    Navigator.of(context).pop(true);
+                  },
+                ),
+              ],
+            ),
+          );
+        });
+    print('$result');
+  }
 }
