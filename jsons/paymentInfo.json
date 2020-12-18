@@ -1,0 +1,12 @@
+{
+  "buyNumber": 0,
+  "countDownTime": 0,
+  "createTime": "",
+  "currencyIconPath": "",
+  "currencyName": "",
+  "lcd": "",
+  "money": 0.0,
+  "orderNumber": 0,
+  "payQr": "",
+  "topAddress": ""
+}

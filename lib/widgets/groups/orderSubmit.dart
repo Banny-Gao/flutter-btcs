@@ -1,14 +1,10 @@
-import 'dart:collection';
 import 'package:flutter/material.dart';
 
-import 'package:scoped_model/scoped_model.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
-import '../../scopedModels/index.dart';
 import '../../models/index.dart' as Models;
 import '../../util/index.dart' as Utils;
-import '../../common/index.dart' as Common;
+import '../contentPreview/contentPreview.dart';
 
 // ignore: must_be_immutable
 class OrderSubmit extends StatefulWidget {
@@ -30,6 +26,8 @@ class _OrderSubmit extends State<OrderSubmit> {
     'serviceName': '服务商',
     'subtotal': '小计',
   };
+
+  bool isChooseDeal = false;
 
   @override
   void initState() {
@@ -60,41 +58,109 @@ class _OrderSubmit extends State<OrderSubmit> {
                       .dividerColor; // Use the default value.
                 }),
                 columnSpacing: 24.0,
-                horizontalMargin: 10.0,
+                horizontalMargin: 20.0,
                 columns: getColumns(),
                 rows: getRows(),
               ),
+            ),
+          ),
+          Padding(
+            padding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
+            child: Row(
+              children: [
+                Expanded(
+                  child: Row(
+                    children: [
+                      RichText(
+                        text: TextSpan(
+                          children: [
+                            TextSpan(
+                              text: '共  ',
+                              style: TextStyle(
+                                color: Colors.black54,
+                                fontSize: 12.0,
+                              ),
+                            ),
+                            TextSpan(
+                              text: '${widget.orderSubmitInfo.number}',
+                              style: TextStyle(
+                                color: Colors.red[400],
+                                fontSize: 16.0,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                            TextSpan(
+                              text: '  台',
+                              style: TextStyle(
+                                color: Colors.black54,
+                                fontSize: 12.0,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                Text(
+                  '${widget.orderSubmitInfo.summary} ${widget.orderSubmitInfo.currencyName}',
+                  style: TextStyle(
+                    color: Colors.red[400],
+                    fontSize: 16.0,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ],
             ),
           ),
           Row(
             children: [
               Expanded(
                 child: Container(
-                  height: 47.0,
+                  height: 42.0,
                   decoration: BoxDecoration(
                     border: Border(
                       top: BorderSide(color: Theme.of(context).dividerColor),
                     ),
                   ),
-                  child: Row(),
+                  child: Row(
+                    children: [
+                      Checkbox(
+                        value: isChooseDeal,
+                        onChanged: (val) {
+                          setState(() {
+                            isChooseDeal = val;
+                          });
+                        },
+                      ),
+                      GestureDetector(
+                        onTap: () {
+                          getUserDeal();
+                        },
+                        child: Text(
+                          '用户协议',
+                          style: TextStyle(
+                            fontSize: 12.0,
+                            color: Theme.of(context).primaryColor,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
-              Container(
-                decoration: BoxDecoration(
-                  gradient: Common.Colors.blueGradient,
-                ),
-                child: MaterialButton(
-                  highlightColor: Colors.transparent,
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(
-                        vertical: 10.0, horizontal: 20.0),
-                    child: Text(
-                      "提交订单",
-                      style: TextStyle(color: Colors.white, fontSize: 16.0),
-                    ),
+              RaisedButton(
+                color: Theme.of(context).primaryColor,
+                highlightColor: Theme.of(context).primaryColorDark,
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(
+                      vertical: 10.0, horizontal: 20.0),
+                  child: Text(
+                    "提交订单",
+                    style: TextStyle(color: Colors.white, fontSize: 16.0),
                   ),
-                  onPressed: () {},
                 ),
+                onPressed: isChooseDeal ? submitOrder : null,
               ),
             ],
           ),
@@ -127,5 +193,41 @@ class _OrderSubmit extends State<OrderSubmit> {
           ),
         )
         .toList();
+  }
+
+  getUserDeal() async {
+    try {
+      EasyLoading.show();
+      final response = await Utils.API.getDeal(3);
+      final resp = Models.DealResponse.fromJson(response);
+      if (resp.code != 200) return;
+
+      Navigator.of(context).push(
+        MaterialPageRoute(
+          fullscreenDialog: true,
+          builder: (context) =>
+              ContentPreview(title: '用户协议', content: resp.data?.content),
+        ),
+      );
+    } finally {
+      EasyLoading.dismiss();
+    }
+  }
+
+  submitOrder() async {
+    final response = await Utils.API.submitOrder(
+      id: widget.orderSubmitInfo.id,
+      number: widget.orderSubmitInfo.number,
+    );
+    final resp = Models.SubmitOrderResponse.fromJson(response);
+
+    if (resp.code != 200) return;
+
+    Navigator.of(context).popAndPushNamed(
+      '/orderPayment',
+      arguments: {
+        'orderNumber': resp.data.orderNumber,
+      },
+    );
   }
 }

@@ -203,6 +203,45 @@ Future _submitGroup({id, number}) async {
   return resp.data;
 }
 
+// 提交订单
+Future _submitOrder({id, number}) async {
+  final resp = await Request.dio.get(
+    '/front/group/addOrder',
+    queryParameters: {
+      'id': id,
+      'number': number,
+    },
+    options: Options(
+      extra: {
+        'showLoading': true,
+      },
+    ),
+  );
+
+  Request.netCache.cache.clear();
+
+  return resp.data;
+}
+
+// 获取支付信息
+Future _getOrderPaymentInfo({@required orderNumber}) async {
+  final resp = await Request.dio.get(
+    '/front/group/queryPayInfo',
+    queryParameters: {
+      'orderNumber': orderNumber,
+    },
+    options: Options(
+      extra: {
+        'showLoading': true,
+      },
+    ),
+  );
+
+  Request.netCache.cache.clear();
+
+  return resp.data;
+}
+
 // 帮助中心分类
 Future _getHelpClassifications({pageNum = 1, pageSize = 3}) async {
   final resp = await Request.dio.get(
@@ -498,6 +537,8 @@ class API {
   static final getGroups = _getGroups;
   static final getGroup = _getGroup;
   static final submitGroup = _submitGroup;
+  static final submitOrder = _submitOrder;
+  static final getOrderPaymentInfo = _getOrderPaymentInfo;
   static final getHelpClassifications = _getHelpClassifications;
   static final getHelps = _getHelps;
   static final getHelp = _getHelp;

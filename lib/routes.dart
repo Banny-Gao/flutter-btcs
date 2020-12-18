@@ -20,7 +20,13 @@ final routes = {
 
     return Helps(id: args['id'], title: args['title']);
   },
-  '/walletAddresses': (context) => WalletAddresses()
+  '/walletAddresses': (context) => WalletAddresses(),
+  // ignore: top_level_function_literal_block
+  '/orderPayment': (context) {
+    final Map<String, dynamic> args = ModalRoute.of(context).settings.arguments;
+
+    return OrderPayment(orderNumber: args['orderNumber']);
+  }
 };
 
 class GlobalRoute {
