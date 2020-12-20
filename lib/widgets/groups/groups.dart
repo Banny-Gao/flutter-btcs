@@ -12,7 +12,7 @@ import '../../util/index.dart' as Utils;
 
 import 'stickyTabBarDelegate.dart';
 import 'groupCheckOutCount.dart';
-import './orderSubmit.dart';
+import '../orders/orderSubmit.dart';
 
 class Groups extends StatefulWidget {
   Groups({Key key}) : super(key: key);
@@ -150,17 +150,22 @@ class _GroupsState extends State<Groups>
       final response = await Utils.API.getGroups(currencyId: coin.currencyId);
       final resp = Models.GroupsResponse.fromJson(response);
 
-      if (resp.code != 200) throw resp;
+      if (resp.code != 200) {
+        EasyLoading.showError(resp.message);
+        return;
+      }
 
-      setState(() {
-        tabGroups[selectedIndex] = resp.data;
+      if (mounted) {
+        setState(() {
+          tabGroups[selectedIndex] = resp.data;
 
-        timerFns.addAll(resp.data.map<Function>((group) => () {
-              setState(() {
-                group.countDownTime -= 1000;
-              });
-            }));
-      });
+          timerFns.addAll(resp.data.map<Function>((group) => () {
+                setState(() {
+                  group.countDownTime -= 1000;
+                });
+              }));
+        });
+      }
     } catch (error) {
       EasyLoading.showError(error.message);
     } finally {
@@ -285,20 +290,6 @@ class _GroupsState extends State<Groups>
     );
   }
 
-  String constructTime(int seconds) {
-    int day = seconds ~/ 3600 ~/ 24;
-    int hour = seconds ~/ 3600 % 24;
-    int minute = seconds % 3600 ~/ 60;
-    int second = seconds % 60;
-    return formatTime(day, '天') +
-        formatTime(hour, '小时', true) +
-        formatTime(minute, '分', true) +
-        formatTime(second, '秒', true);
-  }
-
-  String formatTime(int timeNum, String unit, [bool showUnit = false]) =>
-      timeNum != 0 || showUnit ? timeNum.toString() + unit : '';
-
   Widget buildGroupState(state, countDownTime) {
     TextStyle basicStyle = TextStyle(
       fontSize: gridChildHeight / 30,
@@ -319,7 +310,7 @@ class _GroupsState extends State<Groups>
       case 1:
       case 2:
         component = Text(
-          constructTime(countDownTime ~/ 1000),
+          Utils.constructTime(countDownTime ~/ 1000),
           style: activeStyle,
         );
         break;

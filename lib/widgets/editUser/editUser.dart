@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:path/path.dart' as p;
 
 import '../../scopedModels/index.dart';
@@ -208,7 +209,10 @@ class _EditUser extends State<EditUser> {
     );
     final resp = Models.ChangeUserInfoResponse.fromJson(response);
 
-    if (resp.code != 200) return;
+    if (resp.code != 200) {
+      EasyLoading.showError(resp.message);
+      return;
+    }
 
     ProfileModel.profile.user
       ..memberAvatar = _avatarUrl

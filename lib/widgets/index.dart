@@ -9,3 +9,4 @@ export 'helps/helpClassifications.dart';
 export 'helps/helps.dart';
 export 'walletAddresses/walletAddresses.dart';
 export 'orders/orderPayment.dart';
+export 'orders/orders.dart';

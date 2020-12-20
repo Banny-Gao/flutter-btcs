@@ -15,7 +15,7 @@ PaymentInfo _$PaymentInfoFromJson(Map<String, dynamic> json) {
     ..currencyName = json['currencyName'] as String
     ..lcd = json['lcd'] as String
     ..money = json['money'] as num
-    ..orderNumber = json['orderNumber'] as num
+    ..orderNumber = json['orderNumber'] as String
     ..payQr = json['payQr'] as String
     ..topAddress = json['topAddress'] as String;
 }

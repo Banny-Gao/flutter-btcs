@@ -129,7 +129,7 @@ class AppState extends State<App> {
       ),
       BottomNavigationBarItem(
         icon: Icon(
-          FontAwesomeIcons.commentDollar,
+          FontAwesomeIcons.dollarSign,
         ),
         label: '资产',
       ),

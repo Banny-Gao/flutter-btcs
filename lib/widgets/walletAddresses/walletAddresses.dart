@@ -93,7 +93,7 @@ class _WalletAddresses extends State<WalletAddresses> {
               child: Text(
                 walletAddresses.length == 0
                     ? "暂无数据"
-                    : walletAddresses.length * 80 >
+                    : walletAddresses.length * 120 >
                             MediaQuery.of(context).size.height
                         ? "没有更多了"
                         : '',

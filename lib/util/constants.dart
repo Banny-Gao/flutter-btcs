@@ -11,6 +11,15 @@ class Tips {
 }
 
 List AuthStates = ['未认证', '待审核', '审核拒绝', '已认证'];
+
 List PaymentPasswordStates = ['未设置', '已设置'];
 
 List GroupState = ['距拼团开始: ', '距拼团结束: ', '拼团结束', '已售空'];
+
+List OrdersStatus = ['待支付', '支付成功', '已取消', '已完成', '审核中'];
+
+List RobotStatus = ['关机中', '正在挖矿'];
+
+List CauseStatus = ['个人取消', '订单超时', '支付失败'];
+
+List EnergyStatus = ['已欠费', '正常'];

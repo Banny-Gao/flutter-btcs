@@ -20,28 +20,36 @@ final getBaseRequest = () => Dio(BaseOptions(
 class RequestInterceptor extends LogInterceptor {
   RequestInterceptor() : super(requestBody: true, responseBody: true);
 
-  bool _isLoading = false;
-  bool useResponseInterceptor;
+  Map<String, dynamic> extraOptions = {};
 
   @override
   Future onRequest(dynamic options) {
     // 设置用户token（可能为null，代表未登录）
     options.headers['X-Token'] = ProfileModel.profile.token;
     final extra = RequestExtraOptions.fromJson(options.extra);
-
-    if (extra.showLoading != null) {
-      _isLoading = true;
-      EasyLoading.show();
-    }
-    useResponseInterceptor = extra.useResponseInterceptor != null
+    final bool loading = extra.showLoading != null ? extra.showLoading : false;
+    final bool useResponseInterceptor = extra.useResponseInterceptor != null
         ? extra.useResponseInterceptor
         : true;
+
+    extraOptions['${options.uri}'] = {
+      'loading': loading,
+      'useResponseInterceptor': useResponseInterceptor,
+    };
+
+    if (loading) EasyLoading.show();
+
     return super.onRequest(options);
   }
 
   @override
   Future onResponse(dynamic response) {
-    if (_isLoading) EasyLoading.dismiss();
+    final bool loading = extraOptions['${response.request.uri}']['loading'];
+    final bool useResponseInterceptor =
+        extraOptions['${response.request.uri}']['useResponseInterceptor'];
+
+    if (loading) EasyLoading.dismiss();
+
     if (useResponseInterceptor) {
       final resp = ResponseBasic.fromJson(response.data);
       final context = GlobalRoute.navigatorKey.currentContext;

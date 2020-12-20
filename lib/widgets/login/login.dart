@@ -755,7 +755,9 @@ class _LoginPageState extends State<Login> with SingleTickerProviderStateMixin {
 
     await model.toggleLogStatus(isLogin,
         token: resp.data?.token, phone: resp.data?.phone);
-
-    Navigator.of(context).pushReplacementNamed('/');
+    if (Navigator.of(context).canPop())
+      Navigator.of(context).pop();
+    else
+      Navigator.of(context).pushReplacementNamed('/');
   }
 }

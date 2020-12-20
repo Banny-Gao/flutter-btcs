@@ -26,7 +26,8 @@ final routes = {
     final Map<String, dynamic> args = ModalRoute.of(context).settings.arguments;
 
     return OrderPayment(orderNumber: args['orderNumber']);
-  }
+  },
+  '/orders': (context) => Orders(),
 };
 
 class GlobalRoute {

@@ -13,7 +13,7 @@ class PaymentInfo {
     String currencyName;
     String lcd;
     num money;
-    num orderNumber;
+    String orderNumber;
     String payQr;
     String topAddress;
     

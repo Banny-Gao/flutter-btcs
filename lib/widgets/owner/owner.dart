@@ -19,6 +19,12 @@ class _OwnerState extends State<Owner> with AutomaticKeepAliveClientMixin {
 
   List tabs = [
     {
+      'title': '我的订单',
+      'key': 'orders',
+      'path': '/orders',
+      'icon': FontAwesomeIcons.receipt,
+    },
+    {
       'title': '实名认证',
       'key': 'auth',
       'path': '/auth',
@@ -149,7 +155,6 @@ class _OwnerState extends State<Owner> with AutomaticKeepAliveClientMixin {
           SliverFixedExtentList(
             itemExtent: 60.0,
             delegate: SliverChildBuilderDelegate((context, index) {
-              // String title = titles[index];
               return _buildTab(index);
             }, childCount: tabs.length),
           ),

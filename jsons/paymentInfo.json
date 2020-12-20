@@ -6,7 +6,7 @@
   "currencyName": "",
   "lcd": "",
   "money": 0.0,
-  "orderNumber": 0,
+  "orderNumber": "",
   "payQr": "",
   "topAddress": ""
 }

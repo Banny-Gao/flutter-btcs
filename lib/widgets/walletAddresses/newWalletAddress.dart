@@ -175,7 +175,6 @@ class _NewWalletAddress extends State<NewWalletAddress> {
                         data: walletAddress,
                         version: QrVersions.auto,
                         size: 200.0,
-                        foregroundColor: Theme.of(context).primaryColorLight,
                       ),
                     )
                   : Container(),
@@ -276,7 +275,10 @@ class _NewWalletAddress extends State<NewWalletAddress> {
       resp = Models.AddWalletAddressesResponse.fromJson(response);
     }
 
-    if (resp.code != 200) return;
+    if (resp.code != 200) {
+      EasyLoading.showError(resp.message);
+      return;
+    }
 
     widget.refreshWalletAddresses();
     Navigator.of(context).pop();

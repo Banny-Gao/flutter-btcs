@@ -223,6 +223,46 @@ Future _submitOrder({id, number}) async {
   return resp.data;
 }
 
+// 取消订单
+Future _cancelOrder({orderNumber}) async {
+  final resp = await Request.dio.get(
+    '/front/group/cancel',
+    queryParameters: {
+      'orderNumber': orderNumber,
+    },
+    options: Options(
+      extra: {
+        'showLoading': true,
+        'useResponseInterceptor': false,
+      },
+    ),
+  );
+
+  Request.netCache.cache.clear();
+
+  return resp.data;
+}
+
+// 确认支付
+Future _confirmOrderPayed({orderNumber}) async {
+  final resp = await Request.dio.get(
+    '/front/group/pay',
+    queryParameters: {
+      'orderNumber': orderNumber,
+    },
+    options: Options(
+      extra: {
+        'showLoading': true,
+        'useResponseInterceptor': false,
+      },
+    ),
+  );
+
+  Request.netCache.cache.clear();
+
+  return resp.data;
+}
+
 // 获取支付信息
 Future _getOrderPaymentInfo({@required orderNumber}) async {
   final resp = await Request.dio.get(
@@ -238,6 +278,19 @@ Future _getOrderPaymentInfo({@required orderNumber}) async {
   );
 
   Request.netCache.cache.clear();
+
+  return resp.data;
+}
+
+// 获取订单列表
+Future _getOrders({pageNum = 1, pageSize = 3}) async {
+  final resp = await Request.dio.get(
+    '/front/order/list',
+    queryParameters: {
+      'pageNum': pageNum,
+      'pageSize': pageSize,
+    },
+  );
 
   return resp.data;
 }
@@ -538,7 +591,10 @@ class API {
   static final getGroup = _getGroup;
   static final submitGroup = _submitGroup;
   static final submitOrder = _submitOrder;
+  static final cancelOrder = _cancelOrder;
+  static final confirmOrderPayed = _confirmOrderPayed;
   static final getOrderPaymentInfo = _getOrderPaymentInfo;
+  static final getOrders = _getOrders;
   static final getHelpClassifications = _getHelpClassifications;
   static final getHelps = _getHelps;
   static final getHelp = _getHelp;
