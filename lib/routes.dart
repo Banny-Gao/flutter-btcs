@@ -28,6 +28,12 @@ final routes = {
     return OrderPayment(orderNumber: args['orderNumber']);
   },
   '/orders': (context) => Orders(),
+  // ignore: top_level_function_literal_block
+  '/order': (context) {
+    final Map<String, dynamic> args = ModalRoute.of(context).settings.arguments;
+
+    return Order(orderNumber: args['orderNumber']);
+  },
 };
 
 class GlobalRoute {

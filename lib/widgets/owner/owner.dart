@@ -109,44 +109,41 @@ class _OwnerState extends State<Owner> with AutomaticKeepAliveClientMixin {
             ],
             flexibleSpace: FlexibleSpaceBar(
               stretchModes: [StretchMode.blurBackground],
-              background: Card(
-                shadowColor: Colors.black54,
-                child: Container(
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      begin: Alignment.topCenter,
-                      end: Alignment.bottomCenter,
-                      colors: [
-                        Common.Colors.blueGradientStart,
-                        Common.Colors.blueGradientEnd,
-                      ],
-                    ),
+              background: Container(
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors: [
+                      Common.Colors.blueGradientStart,
+                      Common.Colors.blueGradientEnd,
+                    ],
                   ),
-                  child: InkWell(
-                    highlightColor: Colors.white24,
-                    onTap: () {
-                      Navigator.of(context).pushNamed('/editUser');
-                    },
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        _buildAvatar(),
-                        user.inviteCode != null
-                            ? Padding(
-                                padding: EdgeInsets.only(left: 20.0, top: 16.0),
-                                child: Text(
-                                  '邀请码:    ${user.inviteCode}',
-                                  style: TextStyle(
-                                    color: Theme.of(context).hintColor,
-                                    fontWeight: FontWeight.w500,
-                                    fontSize: 16.0,
-                                  ),
+                ),
+                child: InkWell(
+                  highlightColor: Colors.white24,
+                  onTap: () {
+                    Navigator.of(context).pushNamed('/editUser');
+                  },
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      _buildAvatar(),
+                      user.inviteCode != null
+                          ? Padding(
+                              padding: EdgeInsets.only(left: 20.0, top: 16.0),
+                              child: Text(
+                                '邀请码:    ${user.inviteCode}',
+                                style: TextStyle(
+                                  color: Theme.of(context).hintColor,
+                                  fontWeight: FontWeight.w500,
+                                  fontSize: 16.0,
                                 ),
-                              )
-                            : Container(),
-                      ],
-                    ),
+                              ),
+                            )
+                          : Container(),
+                    ],
                   ),
                 ),
               ),

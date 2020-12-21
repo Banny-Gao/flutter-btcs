@@ -3,11 +3,11 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:scoped_model/scoped_model.dart';
 
 import '../../models/index.dart' as Models;
 import '../../util/index.dart' as Utils;
-import '../../common/index.dart' as Common;
+
+import 'order.dart';
 
 class Orders extends StatefulWidget {
   Orders({Key key}) : super(key: key);
@@ -56,7 +56,7 @@ class _Orders extends State<Orders> {
         },
         child: ListView.custom(
           controller: _scrollController,
-          itemExtent: 220.0,
+          itemExtent: 230.0,
           childrenDelegate: SliverChildBuilderDelegate(
             (BuildContext context, index) => buildListItem(index),
             childCount: orders.length + 1,
@@ -311,52 +311,53 @@ class _Orders extends State<Orders> {
             Text(
               '${order.buyNumber} / ${order.money} ${order.currencyName}',
               style: TextStyle(
-                color: Colors.red[400],
+                color: Colors.black87,
               ),
             ),
           ],
         ),
       ),
       Padding(
-        padding: EdgeInsets.only(top: 4.0),
+        padding: EdgeInsets.only(top: 10.0),
         child: Row(
           children: [
             Expanded(
-              child: Container(),
+              child: order.status == 1 && order.energyStatus == 0
+                  ? RaisedButton(
+                      color: Colors.red[400],
+                      padding: EdgeInsets.symmetric(
+                        vertical: 4.0,
+                        horizontal: 6.0,
+                      ),
+                      child: Text(
+                        "去缴费",
+                        style: TextStyle(
+                          color: Colors.white,
+                        ),
+                      ),
+                      onPressed: () {
+                        showPopUpEectricOrder(order);
+                      },
+                    )
+                  : OutlineButton(
+                      borderSide: BorderSide(
+                        color: Colors.black54,
+                      ),
+                      padding: EdgeInsets.symmetric(
+                        vertical: 4.0,
+                        horizontal: 6.0,
+                      ),
+                      child: Text(
+                        "查看订单",
+                        style: TextStyle(
+                          color: Colors.black54,
+                        ),
+                      ),
+                      onPressed: () {
+                        navigateToOrder(order);
+                      },
+                    ),
             ),
-            order.status == 1 && order.energyStatus == 0
-                ? RaisedButton(
-                    color: Colors.red[400],
-                    padding: EdgeInsets.symmetric(
-                      vertical: 4.0,
-                      horizontal: 6.0,
-                    ),
-                    child: Text(
-                      "去缴费",
-                      style: TextStyle(
-                        color: Colors.white,
-                      ),
-                    ),
-                    onPressed: () {
-                      showPopUpEectricOrder(order);
-                    },
-                  )
-                : RaisedButton(
-                    color: Theme.of(context).primaryColor,
-                    padding: EdgeInsets.symmetric(
-                      vertical: 4.0,
-                      horizontal: 6.0,
-                    ),
-                    child: Text(
-                      "查看订单",
-                      style: TextStyle(
-                        color: Colors.white,
-                      ),
-                    ),
-                    onPressed: () {
-                      navigateToOrder(order);
-                    },
-                  ),
           ],
         ),
       )
@@ -397,16 +398,23 @@ class _Orders extends State<Orders> {
   }
 
   showPopUpEectricOrder(Models.Orders order) {
-    // Navigator.of(context).push(MaterialPageRoute(
-    //   fullscreenDialog: true,
-    //   builder: (context) => NewWalletAddress(
-    //       refreshorders: _refreshOrders,
-    //       currencyId: walletAddress?.currencyId,
-    //       address: walletAddress?.address,
-    //       addressId: walletAddress?.id,
-    //       memberId: walletAddress?.memberId),
-    // ));
+    // Navigator.of(context).push(
+    //   MaterialPageRoute(
+    //     fullscreenDialog: true,
+    //     builder: (context) => NewWalletAddress(
+    //         refreshorders: _refreshOrders,
+    //         currencyId: walletAddress?.currencyId,
+    //         address: walletAddress?.address,
+    //         addressId: walletAddress?.id,
+    //         memberId: walletAddress?.memberId),
+    //   ),
+    // );
   }
 
-  navigateToOrder(Models.Orders order) {}
+  navigateToOrder(Models.Orders order) {
+    Navigator.of(context).pushNamed(
+      '/order',
+      arguments: {'orderNumber': order.orderNumber},
+    );
+  }
 }

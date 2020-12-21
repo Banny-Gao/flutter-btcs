@@ -295,6 +295,33 @@ Future _getOrders({pageNum = 1, pageSize = 3}) async {
   return resp.data;
 }
 
+// 获取订单详情
+Future _getOrder({@required orderNumber}) async {
+  final resp = await Request.dio.get(
+    '/front/order/detail',
+    queryParameters: {
+      'orderNumber': orderNumber,
+    },
+  );
+
+  return resp.data;
+}
+
+// 获取订单收益
+Future _getOrderEarnings(
+    {@required orderNumber, pageSize = 1, pageNum = 10}) async {
+  final resp = await Request.dio.get(
+    '/front/order/earnings',
+    queryParameters: {
+      'orderNumber': orderNumber,
+      'pageSize': pageSize,
+      'pageNum': pageNum,
+    },
+  );
+
+  return resp.data;
+}
+
 // 帮助中心分类
 Future _getHelpClassifications({pageNum = 1, pageSize = 3}) async {
   final resp = await Request.dio.get(
@@ -595,6 +622,8 @@ class API {
   static final confirmOrderPayed = _confirmOrderPayed;
   static final getOrderPaymentInfo = _getOrderPaymentInfo;
   static final getOrders = _getOrders;
+  static final getOrder = _getOrder;
+  static final getOrderEarnings = _getOrderEarnings;
   static final getHelpClassifications = _getHelpClassifications;
   static final getHelps = _getHelps;
   static final getHelp = _getHelp;
