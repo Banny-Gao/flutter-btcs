@@ -42,3 +42,5 @@ class GlobalRoute {
   NavigatorState get navigatorState => GlobalRoute.navigatorKey.currentState;
   BuildContext get currentContext => GlobalRoute.navigatorKey.currentContext;
 }
+
+RouteObserver<PageRoute> routeObserver = RouteObserver<PageRoute>();

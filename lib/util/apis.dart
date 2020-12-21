@@ -292,6 +292,8 @@ Future _getOrders({pageNum = 1, pageSize = 3}) async {
     },
   );
 
+  Request.netCache.cache.clear();
+
   return resp.data;
 }
 
@@ -318,6 +320,80 @@ Future _getOrderEarnings(
       'pageNum': pageNum,
     },
   );
+
+  return resp.data;
+}
+
+// 获取缴费信息
+Future _getElectricOrder({@required orderNumber}) async {
+  final resp = await Request.dio.get(
+    '/front/electricOrder/add',
+    queryParameters: {
+      'orderNumber': orderNumber,
+    },
+    options: Options(
+      extra: {
+        'showLoading': true,
+      },
+    ),
+  );
+
+  Request.netCache.cache.clear();
+
+  return resp.data;
+}
+
+// 确认支付缴费
+Future _confirmElectricOrderPayed({electricOrderNumber}) async {
+  final resp = await Request.dio.get(
+    '/front/electricOrder/pay',
+    queryParameters: {
+      'electricOrderNumber': electricOrderNumber,
+    },
+    options: Options(
+      extra: {
+        'showLoading': true,
+        'useResponseInterceptor': false,
+      },
+    ),
+  );
+
+  Request.netCache.cache.clear();
+
+  return resp.data;
+}
+
+// 取消缴费订单缴费
+Future _cancelElectricOrderPayed({electricOrderNumber}) async {
+  final resp = await Request.dio.get(
+    '/front/electricOrder/cancel',
+    queryParameters: {
+      'electricOrderNumber': electricOrderNumber,
+    },
+    options: Options(
+      extra: {
+        'showLoading': true,
+        'useResponseInterceptor': false,
+      },
+    ),
+  );
+
+  Request.netCache.cache.clear();
+
+  return resp.data;
+}
+
+// 获取订单列表
+Future _getElectrics({pageNum = 1, pageSize = 10}) async {
+  final resp = await Request.dio.get(
+    '/front/electricOrder/list',
+    queryParameters: {
+      'pageNum': pageNum,
+      'pageSize': pageSize,
+    },
+  );
+
+  Request.netCache.cache.clear();
 
   return resp.data;
 }
@@ -624,6 +700,10 @@ class API {
   static final getOrders = _getOrders;
   static final getOrder = _getOrder;
   static final getOrderEarnings = _getOrderEarnings;
+  static final getElectricOrder = _getElectricOrder;
+  static final confirmElectricOrderPayed = _confirmElectricOrderPayed;
+  static final cancelElectricOrderPayed = _cancelElectricOrderPayed;
+  static final getElectrics = _getElectrics;
   static final getHelpClassifications = _getHelpClassifications;
   static final getHelps = _getHelps;
   static final getHelp = _getHelp;

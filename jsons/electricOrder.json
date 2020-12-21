@@ -1,0 +1,11 @@
+{
+  "createTime": "",
+  "currencyIconPath": "",
+  "currencyName": "",
+  "electricOrderNumber": "",
+  "money": 0,
+  "orderStatus": 0,
+  "payAddress": "",
+  "payQr": "",
+  "currencyId": 0
+}

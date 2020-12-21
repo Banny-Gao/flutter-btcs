@@ -23,6 +23,7 @@ class OreApp extends StatelessWidget {
           routes: routes,
           builder: EasyLoading.init(),
           navigatorKey: GlobalRoute.navigatorKey,
+          navigatorObservers: [routeObserver],
         );
       },
     );

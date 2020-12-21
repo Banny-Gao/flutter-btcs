@@ -4,10 +4,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
+import '../../routes.dart';
 import '../../models/index.dart' as Models;
 import '../../util/index.dart' as Utils;
 
-import 'order.dart';
+import 'electricOrder.dart';
+import 'electrics.dart';
 
 class Orders extends StatefulWidget {
   Orders({Key key}) : super(key: key);
@@ -16,7 +18,7 @@ class Orders extends StatefulWidget {
   _Orders createState() => _Orders();
 }
 
-class _Orders extends State<Orders> {
+class _Orders extends State<Orders> with RouteAware {
   final num pageSize = 10;
   num pageNum = 1;
   bool isCompleted = false;
@@ -45,10 +47,40 @@ class _Orders extends State<Orders> {
   }
 
   @override
+  void dispose() {
+    EasyLoading.dismiss();
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    routeObserver.subscribe(this, ModalRoute.of(context));
+  }
+
+  @override
+  void didPopNext() {
+    _refreshOrders();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text('我的订单'),
+        actions: [
+          Padding(
+            padding: EdgeInsets.only(right: 20.0),
+            child: Align(
+              alignment: Alignment.centerRight,
+              child: GestureDetector(
+                onTap: showElectrics,
+                child: Text('缴费记录', style: TextStyle()),
+              ),
+            ),
+          )
+        ],
       ),
       body: RefreshIndicator(
         onRefresh: () async {
@@ -339,24 +371,44 @@ class _Orders extends State<Orders> {
                         showPopUpEectricOrder(order);
                       },
                     )
-                  : OutlineButton(
-                      borderSide: BorderSide(
-                        color: Colors.black54,
-                      ),
-                      padding: EdgeInsets.symmetric(
-                        vertical: 4.0,
-                        horizontal: 6.0,
-                      ),
-                      child: Text(
-                        "查看订单",
-                        style: TextStyle(
-                          color: Colors.black54,
+                  : order.status == 0
+                      ? RaisedButton(
+                          color: Colors.red[400],
+                          padding: EdgeInsets.symmetric(
+                            vertical: 4.0,
+                            horizontal: 6.0,
+                          ),
+                          child: Text(
+                            "去支付",
+                            style: TextStyle(
+                              color: Colors.white,
+                            ),
+                          ),
+                          onPressed: () {
+                            Navigator.of(context)
+                                .pushNamed('/orderPayment', arguments: {
+                              'orderNumber': order.orderNumber,
+                            });
+                          },
+                        )
+                      : OutlineButton(
+                          borderSide: BorderSide(
+                            color: Colors.black54,
+                          ),
+                          padding: EdgeInsets.symmetric(
+                            vertical: 4.0,
+                            horizontal: 6.0,
+                          ),
+                          child: Text(
+                            "查看订单",
+                            style: TextStyle(
+                              color: Colors.black54,
+                            ),
+                          ),
+                          onPressed: () {
+                            navigateToOrder(order);
+                          },
                         ),
-                      ),
-                      onPressed: () {
-                        navigateToOrder(order);
-                      },
-                    ),
             ),
           ],
         ),
@@ -398,23 +450,27 @@ class _Orders extends State<Orders> {
   }
 
   showPopUpEectricOrder(Models.Orders order) {
-    // Navigator.of(context).push(
-    //   MaterialPageRoute(
-    //     fullscreenDialog: true,
-    //     builder: (context) => NewWalletAddress(
-    //         refreshorders: _refreshOrders,
-    //         currencyId: walletAddress?.currencyId,
-    //         address: walletAddress?.address,
-    //         addressId: walletAddress?.id,
-    //         memberId: walletAddress?.memberId),
-    //   ),
-    // );
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        fullscreenDialog: true,
+        builder: (context) => ElectricOrder(orderNumber: order.orderNumber),
+      ),
+    );
   }
 
   navigateToOrder(Models.Orders order) {
     Navigator.of(context).pushNamed(
       '/order',
       arguments: {'orderNumber': order.orderNumber},
+    );
+  }
+
+  showElectrics() {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        fullscreenDialog: true,
+        builder: (context) => Electrics(),
+      ),
     );
   }
 }

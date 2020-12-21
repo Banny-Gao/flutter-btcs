@@ -6,6 +6,7 @@ import 'package:scoped_model/scoped_model.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
+import '../../routes.dart';
 import '../../scopedModels/index.dart';
 import '../../models/index.dart' as Models;
 import '../../util/index.dart' as Utils;
@@ -22,7 +23,10 @@ class Groups extends StatefulWidget {
 }
 
 class _GroupsState extends State<Groups>
-    with AutomaticKeepAliveClientMixin, SingleTickerProviderStateMixin {
+    with
+        AutomaticKeepAliveClientMixin,
+        SingleTickerProviderStateMixin,
+        RouteAware {
   final num pageSize = 10;
 
   List<Models.Coin> tabs = AppModel.coinList;
@@ -72,6 +76,27 @@ class _GroupsState extends State<Groups>
     _timer = Timer.periodic(Duration(seconds: 1), call);
 
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _tabController.dispose();
+
+    if (_timer != null) {
+      _timer.cancel();
+    }
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    routeObserver.subscribe(this, ModalRoute.of(context));
+  }
+
+  @override
+  void didPopNext() {
+    _getData();
   }
 
   @override
@@ -130,16 +155,6 @@ class _GroupsState extends State<Groups>
         ),
       );
     });
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-    _tabController.dispose();
-
-    if (_timer != null) {
-      _timer.cancel();
-    }
   }
 
   _getData() async {
@@ -400,7 +415,8 @@ class _GroupsState extends State<Groups>
   }
 
   Widget buildSold(Models.Group group) {
-    final double soldPercent = group.sellPlatform / group.platformTotal;
+    final double soldPercent = double.parse(
+        (group.sellPlatform / group.platformTotal).toStringAsFixed(2));
 
     return Padding(
       padding: EdgeInsets.fromLTRB(10.0, 0, 10.0, gridChildHeight / 35),
@@ -416,7 +432,7 @@ class _GroupsState extends State<Groups>
                 Padding(
                   padding: EdgeInsets.only(left: 10.0),
                   child: Text(
-                    '已售${soldPercent}%',
+                    '已售${soldPercent * 100}%',
                     style: TextStyle(
                       color: Colors.black54,
                       fontSize: gridChildHeight / 35,
