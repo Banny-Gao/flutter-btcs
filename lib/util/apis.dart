@@ -325,11 +325,30 @@ Future _getOrderEarnings(
 }
 
 // 获取缴费信息
-Future _getElectricOrder({@required orderNumber}) async {
+Future _addElectricOrder({@required orderNumber}) async {
   final resp = await Request.dio.get(
     '/front/electricOrder/add',
     queryParameters: {
       'orderNumber': orderNumber,
+    },
+    options: Options(
+      extra: {
+        'showLoading': true,
+      },
+    ),
+  );
+
+  Request.netCache.cache.clear();
+
+  return resp.data;
+}
+
+// 获取缴费信息
+Future _getElectricOrder({@required electricOrderNumber}) async {
+  final resp = await Request.dio.get(
+    '/front/electricOrder/detail',
+    queryParameters: {
+      'electricOrderNumber': electricOrderNumber,
     },
     options: Options(
       extra: {
@@ -680,6 +699,37 @@ Future _upload(path, fileName) async {
   return resp.data;
 }
 
+Future _getAssets({@required currencyId}) async {
+  final resp = await Request.dio.get(
+    '/front/assets/list',
+    queryParameters: {
+      'currencyId': currencyId,
+    },
+    options: Options(extra: {
+      'useResponseInterceptor': false,
+    }),
+  );
+
+  Request.netCache.cache.clear();
+
+  return resp.data;
+}
+
+// 提现申请列表
+Future _getCapitalLogs(
+    {@required currencyId, pageNum = 1, pageSize = 3}) async {
+  final resp = await Request.dio.get(
+    '/front/assets/capitalLogList',
+    queryParameters: {
+      'pageNum': pageNum,
+      'pageSize': pageSize,
+      'currencyId': currencyId,
+    },
+  );
+
+  return resp.data;
+}
+
 class API {
   static final getCode = _getCode;
   static final signUp = _signUp;
@@ -700,10 +750,11 @@ class API {
   static final getOrders = _getOrders;
   static final getOrder = _getOrder;
   static final getOrderEarnings = _getOrderEarnings;
-  static final getElectricOrder = _getElectricOrder;
+  static final addElectricOrder = _addElectricOrder;
   static final confirmElectricOrderPayed = _confirmElectricOrderPayed;
   static final cancelElectricOrderPayed = _cancelElectricOrderPayed;
   static final getElectrics = _getElectrics;
+  static final getElectricOrder = _getElectricOrder;
   static final getHelpClassifications = _getHelpClassifications;
   static final getHelps = _getHelps;
   static final getHelp = _getHelp;
@@ -722,4 +773,6 @@ class API {
   static final addWithdrawAudit = _addWithdrawAudit;
   static final getDeal = _getDeal;
   static final upload = _upload;
+  static final getAssets = _getAssets;
+  static final getCapitalLogs = _getCapitalLogs;
 }

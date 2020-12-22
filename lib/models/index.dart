@@ -1,8 +1,13 @@
 export 'addWalletAddressesResponse.dart' ; 
+export 'asset.dart' ; 
+export 'assetsResponse.dart' ; 
 export 'bulletins.dart' ; 
 export 'bulletinsResponse.dart' ; 
 export 'bulletinsResponseData.dart' ; 
 export 'cacheConfig.dart' ; 
+export 'capitalLog.dart' ; 
+export 'capitalLogsResponse.dart' ; 
+export 'capitalLogsResponseData.dart' ; 
 export 'changeUserInfoResponse.dart' ; 
 export 'coin.dart' ; 
 export 'coinsResponse.dart' ; 

@@ -16,7 +16,8 @@ ElectricOrder _$ElectricOrderFromJson(Map<String, dynamic> json) {
     ..orderStatus = json['orderStatus'] as num
     ..payAddress = json['payAddress'] as String
     ..payQr = json['payQr'] as String
-    ..currencyId = json['currencyId'] as num;
+    ..currencyId = json['currencyId'] as num
+    ..orderNumber = json['orderNumber'] as String;
 }
 
 Map<String, dynamic> _$ElectricOrderToJson(ElectricOrder instance) =>
@@ -29,5 +30,6 @@ Map<String, dynamic> _$ElectricOrderToJson(ElectricOrder instance) =>
       'orderStatus': instance.orderStatus,
       'payAddress': instance.payAddress,
       'payQr': instance.payQr,
-      'currencyId': instance.currencyId
+      'currencyId': instance.currencyId,
+      'orderNumber': instance.orderNumber
     };

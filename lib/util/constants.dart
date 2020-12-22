@@ -23,3 +23,5 @@ List RobotStatus = ['关机中', '正在挖矿'];
 List CauseStatus = ['个人取消', '订单超时', '支付失败'];
 
 List EnergyStatus = ['已欠费', '正常'];
+
+List ElectricOrderStatus = ['待支付', '待审核', '已取消', '支付成功'];

@@ -7,5 +7,6 @@
   "orderStatus": 0,
   "payAddress": "",
   "payQr": "",
-  "currencyId": 0
+  "currencyId": 0,
+  "orderNumber": ""
 }

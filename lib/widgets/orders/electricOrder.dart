@@ -11,8 +11,13 @@ import '../../util/index.dart' as Utils;
 // ignore: must_be_immutable
 class ElectricOrder extends StatefulWidget {
   String orderNumber;
+  String electricOrderNumber;
 
-  ElectricOrder({Key key, @required this.orderNumber}) : super(key: key);
+  ElectricOrder({
+    Key key,
+    this.orderNumber,
+    this.electricOrderNumber,
+  }) : super(key: key);
 
   @override
   _ElectricOrder createState() => _ElectricOrder();
@@ -72,13 +77,15 @@ class _ElectricOrder extends State<ElectricOrder> {
                   ),
                   Padding(
                     padding: EdgeInsets.only(left: 10.0),
-                    child: Text(
-                      '${paymentInfo.currencyName}支付',
-                      style: TextStyle(
-                        fontSize: 16.0,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
+                    child: paymentInfo.currencyName != null
+                        ? Text(
+                            '${paymentInfo.currencyName}支付',
+                            style: TextStyle(
+                              fontSize: 16.0,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          )
+                        : Container(),
                   ),
                   Expanded(
                     child: paymentInfo.money != null
@@ -98,108 +105,115 @@ class _ElectricOrder extends State<ElectricOrder> {
             Divider(height: 0),
             Padding(
               padding: EdgeInsets.only(top: 20.0, bottom: 20.0),
-              child: Row(
-                children: [
-                  Padding(
-                    padding: EdgeInsets.only(right: 10.0),
-                    child: Icon(
-                      FontAwesomeIcons.clock,
-                      color: Colors.primaries[3 % Colors.primaries.length],
-                      size: 20.0,
-                    ),
-                  ),
-                  Text(
-                    '创建时间',
-                    style: TextStyle(
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                  Expanded(
-                    child: paymentInfo.createTime != null
-                        ? Text(
+              child: paymentInfo.createTime != null
+                  ? Row(
+                      children: [
+                        Padding(
+                          padding: EdgeInsets.only(right: 10.0),
+                          child: Icon(
+                            FontAwesomeIcons.clock,
+                            color:
+                                Colors.primaries[3 % Colors.primaries.length],
+                            size: 20.0,
+                          ),
+                        ),
+                        Text(
+                          '创建时间',
+                          style: TextStyle(
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                        Expanded(
+                          child: Text(
                             '${paymentInfo.createTime}',
                             textAlign: TextAlign.right,
-                          )
-                        : Container(),
-                  ),
-                ],
-              ),
+                          ),
+                        ),
+                      ],
+                    )
+                  : Container(),
             ),
             Divider(height: 0),
             Padding(
               padding: EdgeInsets.only(top: 20.0, bottom: 20.0),
-              child: Row(
-                children: [
-                  Padding(
-                    padding: EdgeInsets.only(right: 10.0),
-                    child: Icon(
-                      FontAwesomeIcons.receipt,
-                      color: Colors.primaries[1 % Colors.primaries.length],
-                      size: 20.0,
-                    ),
-                  ),
-                  Text(
-                    '缴费订单编号',
-                    style: TextStyle(
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                  Expanded(
-                    child: paymentInfo.electricOrderNumber != null
-                        ? Text(
-                            '${paymentInfo.electricOrderNumber}',
-                            textAlign: TextAlign.right,
-                          )
-                        : Container(),
-                  ),
-                  Padding(
-                    padding: EdgeInsets.only(left: 10.0),
-                    child: Icon(
-                      FontAwesomeIcons.copy,
-                      size: 16.0,
-                      color: Colors.black45,
-                    ),
-                  ),
-                ],
-              ),
+              child: paymentInfo.electricOrderNumber != null
+                  ? Row(
+                      children: [
+                        Padding(
+                          padding: EdgeInsets.only(right: 10.0),
+                          child: Icon(
+                            FontAwesomeIcons.receipt,
+                            color:
+                                Colors.primaries[1 % Colors.primaries.length],
+                            size: 20.0,
+                          ),
+                        ),
+                        Text(
+                          '缴费订单编号',
+                          style: TextStyle(
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                        Expanded(
+                          child: paymentInfo.electricOrderNumber != null
+                              ? Text(
+                                  '${paymentInfo.electricOrderNumber}',
+                                  textAlign: TextAlign.right,
+                                )
+                              : Container(),
+                        ),
+                        Padding(
+                          padding: EdgeInsets.only(left: 10.0),
+                          child: Icon(
+                            FontAwesomeIcons.copy,
+                            size: 16.0,
+                            color: Colors.black45,
+                          ),
+                        ),
+                      ],
+                    )
+                  : Container(),
             ),
             Divider(height: 0),
             Padding(
               padding: EdgeInsets.only(top: 20.0, bottom: 20.0),
-              child: Row(
-                children: [
-                  Padding(
-                    padding: EdgeInsets.only(right: 10.0),
-                    child: Icon(
-                      FontAwesomeIcons.mapMarkerAlt,
-                      color: Colors.primaries[4 % Colors.primaries.length],
-                      size: 20.0,
-                    ),
-                  ),
-                  Text(
-                    '收款地址',
-                    style: TextStyle(
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                  Expanded(
-                    child: paymentInfo.payAddress != null
-                        ? Text(
-                            '${paymentInfo.payAddress}',
-                            textAlign: TextAlign.right,
-                          )
-                        : Container(),
-                  ),
-                  Padding(
-                    padding: EdgeInsets.only(left: 10.0),
-                    child: Icon(
-                      FontAwesomeIcons.copy,
-                      size: 16.0,
-                      color: Colors.black45,
-                    ),
-                  ),
-                ],
-              ),
+              child: paymentInfo.payAddress != null
+                  ? Row(
+                      children: [
+                        Padding(
+                          padding: EdgeInsets.only(right: 10.0),
+                          child: Icon(
+                            FontAwesomeIcons.mapMarkerAlt,
+                            color:
+                                Colors.primaries[4 % Colors.primaries.length],
+                            size: 20.0,
+                          ),
+                        ),
+                        Text(
+                          '收款地址',
+                          style: TextStyle(
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                        Expanded(
+                          child: paymentInfo.payAddress != null
+                              ? Text(
+                                  '${paymentInfo.payAddress}',
+                                  textAlign: TextAlign.right,
+                                )
+                              : Container(),
+                        ),
+                        Padding(
+                          padding: EdgeInsets.only(left: 10.0),
+                          child: Icon(
+                            FontAwesomeIcons.copy,
+                            size: 16.0,
+                            color: Colors.black45,
+                          ),
+                        ),
+                      ],
+                    )
+                  : Container(),
             ),
             Padding(
               padding: EdgeInsets.only(top: 20.0, bottom: 20.0),
@@ -284,8 +298,10 @@ class _ElectricOrder extends State<ElectricOrder> {
   }
 
   getOrderPaymentInfo() async {
-    final response =
-        await Utils.API.getElectricOrder(orderNumber: widget.orderNumber);
+    final response = widget.electricOrderNumber != null
+        ? await Utils.API
+            .getElectricOrder(electricOrderNumber: widget.electricOrderNumber)
+        : await Utils.API.addElectricOrder(orderNumber: widget.orderNumber);
     final resp = Models.ElectricOrderResponse.fromJson(response);
 
     if (resp.code != 200) {
@@ -293,7 +309,9 @@ class _ElectricOrder extends State<ElectricOrder> {
       return;
     }
 
-    paymentInfo = resp.data;
+    setState(() {
+      paymentInfo = resp.data;
+    });
   }
 
   handlePayed() async {

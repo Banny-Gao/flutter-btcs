@@ -72,7 +72,7 @@ class _WalletAddresses extends State<WalletAddresses> {
           },
           child: ListView.custom(
             controller: _scrollController,
-            itemExtent: 120.0,
+            itemExtent: 112.0,
             childrenDelegate: SliverChildBuilderDelegate(
               (BuildContext context, index) => buildListItem(model, index),
               childCount: walletAddresses.length + 1,
@@ -107,7 +107,7 @@ class _WalletAddresses extends State<WalletAddresses> {
         _getIconPathById(model.coins, walletAddresses[index].currencyId);
 
     return Padding(
-      padding: EdgeInsets.fromLTRB(20.0, 8.0, 20.0, 8.0),
+      padding: EdgeInsets.fromLTRB(10.0, 6.0, 10.0, 6.0),
       child: Slidable(
         actionPane: SlidableStrechActionPane(),
         actionExtentRatio: 0.25,

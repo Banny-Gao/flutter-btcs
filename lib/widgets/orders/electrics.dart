@@ -10,6 +10,8 @@ import '../../scopedModels/index.dart';
 import '../../models/index.dart' as Models;
 import '../../util/index.dart' as Utils;
 
+import 'electricOrder.dart';
+
 class Electrics extends StatefulWidget {
   Electrics({Key key}) : super(key: key);
 
@@ -58,7 +60,7 @@ class _Electrics extends State<Electrics> {
           },
           child: ListView.custom(
             controller: _scrollController,
-            itemExtent: 120.0,
+            itemExtent: 185.0,
             childrenDelegate: SliverChildBuilderDelegate(
               (BuildContext context, index) => buildListItem(model, index),
               childCount: electrics.length + 1,
@@ -90,17 +92,22 @@ class _Electrics extends State<Electrics> {
     }
 
     final coin = _getCoinById(model.coins, electrics[index].currencyId);
+    final electric = electrics[index];
 
     return Padding(
-      padding: EdgeInsets.fromLTRB(20.0, 8.0, 20.0, 8.0),
+      padding: EdgeInsets.fromLTRB(10.0, 6.0, 10.0, 6.0),
       child: Slidable(
         actionPane: SlidableStrechActionPane(),
-        actionExtentRatio: 0.25,
+        actionExtentRatio: 0.20,
         child: Card(
           shadowColor: Theme.of(context).primaryColor,
           child: OverflowBox(
             child: InkWell(
-              onTap: () {},
+              onTap: electric == 0
+                  ? () {
+                      showPopUpEectricOrder(electric);
+                    }
+                  : () {},
               child: Padding(
                 padding: EdgeInsets.all(12.0),
                 child: Column(
@@ -132,7 +139,133 @@ class _Electrics extends State<Electrics> {
                                 ),
                               )
                             : Container(),
+                        Expanded(
+                          child: Text(
+                            electric.orderStatus != null
+                                ? Utils
+                                    .ElectricOrderStatus[electric.orderStatus]
+                                : '',
+                            textAlign: TextAlign.right,
+                            style: TextStyle(
+                              color: Colors.red[400],
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        ),
                       ],
+                    ),
+                    Padding(
+                      padding: EdgeInsets.only(top: 6.0),
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: Text(
+                              '订单编号',
+                              style: TextStyle(
+                                fontSize: 12.0,
+                              ),
+                            ),
+                          ),
+                          Text(
+                            '${electric.orderNumber}',
+                            style: TextStyle(
+                              color: Colors.black87,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Padding(
+                      padding: EdgeInsets.only(top: 6.0),
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: Text(
+                              '缴费订单编号',
+                              style: TextStyle(
+                                fontSize: 12.0,
+                              ),
+                            ),
+                          ),
+                          Text(
+                            '${electric.electricOrderNumber}',
+                            style: TextStyle(
+                              color: Colors.black87,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Padding(
+                      padding: EdgeInsets.only(top: 6.0),
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: Text(
+                              '创建日期',
+                              style: TextStyle(
+                                fontSize: 12.0,
+                              ),
+                            ),
+                          ),
+                          Text(
+                            '${electric.createTime}',
+                            style: TextStyle(
+                              color: Colors.black87,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Padding(
+                      padding: EdgeInsets.only(top: 6.0),
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: Text(
+                              '支付金额',
+                              style: TextStyle(
+                                fontSize: 12.0,
+                              ),
+                            ),
+                          ),
+                          Text(
+                            '${electric.money} ${coin.currencyName}',
+                            style: TextStyle(
+                              color: Colors.black87,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Padding(
+                      padding: EdgeInsets.only(top: 6.0),
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: Text(
+                              '支付地址',
+                              style: TextStyle(
+                                fontSize: 12.0,
+                              ),
+                            ),
+                          ),
+                          Text(
+                            '${electric.payAddress}',
+                            style: TextStyle(
+                              color: Colors.black87,
+                            ),
+                          ),
+                          Padding(
+                            padding: EdgeInsets.only(left: 10.0),
+                            child: Icon(
+                              FontAwesomeIcons.copy,
+                              size: 16.0,
+                              color: Colors.black45,
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ],
                 ),
@@ -140,38 +273,18 @@ class _Electrics extends State<Electrics> {
             ),
           ),
         ),
-        secondaryActions: <Widget>[
-          IconSlideAction(
-            caption: '取消订单',
-            color: Colors.red,
-            icon: FontAwesomeIcons.trashAlt,
-            onTap: () {
-              showDialog(
-                context: context,
-                builder: (context) {
-                  return AlertDialog(
-                    title: Text('提示'),
-                    content: Text('确认取消当前缴费订单吗？'),
-                    actions: <Widget>[
-                      FlatButton(
-                        child: Text('取消'),
-                        onPressed: () => Navigator.of(context).pop(),
-                      ),
-                      FlatButton(
-                        child: Text('确认'),
-                        onPressed: () {
-                          Navigator.of(context).pop();
-                          _handleCancelElectric(
-                              electrics[index].electricOrderNumber);
-                        },
-                      ),
-                    ],
-                  );
-                },
-              );
-            },
-          ),
-        ],
+        secondaryActions: electric.orderStatus == 0
+            ? [
+                IconSlideAction(
+                  caption: '取消订单',
+                  color: Colors.red,
+                  icon: FontAwesomeIcons.trashAlt,
+                  onTap: () {
+                    handleCancleOrder(electric);
+                  },
+                ),
+              ]
+            : [],
       ),
     );
   }
@@ -216,9 +329,45 @@ class _Electrics extends State<Electrics> {
     return coin;
   }
 
-  _handleCancelElectric(electricOrderNumber) async {
-    final response = await Utils.API
-        .cancelElectricOrderPayed(electricOrderNumber: electricOrderNumber);
+  showPopUpEectricOrder(Models.ElectricOrder electricOrder) {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        fullscreenDialog: true,
+        builder: (context) => ElectricOrder(
+            electricOrderNumber: electricOrder.electricOrderNumber),
+      ),
+    );
+  }
+
+  handleCancleOrder(electricOrder) async {
+    final bool isCancel = await showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text('提示'),
+          content: Text('确认取消当前缴费订单吗？'),
+          actions: <Widget>[
+            FlatButton(
+              child: Text('取消'),
+              onPressed: () {
+                Navigator.of(context).pop(false);
+              },
+            ),
+            FlatButton(
+              child: Text('确认'),
+              onPressed: () {
+                Navigator.of(context).pop(true);
+              },
+            ),
+          ],
+        );
+      },
+    );
+
+    if (!isCancel) return;
+
+    final response = await Utils.API.cancelElectricOrderPayed(
+        electricOrderNumber: electricOrder.electricOrderNumber);
     final resp = Models.NonstandardResponse.fromJson(response);
 
     if (resp.code != 200) {

@@ -11,6 +11,7 @@ import '../../util/index.dart' as Utils;
 import '../../common/index.dart' as Common;
 
 import '../data.dart';
+import 'electricOrder.dart';
 
 class Order extends StatefulWidget {
   final String orderNumber;
@@ -111,8 +112,8 @@ class _OrderState extends State<Order> with RouteAware {
   _getData() async {
     EasyLoading.show();
     try {
-      getOrder();
-      getOrderEarnings();
+      await getOrder();
+      await getOrderEarnings();
     } finally {
       EasyLoading.dismiss();
     }
@@ -479,7 +480,9 @@ class _OrderState extends State<Order> with RouteAware {
                           color: Colors.white,
                         ),
                       ),
-                      onPressed: () {},
+                      onPressed: () {
+                        showPopUpEectricOrder();
+                      },
                     )
                   : order.status == 0
                       ? RaisedButton(
@@ -503,6 +506,15 @@ class _OrderState extends State<Order> with RouteAware {
                         )
                       : Container()),
         ],
+      ),
+    );
+  }
+
+  showPopUpEectricOrder() {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        fullscreenDialog: true,
+        builder: (context) => ElectricOrder(orderNumber: order.orderNumber),
       ),
     );
   }

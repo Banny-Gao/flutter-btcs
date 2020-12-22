@@ -109,7 +109,7 @@ class AppState extends State<App> {
     return <Widget>[
       Home(),
       Groups(),
-      Earnings(),
+      Assets(),
       Owner(),
     ];
   }

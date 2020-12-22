@@ -417,8 +417,10 @@ class _Orders extends State<Orders> with RouteAware {
   }
 
   _refreshOrders() {
-    pageNum = 1;
-    orders = [];
+    setState(() {
+      pageNum = 1;
+      orders = [];
+    });
     _getData();
   }
 

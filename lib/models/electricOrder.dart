@@ -15,6 +15,7 @@ class ElectricOrder {
     String payAddress;
     String payQr;
     num currencyId;
+    String orderNumber;
     
     factory ElectricOrder.fromJson(Map<String,dynamic> json) => _$ElectricOrderFromJson(json);
     Map<String, dynamic> toJson() => _$ElectricOrderToJson(this);

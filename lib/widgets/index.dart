@@ -1,5 +1,5 @@
 export 'home/home.dart';
-export 'earnings/earnings.dart';
+export 'assets/assets.dart';
 export 'groups/groups.dart';
 export 'owner/owner.dart';
 export 'login/login.dart';
