@@ -9,6 +9,7 @@ import '../../models/index.dart' as Models;
 import '../../util/index.dart' as Utils;
 
 import 'capitalLogs.dart';
+import 'withdraw.dart';
 
 class Assets extends StatefulWidget {
   Assets({Key key}) : super(key: key);
@@ -127,7 +128,9 @@ class _Assets extends State<Assets> {
                           ? Padding(
                               padding: EdgeInsets.only(right: 10.0),
                               child: InkWell(
-                                onTap: () {},
+                                onTap: () {
+                                  _showPopUpWithdraw(asset);
+                                },
                                 child: Container(
                                   decoration: BoxDecoration(
                                     color: Colors.white38,
@@ -264,6 +267,15 @@ class _Assets extends State<Assets> {
       fullscreenDialog: true,
       builder: (context) => CapitalLogs(
         currencyId: asset.currencyId,
+      ),
+    ));
+  }
+
+  _showPopUpWithdraw(Models.Asset asset) {
+    Navigator.of(context).push(MaterialPageRoute(
+      fullscreenDialog: true,
+      builder: (context) => Withdraw(
+        asset: asset,
       ),
     ));
   }

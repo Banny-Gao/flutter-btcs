@@ -629,6 +629,23 @@ Future _deleteWalletAddress(id) async {
   return resp.data;
 }
 
+// 币种提现地址查询
+Future _getCurrencyAddress({@required currencyId}) async {
+  final resp = await Request.dio.get(
+    '/front/walletAddress/list',
+    queryParameters: {
+      'currencyId': currencyId,
+    },
+    options: Options(extra: {
+      'useResponseInterceptor': false,
+    }),
+  );
+
+  Request.netCache.cache.clear();
+
+  return resp.data;
+}
+
 // 提现申请列表
 Future _getWithdrawAudits({pageNum = 1, pageSize = 3}) async {
   final resp = await Request.dio.get(
@@ -650,7 +667,8 @@ Future _getWithdrawAudit(id) async {
 }
 
 // 提现申请
-Future _addWithdrawAudit({address, currencyId, money, serviceCharge}) async {
+Future _addWithdrawAudit(
+    {address, currencyId, money, serviceCharge, remark}) async {
   final resp = await Request.dio.get(
     '/front/withdrawAudit/detail/',
     queryParameters: {
@@ -658,6 +676,7 @@ Future _addWithdrawAudit({address, currencyId, money, serviceCharge}) async {
       'currencyId': currencyId,
       'money': money,
       'serviceCharge': serviceCharge,
+      'remark': remark,
     },
   );
 
@@ -769,6 +788,7 @@ class API {
   static final updateWalletAddress = _updateWalletAddress;
   static final deleteWalletAddress = _deleteWalletAddress;
   static final getWithdrawAudits = _getWithdrawAudits;
+  static final getCurrencyAddress = _getCurrencyAddress;
   static final getWithdrawAudit = _getWithdrawAudit;
   static final addWithdrawAudit = _addWithdrawAudit;
   static final getDeal = _getDeal;

@@ -158,37 +158,85 @@ class _CapitalLogs extends State<CapitalLogs> {
 
     return Padding(
       padding: EdgeInsets.fromLTRB(10.0, 6.0, 10.0, 6.0),
-      child: Padding(
-        padding: EdgeInsets.all(12.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            Padding(
-              padding: EdgeInsets.only(top: 16.0),
-              child: DecoratedBox(
-                decoration: BoxDecoration(
-                  color: Colors.grey[200],
-                  borderRadius: BorderRadius.circular(4.0),
-                ),
+      child: Container(
+        decoration: BoxDecoration(
+          color: Color(0xFFF2F2FF),
+          borderRadius: BorderRadius.circular(4.0),
+        ),
+        child: Padding(
+          padding: EdgeInsets.all(12.0),
+          child: Row(
+            children: [
+              log.currencyIconPath != null
+                  ? Image.network(
+                      log.currencyIconPath,
+                      width: 24.0,
+                      height: 24.0,
+                      fit: BoxFit.fill,
+                    )
+                  : Icon(
+                      log.type == 1
+                          ? FontAwesomeIcons.wallet
+                          : FontAwesomeIcons.exchangeAlt,
+                      color: Colors.red[200],
+                    ),
+              Expanded(
                 child: Padding(
-                  padding: EdgeInsets.all(6.0),
-                  child: Row(
+                  padding: EdgeInsets.only(left: 20.0, right: 20.0),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Expanded(
-                        child: Text(
-                          log.createTime,
-                          style: TextStyle(
-                            color: Colors.grey,
+                      Row(
+                        children: [
+                          Padding(
+                            padding: EdgeInsets.only(right: 10.0),
+                            child: Text(
+                              Utils.AessetTypes[log.type - 1],
+                              style: TextStyle(
+                                fontSize: 16.0,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
                           ),
+                          Container(
+                            decoration: BoxDecoration(
+                              color: log.logStatus == 1
+                                  ? Colors.yellow[50]
+                                  : Colors.red[50],
+                              borderRadius: BorderRadius.circular(4.0),
+                            ),
+                            child: Padding(
+                              padding: EdgeInsets.symmetric(
+                                vertical: 4.0,
+                                horizontal: 10.0,
+                              ),
+                              child: Text(
+                                log.logStatus == 1 ? '支出' : '收入',
+                                style: TextStyle(
+                                  fontSize: 10.0,
+                                  color: log.logStatus == 1
+                                      ? Colors.yellow[800]
+                                      : Colors.red[400],
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      Text(
+                        log.createTime,
+                        style: TextStyle(
+                          color: Colors.grey,
                         ),
                       ),
                     ],
                   ),
                 ),
               ),
-            ),
-          ],
+              Text('${log.money}'),
+            ],
+          ),
         ),
       ),
     );
