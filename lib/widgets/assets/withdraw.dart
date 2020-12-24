@@ -25,7 +25,9 @@ class _Withdraw extends State<Withdraw> {
   String address;
   num money = 0;
   String remark;
-  num serviceCharge;
+
+  num get serviceCharge =>
+      widget.asset.isRollOut == 0 ? 0 : widget.asset.serviceCharge * money;
 
   @override
   void initState() {
@@ -232,6 +234,16 @@ class _Withdraw extends State<Withdraw> {
                 money = double.parse(val.trim());
               },
             ),
+            widget.asset.isRollOut == 0
+                ? Container()
+                : Padding(
+                    padding: EdgeInsets.only(top: 10.0),
+                    child: Text('提现手续费: ${widget.asset.serviceCharge}',
+                        style: TextStyle(
+                          color: Theme.of(context).hintColor,
+                          fontSize: 10.0,
+                        )),
+                  ),
             Padding(
               padding: EdgeInsets.only(
                 top: 20.0,
@@ -320,12 +332,17 @@ class _Withdraw extends State<Withdraw> {
 
     _withdrawForm.save();
 
-    final response = await Utils.API.addWithdrawAudit(
-      address: address,
-      currencyId: widget.asset.currencyId,
-      money: money,
-      serviceCharge: money * widget.asset.serviceCharge,
-      remark: remark,
-    );
+    print(address);
+    print(money);
+    print(money * this.serviceCharge);
+    print(remark);
+
+    // final response = await Utils.API.addWithdrawAudit(
+    //   address: address,
+    //   currencyId: widget.asset.currencyId,
+    //   money: money,
+    //   serviceCharge: money * widget.asset.serviceCharge,
+    //   remark: remark,
+    // );
   }
 }
