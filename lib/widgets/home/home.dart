@@ -39,13 +39,18 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin {
   @override
   Widget build(BuildContext context) {
     return ScopedModelDescendant<AppModel>(builder: (context, child, model) {
-      return ListView(
-        children: <Widget>[
-          buildBanners(),
-          buildBulletins(),
-          buildCoinPirceCharts(),
-          buildhashrateCharts(),
-        ],
+      return Scaffold(
+        appBar: AppBar(
+          title: Text('比特超算'),
+        ),
+        body: ListView(
+          children: <Widget>[
+            buildBanners(),
+            buildBulletins(),
+            buildCoinPirceCharts(),
+            buildhashrateCharts(),
+          ],
+        ),
       );
     });
   }
@@ -71,9 +76,12 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin {
               ),
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(10.0),
-                child: new Image.network(
-                  "${_imgList[index].imageUrl}",
-                  fit: BoxFit.fill,
+                child: InkWell(
+                  onTap: () {},
+                  child: new Image.network(
+                    "${_imgList[index].imageUrl}",
+                    fit: BoxFit.fill,
+                  ),
                 ),
               ),
             ),
@@ -91,75 +99,83 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin {
   }
 
   Widget buildBulletins() {
-    return Container(
-      margin: EdgeInsets.only(top: 20.0),
-      height: 40.0,
-      child: Padding(
-        padding: EdgeInsets.only(left: 20.0, right: 20.0),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: <Widget>[
-            Icon(
-              FontAwesomeIcons.bullhorn,
-              color: Theme.of(context).primaryColor,
-              size: 12.0,
-            ),
-            Flexible(
-              flex: 1,
-              child: Padding(
-                padding: EdgeInsets.only(left: 12),
-                child: new Swiper(
-                  itemBuilder: (BuildContext context, int index) {
-                    return GestureDetector(
-                      child: Align(
-                        alignment: Alignment.centerLeft,
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: <Widget>[
-                            Text(
-                              _bulletins[index].title,
-                              softWrap: false,
-                              overflow: TextOverflow.ellipsis,
-                              style: TextStyle(
-                                color: Colors.black,
-                                fontSize: 14.0,
-                                fontWeight: FontWeight.w600,
-                              ),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: <Widget>[
+        buildTitle('公告'),
+        Container(
+          color: Color(0xFFF2F2FF),
+          child: Padding(
+            padding: EdgeInsets.only(left: 20.0, right: 20.0),
+            child: Container(
+              height: 40.0,
+              child: new Swiper(
+                itemBuilder: (BuildContext context, int index) {
+                  return GestureDetector(
+                    child: Align(
+                      alignment: Alignment.centerLeft,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: <Widget>[
+                          Text(
+                            _bulletins[index].title,
+                            softWrap: false,
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(
+                              color: Colors.black,
+                              fontSize: 14.0,
+                              fontWeight: FontWeight.w600,
                             ),
-                            Icon(
-                              FontAwesomeIcons.chevronRight,
-                              size: 16.0,
-                              color: Colors.grey[400],
-                            ),
-                          ],
-                        ),
+                          ),
+                          Icon(
+                            FontAwesomeIcons.chevronRight,
+                            size: 16.0,
+                            color: Colors.grey[400],
+                          ),
+                        ],
                       ),
-                    );
-                  },
-                  key: UniqueKey(),
-                  itemCount: _bulletins.length,
-                  autoplay: true,
-                  autoplayDelay: 10000,
-                  scrollDirection: Axis.vertical,
-                  onTap: (index) {
-                    _getBulletin(_bulletins[index]);
-                  },
-                ),
+                    ),
+                  );
+                },
+                key: UniqueKey(),
+                itemCount: _bulletins.length,
+                autoplay: true,
+                autoplayDelay: 10000,
+                scrollDirection: Axis.vertical,
+                onTap: (index) {
+                  _getBulletin(_bulletins[index]);
+                },
               ),
-            )
-          ],
+            ),
+          ),
         ),
-      ),
+      ],
     );
   }
 
-  Widget buildTitle(title) {
-    return Text(
-      title,
-      style: TextStyle(
-        color: Theme.of(context).hintColor,
-        fontSize: 14.0,
-        fontWeight: FontWeight.w500,
+  Widget buildTitle(String title, {IconData icon}) {
+    return Padding(
+      padding: EdgeInsets.all(10.0),
+      child: Row(
+        children: [
+          Padding(
+            padding: EdgeInsets.only(right: 6.0),
+            child: Icon(
+              icon != null ? icon : FontAwesomeIcons.gripVertical,
+              size: 16.0,
+              color: Colors.red[400],
+            ),
+          ),
+          Expanded(
+            child: Text(
+              title,
+              style: TextStyle(
+                fontSize: 16.0,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -167,18 +183,15 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin {
   Widget buildCoinPirceCharts() {
     return Container(
       margin: EdgeInsets.only(top: 20.0),
-      child: Padding(
-        padding: EdgeInsets.all(10.0),
-        child: Column(
-          children: [
-            buildTitle('FireCoin价格'),
-            Container(
-              width: MediaQuery.of(context).size.width,
-              height: 240.0,
-              child: Container(),
-            ),
-          ],
-        ),
+      child: Column(
+        children: [
+          buildTitle('FireCoin价格'),
+          Container(
+            width: MediaQuery.of(context).size.width,
+            height: 240.0,
+            child: Container(),
+          ),
+        ],
       ),
     );
   }
@@ -186,18 +199,15 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin {
   Widget buildhashrateCharts() {
     return Container(
       margin: EdgeInsets.only(top: 20.0),
-      child: Padding(
-        padding: EdgeInsets.all(10.0),
-        child: Column(
-          children: [
-            buildTitle('矿池算力'),
-            Container(
-              width: MediaQuery.of(context).size.width,
-              height: 240.0,
-              child: Container(),
-            ),
-          ],
-        ),
+      child: Column(
+        children: [
+          buildTitle('矿池算力'),
+          Container(
+            width: MediaQuery.of(context).size.width,
+            height: 240.0,
+            child: Container(),
+          ),
+        ],
       ),
     );
   }
@@ -225,9 +235,10 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin {
 
     if (resp.code != 200) return;
 
-    setState(() {
-      _imgList = resp.data.list;
-    });
+    if (mounted)
+      setState(() {
+        _imgList = resp.data.list;
+      });
   }
 
   _getBulletins() async {
@@ -236,9 +247,10 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin {
 
     if (resp.code != 200) return;
 
-    setState(() {
-      _bulletins = resp.data?.list;
-    });
+    if (mounted)
+      setState(() {
+        _bulletins = resp.data?.list;
+      });
   }
 
   _getBulletin(Models.Bulletins bullet) {

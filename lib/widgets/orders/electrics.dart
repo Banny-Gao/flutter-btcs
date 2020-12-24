@@ -316,10 +316,11 @@ class _Electrics extends State<Electrics> {
 
     List<Models.ElectricOrder> list = resp.data.list;
     Iterable<Models.ElectricOrder> more = electrics.followedBy(list);
-    setState(() {
-      electrics = more.toList();
-      isCompleted = isLastPage;
-    });
+    if (mounted)
+      setState(() {
+        electrics = more.toList();
+        isCompleted = isLastPage;
+      });
   }
 
   _getCoinById(coins, id) {

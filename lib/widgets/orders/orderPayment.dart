@@ -386,9 +386,10 @@ class _OrderPayment extends State<OrderPayment> {
       return;
     }
 
-    setState(() {
-      paymentInfo = resp.data;
-    });
+    if (mounted)
+      setState(() {
+        paymentInfo = resp.data;
+      });
 
     _timer = Timer.periodic(Duration(seconds: 1), (timer) {
       if (paymentInfo.countDownTime > 0) {

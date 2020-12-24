@@ -249,10 +249,11 @@ class _WalletAddresses extends State<WalletAddresses> {
 
     List<Models.WalletAddress> list = resp.data.list;
     Iterable<Models.WalletAddress> more = walletAddresses.followedBy(list);
-    setState(() {
-      walletAddresses = more.toList();
-      isCompleted = isLastPage;
-    });
+    if (mounted)
+      setState(() {
+        walletAddresses = more.toList();
+        isCompleted = isLastPage;
+      });
   }
 
   _showPopUpNewAddress({walletAddress}) {

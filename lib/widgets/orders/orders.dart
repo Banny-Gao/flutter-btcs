@@ -417,10 +417,11 @@ class _Orders extends State<Orders> with RouteAware {
   }
 
   _refreshOrders() {
-    setState(() {
-      pageNum = 1;
-      orders = [];
-    });
+    if (mounted)
+      setState(() {
+        pageNum = 1;
+        orders = [];
+      });
     _getData();
   }
 
@@ -445,10 +446,11 @@ class _Orders extends State<Orders> with RouteAware {
 
     List<Models.Orders> list = resp.data.list;
     Iterable<Models.Orders> more = orders.followedBy(list);
-    setState(() {
-      orders = more.toList();
-      isCompleted = isLastPage;
-    });
+    if (mounted)
+      setState(() {
+        orders = more.toList();
+        isCompleted = isLastPage;
+      });
   }
 
   showPopUpEectricOrder(Models.Orders order) {

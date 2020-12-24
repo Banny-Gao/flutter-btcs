@@ -669,15 +669,18 @@ Future _getWithdrawAudit(id) async {
 // 提现申请
 Future _addWithdrawAudit(
     {address, currencyId, money, serviceCharge, remark}) async {
-  final resp = await Request.dio.get(
-    '/front/withdrawAudit/detail/',
-    queryParameters: {
+  final resp = await Request.dio.post(
+    '/front/withdrawAudit/apply',
+    data: {
       'address': address,
       'currencyId': currencyId,
       'money': money,
       'serviceCharge': serviceCharge,
       'remark': remark,
     },
+    options: Options(extra: {
+      'useResponseInterceptor': false,
+    }),
   );
 
   Request.netCache.cache.clear();

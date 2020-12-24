@@ -34,6 +34,7 @@ final routes = {
 
     return Order(orderNumber: args['orderNumber']);
   },
+  '/withdraws': (context) => Withdraws(),
 };
 
 class GlobalRoute {

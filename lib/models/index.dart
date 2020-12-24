@@ -60,3 +60,6 @@ export 'userSignResponseData.dart' ;
 export 'walletAddress.dart' ; 
 export 'walletAddressesResponse.dart' ; 
 export 'walletAddressesResponseData.dart' ; 
+export 'withdraw.dart' ; 
+export 'withdrawsResponse.dart' ; 
+export 'withdrawsResponseData.dart' ; 

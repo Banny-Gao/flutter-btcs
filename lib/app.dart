@@ -4,10 +4,8 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import 'scopedModels/index.dart';
-import 'common/toggleThemeButton.dart';
 
 import 'widgets/index.dart';
-import './util/index.dart' as Utils;
 import 'routes.dart';
 
 // ignore: must_be_immutable
@@ -43,7 +41,6 @@ class App extends StatefulWidget {
 class AppState extends State<App> {
   PageController _pageController;
   int _page = 0;
-  String _appBarTitle = 'ORE';
 
   @override
   void initState() {
@@ -59,12 +56,6 @@ class AppState extends State<App> {
         context: context,
         removeBottom: true,
         child: Scaffold(
-          // appBar: AppBar(
-          //   actions: <Widget>[
-          //     ToggleThemeButton(),
-          //   ],
-          //   title: Text('$_appBarTitle'),
-          // ),
           body: DecoratedBox(
             decoration: BoxDecoration(
               color: Theme.of(context).scaffoldBackgroundColor,
@@ -100,9 +91,10 @@ class AppState extends State<App> {
   }
 
   void _onPageChanged(int index) {
-    setState(() {
-      _page = index;
-    });
+    if (mounted)
+      setState(() {
+        _page = index;
+      });
   }
 
   List<Widget> _getMediaList() {

@@ -309,9 +309,10 @@ class _ElectricOrder extends State<ElectricOrder> {
       return;
     }
 
-    setState(() {
-      paymentInfo = resp.data;
-    });
+    if (mounted)
+      setState(() {
+        paymentInfo = resp.data;
+      });
   }
 
   handlePayed() async {

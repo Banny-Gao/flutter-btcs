@@ -270,9 +270,10 @@ class _CapitalLogs extends State<CapitalLogs> {
 
     List<Models.CapitalLog> list = resp.data.list;
     Iterable<Models.CapitalLog> more = logs.followedBy(list);
-    setState(() {
-      logs = more.toList();
-      isCompleted = isLastPage;
-    });
+    if (mounted)
+      setState(() {
+        logs = more.toList();
+        isCompleted = isLastPage;
+      });
   }
 }

@@ -141,13 +141,15 @@ class _Helps extends State<Helps> {
     List<Models.Help> list = resp.data.list;
     if (list.length != 0) {
       Iterable<Models.Help> more = helps.followedBy(list);
-      setState(() {
-        helps = more.toList();
-      });
+      if (mounted)
+        setState(() {
+          helps = more.toList();
+        });
     } else {
-      setState(() {
-        isCompleted = true;
-      });
+      if (mounted)
+        setState(() {
+          isCompleted = true;
+        });
     }
   }
 }

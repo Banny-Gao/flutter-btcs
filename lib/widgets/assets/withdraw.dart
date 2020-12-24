@@ -26,8 +26,8 @@ class _Withdraw extends State<Withdraw> {
   num money = 0;
   String remark;
 
-  num get serviceCharge =>
-      widget.asset.isRollOut == 0 ? 0 : widget.asset.serviceCharge * money;
+  // num get serviceCharge =>
+  //     widget.asset.isRollOut == 0 ? 0 : widget.asset.serviceCharge * money;
 
   @override
   void initState() {
@@ -48,18 +48,7 @@ class _Withdraw extends State<Withdraw> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text(widget.asset.currencyName), actions: [
-        FlatButton(
-          onPressed: () {},
-          child: Text(
-            '明细',
-            style: TextStyle(
-              fontSize: 14.0,
-              color: Theme.of(context).bottomAppBarColor,
-            ),
-          ),
-        ),
-      ]),
+      appBar: AppBar(title: Text(widget.asset.currencyName)),
       body: SingleChildScrollView(
         child: Column(
           children: [
@@ -203,9 +192,10 @@ class _Withdraw extends State<Withdraw> {
                   )
                   .toList(),
               onChanged: (String value) {
-                setState(() {
-                  address = value;
-                });
+                if (mounted)
+                  setState(() {
+                    address = value;
+                  });
               },
             ),
             Padding(
@@ -321,9 +311,10 @@ class _Withdraw extends State<Withdraw> {
     final resp = Models.CurrencyAddresses.fromJson(response);
     if (resp.code != 200) return;
 
-    setState(() {
-      currencyAddresses = resp.data;
-    });
+    if (mounted)
+      setState(() {
+        currencyAddresses = resp.data;
+      });
   }
 
   submitWithdraw() async {
@@ -332,17 +323,17 @@ class _Withdraw extends State<Withdraw> {
 
     _withdrawForm.save();
 
-    print(address);
-    print(money);
-    print(money * this.serviceCharge);
-    print(remark);
+    final response = await Utils.API.addWithdrawAudit(
+      address: address,
+      currencyId: widget.asset.currencyId,
+      money: money,
+      serviceCharge: widget.asset.serviceCharge,
+      remark: remark,
+    );
 
-    // final response = await Utils.API.addWithdrawAudit(
-    //   address: address,
-    //   currencyId: widget.asset.currencyId,
-    //   money: money,
-    //   serviceCharge: money * widget.asset.serviceCharge,
-    //   remark: remark,
-    // );
+    final resp = Models.NonstandardResponse.fromJson(response);
+    if (resp.code != 200) return;
+
+    Navigator.of(context).popAndPushNamed('/withdraws');
   }
 }

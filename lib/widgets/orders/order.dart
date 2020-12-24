@@ -125,9 +125,10 @@ class _OrderState extends State<Order> with RouteAware {
 
     if (resp.code != 200) return;
 
-    setState(() {
-      order = resp.data;
-    });
+    if (mounted)
+      setState(() {
+        order = resp.data;
+      });
   }
 
   getOrderEarnings() async {
@@ -144,10 +145,11 @@ class _OrderState extends State<Order> with RouteAware {
 
     List<Models.OrderEarnings> list = resp.data.list;
     Iterable<Models.OrderEarnings> more = earnings.followedBy(list);
-    setState(() {
-      earnings = more.toList();
-      earningsPagination.isCompleted = isLastPage;
-    });
+    if (mounted)
+      setState(() {
+        earnings = more.toList();
+        earningsPagination.isCompleted = isLastPage;
+      });
   }
 
   Widget buildTitle(String title) {

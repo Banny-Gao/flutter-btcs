@@ -27,3 +27,5 @@ List EnergyStatus = ['已欠费', '正常'];
 List ElectricOrderStatus = ['待支付', '待审核', '已取消', '支付成功'];
 
 List AessetTypes = ['矿机收益'];
+
+List WithdrawStatus = ['等待处理', '通过', '拒绝'];

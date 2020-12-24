@@ -135,13 +135,15 @@ class _HelpClassifications extends State<HelpClassifications> {
     if (list.length != 0) {
       Iterable<Models.HelpClassifications> more =
           helpClassifications.followedBy(list);
-      setState(() {
-        helpClassifications = more.toList();
-      });
+      if (mounted)
+        setState(() {
+          helpClassifications = more.toList();
+        });
     } else {
-      setState(() {
-        isCompleted = true;
-      });
+      if (mounted)
+        setState(() {
+          isCompleted = true;
+        });
     }
   }
 }

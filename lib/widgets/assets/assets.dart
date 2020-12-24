@@ -1,12 +1,12 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../scopedModels/index.dart';
 import '../../models/index.dart' as Models;
 import '../../util/index.dart' as Utils;
+import '../../routes.dart';
 
 import 'capitalLogs.dart';
 import 'withdraw.dart';
@@ -18,8 +18,9 @@ class Assets extends StatefulWidget {
   _Assets createState() => _Assets();
 }
 
-class _Assets extends State<Assets> {
+class _Assets extends State<Assets> with RouteAware {
   List<Models.Asset> assets = [];
+  List<Map<String, dynamic>> colors = [];
   num currencyId;
 
   ScrollController _scrollController = new ScrollController();
@@ -27,9 +28,18 @@ class _Assets extends State<Assets> {
   @override
   void initState() {
     if (AppModel.coinList.length != 0) {
-      setState(() {
-        currencyId = AppModel.coinList[0].currencyId;
-      });
+      num i = 2;
+      if (mounted)
+        setState(() {
+          currencyId = AppModel.coinList[0].currencyId;
+          colors = AppModel.coinList.map<Map<String, dynamic>>((coin) {
+            i++;
+            return {
+              'currencyId': coin.currencyId,
+              'color': Colors.primaries[i],
+            };
+          }).toList();
+        });
     }
     Future.delayed(Duration.zero).then((value) {
       _getData();
@@ -39,46 +49,22 @@ class _Assets extends State<Assets> {
   }
 
   @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    routeObserver.subscribe(this, ModalRoute.of(context));
+  }
+
+  @override
+  void didPopNext() {
+    _getData();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return ScopedModelDescendant<AppModel>(
       builder: (context, child, model) => Scaffold(
         appBar: AppBar(
           title: Text('我的资产'),
-          actions: [
-            DropdownButton(
-              hint: Text('选择币种'),
-              underline: Container(),
-              value: currencyId,
-              items: model.coins
-                  .map<DropdownMenuItem>(
-                    (coin) => DropdownMenuItem(
-                      child: Row(
-                        children: [
-                          Image.network(
-                            coin.iconPath,
-                            width: 18.0,
-                            height: 18.0,
-                            fit: BoxFit.fill,
-                          ),
-                          Padding(
-                            padding: EdgeInsets.only(left: 6.0),
-                            child: Text(
-                              coin.currencyName,
-                              style: TextStyle(fontSize: 14.0),
-                            ),
-                          ),
-                        ],
-                      ),
-                      value: coin.currencyId,
-                    ),
-                  )
-                  .toList(),
-              onChanged: (value) {
-                currencyId = value;
-                _getData();
-              },
-            ),
-          ],
         ),
         body: RefreshIndicator(
           onRefresh: () async {
@@ -93,6 +79,97 @@ class _Assets extends State<Assets> {
             ),
           ),
         ),
+        endDrawer: Drawer(
+          child: Padding(
+            padding: MediaQuery.of(context).padding,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Padding(
+                  padding: EdgeInsets.only(left: 24.0),
+                  child: Row(
+                    children: [
+                      Icon(
+                        FontAwesomeIcons.wallet,
+                        color: Colors.red[400],
+                      ),
+                      FlatButton(
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                          Navigator.of(context).pushNamed('/withdraws');
+                        },
+                        child: Text(
+                          '提现明细',
+                          style: TextStyle(
+                            fontSize: 14.0,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                Divider(),
+                Padding(
+                  padding: EdgeInsets.only(left: 24.0),
+                  child: Row(
+                    children: [
+                      Icon(
+                        FontAwesomeIcons.btc,
+                        color: Colors.primaries[4],
+                      ),
+                      FlatButton(
+                        onPressed: () {},
+                        child: Text(
+                          '币种选择',
+                          style: TextStyle(
+                            fontSize: 14.0,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                Expanded(
+                  child: SingleChildScrollView(
+                    child: Column(
+                      children: model.coins
+                          .map<RadioListTile>(
+                            (coin) => RadioListTile(
+                              title: Row(
+                                children: [
+                                  Image.network(
+                                    coin.iconPath,
+                                    width: 18.0,
+                                    height: 18.0,
+                                    fit: BoxFit.fill,
+                                  ),
+                                  Padding(
+                                    padding: EdgeInsets.only(left: 6.0),
+                                    child: Text(
+                                      coin.currencyName,
+                                      style: TextStyle(fontSize: 14.0),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              value: coin.currencyId,
+                              groupValue: currencyId,
+                              activeColor: Colors.red[400],
+                              onChanged: (value) {
+                                currencyId = value;
+                                _getData();
+                                Navigator.of(context).pop();
+                              },
+                            ),
+                          )
+                          .toList(),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
       ),
     );
   }
@@ -103,7 +180,7 @@ class _Assets extends State<Assets> {
     return Padding(
       padding: EdgeInsets.fromLTRB(10.0, 6.0, 10.0, 6.0),
       child: Card(
-        color: Colors.primaries[Random().nextInt(10) + 1],
+        color: getCurrencyColor(),
         child: OverflowBox(
           child: InkWell(
             onTap: () {},
@@ -257,9 +334,10 @@ class _Assets extends State<Assets> {
 
     if (resp.code != 200) return;
 
-    setState(() {
-      assets = resp.data;
-    });
+    if (mounted)
+      setState(() {
+        assets = resp.data;
+      });
   }
 
   _showPopUpLogs(Models.Asset asset) {
@@ -278,5 +356,12 @@ class _Assets extends State<Assets> {
         asset: asset,
       ),
     ));
+  }
+
+  Color getCurrencyColor() {
+    final currencyColor = colors.length != 0
+        ? colors.singleWhere((color) => color['currencyId'] == currencyId)
+        : null;
+    return currencyColor != null ? currencyColor['color'] : Colors.transparent;
   }
 }

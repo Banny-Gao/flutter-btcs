@@ -59,7 +59,7 @@ class _GroupsState extends State<Groups>
 
     _tabController.addListener(() {
       final index = _tabController.index;
-      setState(() => selectedIndex = index);
+      if (mounted) setState(() => selectedIndex = index);
 
       if (tabGroups[index].length == 0) _getData();
     });

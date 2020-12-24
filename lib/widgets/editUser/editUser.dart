@@ -191,10 +191,11 @@ class _EditUser extends State<EditUser> {
     if (resp.code != 200) return;
 
     Navigator.of(context).pop();
-    setState(() {
-      _avatarUrl = resp.data?.url;
-      _avatarUrlController.text = _avatarUrl;
-    });
+    if (mounted)
+      setState(() {
+        _avatarUrl = resp.data?.url;
+        _avatarUrlController.text = _avatarUrl;
+      });
   }
 
   _handleSave(AppModel model) async {
