@@ -10,7 +10,6 @@ import '../../models/index.dart' as Models;
 import '../../util/index.dart' as Utils;
 import '../../common/index.dart' as Common;
 
-import '../data.dart';
 import 'electricOrder.dart';
 
 class Order extends StatefulWidget {
@@ -23,7 +22,8 @@ class Order extends StatefulWidget {
 }
 
 class _OrderState extends State<Order> with RouteAware {
-  Models.Pagination earningsPagination = Common.getBasicPagination();
+  Models.Pagination earningsPagination =
+      Common.getBasicPagination(pageSize: 100);
   Models.Orders order = Models.Orders();
   List<Models.OrderEarnings> earnings = [];
 
@@ -53,6 +53,33 @@ class _OrderState extends State<Order> with RouteAware {
     _getData();
   }
 
+  get computedEarnings {
+    List list = [];
+    earnings.forEach((earning) {
+      list.add({
+        'type': 'earnings',
+        'value': earning.earnings,
+        'createTime': earning.createTime,
+        'longTime': earning.longTime,
+      });
+      list.add({
+        'type': 'platformMoney',
+        'value': earning.platformMoney,
+        'longTime': earning.longTime,
+        'createTime': earning.createTime,
+      });
+      list.add({
+        'type': 'totalEarnings',
+        'value': earning.totalEarnings,
+        'longTime': earning.longTime,
+        'createTime': earning.createTime,
+      });
+    });
+    list.sort(
+        (left, right) => left['createTime'].compareTo(right['createTime']));
+    return list;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -61,7 +88,7 @@ class _OrderState extends State<Order> with RouteAware {
       ),
       body: ListView(
         children: <Widget>[
-          // buildOrderEarnings(),
+          computedEarnings.length != 0 ? buildOrderEarnings() : Container(),
           order.orderNumber != null ? buildOrderInfo() : Container(),
         ],
       ),
@@ -76,14 +103,13 @@ class _OrderState extends State<Order> with RouteAware {
             width: MediaQuery.of(context).size.width,
             height: 200.0,
             child: graphic.Chart(
-              data: adjustData,
+              data: computedEarnings,
               scales: {
-                'index': graphic.CatScale(
-                  accessor: (map) => map['index'].toString(),
-                  range: [0, 1],
+                'createTime': graphic.CatScale(
+                  accessor: (map) => map['createTime'].toString(),
                 ),
                 'type': graphic.CatScale(
-                  accessor: (map) => map['type'] as String,
+                  accessor: (map) => map['type'],
                 ),
                 'value': graphic.LinearScale(
                   accessor: (map) => map['value'] as num,
@@ -92,16 +118,20 @@ class _OrderState extends State<Order> with RouteAware {
               },
               geoms: [
                 graphic.LineGeom(
-                  position: graphic.PositionAttr(field: 'index*value'),
+                  position: graphic.PositionAttr(field: 'createTime*value'),
                   color: graphic.ColorAttr(field: 'type'),
                   shape: graphic.ShapeAttr(
                       values: [graphic.BasicLineShape(smooth: true)]),
                 )
               ],
               axes: {
-                'index': graphic.Defaults.horizontalAxis,
+                'createTime': graphic.Defaults.horizontalAxis,
                 'value': graphic.Defaults.verticalAxis,
               },
+              interactions: [
+                graphic.Defaults.xPaning,
+                graphic.Defaults.xScaling,
+              ],
             ),
           ),
         ],

@@ -4,6 +4,7 @@
   "carePattern": "",
   "countDownTime": 0,
   "currencyName": "",
+  "currencyId": 0,
   "discountMoney": 0,
   "electricMoney": 0,
   "endTime": "",
@@ -22,5 +23,13 @@
   "sellPlatform": 0,
   "stagingTime": 0,
   "theRatio": 0,
-  "yieldOutput": 0
+  "yieldOutput": 0,
+  "millProductId": 0,
+  "groupProtocol": "",
+  "millInfo": "",
+  "mineral": "",
+  "miningStatus": 0,
+  "observerAddress": "",
+  "riskProtocol": "",
+  "sampleInfo": ""
 }

@@ -13,6 +13,7 @@ Group _$GroupFromJson(Map<String, dynamic> json) {
     ..carePattern = json['carePattern'] as String
     ..countDownTime = json['countDownTime'] as num
     ..currencyName = json['currencyName'] as String
+    ..currencyId = json['currencyId'] as num
     ..discountMoney = json['discountMoney'] as num
     ..electricMoney = json['electricMoney'] as num
     ..endTime = json['endTime'] as String
@@ -31,7 +32,15 @@ Group _$GroupFromJson(Map<String, dynamic> json) {
     ..sellPlatform = json['sellPlatform'] as num
     ..stagingTime = json['stagingTime'] as num
     ..theRatio = json['theRatio'] as num
-    ..yieldOutput = json['yieldOutput'] as num;
+    ..yieldOutput = json['yieldOutput'] as num
+    ..millProductId = json['millProductId'] as num
+    ..groupProtocol = json['groupProtocol'] as String
+    ..millInfo = json['millInfo'] as String
+    ..mineral = json['mineral'] as String
+    ..miningStatus = json['miningStatus'] as num
+    ..observerAddress = json['observerAddress'] as String
+    ..riskProtocol = json['riskProtocol'] as String
+    ..sampleInfo = json['sampleInfo'] as String;
 }
 
 Map<String, dynamic> _$GroupToJson(Group instance) => <String, dynamic>{
@@ -40,6 +49,7 @@ Map<String, dynamic> _$GroupToJson(Group instance) => <String, dynamic>{
       'carePattern': instance.carePattern,
       'countDownTime': instance.countDownTime,
       'currencyName': instance.currencyName,
+      'currencyId': instance.currencyId,
       'discountMoney': instance.discountMoney,
       'electricMoney': instance.electricMoney,
       'endTime': instance.endTime,
@@ -58,5 +68,13 @@ Map<String, dynamic> _$GroupToJson(Group instance) => <String, dynamic>{
       'sellPlatform': instance.sellPlatform,
       'stagingTime': instance.stagingTime,
       'theRatio': instance.theRatio,
-      'yieldOutput': instance.yieldOutput
+      'yieldOutput': instance.yieldOutput,
+      'millProductId': instance.millProductId,
+      'groupProtocol': instance.groupProtocol,
+      'millInfo': instance.millInfo,
+      'mineral': instance.mineral,
+      'miningStatus': instance.miningStatus,
+      'observerAddress': instance.observerAddress,
+      'riskProtocol': instance.riskProtocol,
+      'sampleInfo': instance.sampleInfo
     };

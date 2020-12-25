@@ -35,6 +35,12 @@ final routes = {
     return Order(orderNumber: args['orderNumber']);
   },
   '/withdraws': (context) => Withdraws(),
+  // ignore: top_level_function_literal_block
+  '/group': (context) {
+    final Map<String, dynamic> args = ModalRoute.of(context).settings.arguments;
+
+    return Group(id: args['id']);
+  },
 };
 
 class GlobalRoute {

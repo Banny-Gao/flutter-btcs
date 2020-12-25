@@ -11,6 +11,7 @@ class Group {
     String carePattern;
     num countDownTime;
     String currencyName;
+    num currencyId;
     num discountMoney;
     num electricMoney;
     String endTime;
@@ -30,6 +31,14 @@ class Group {
     num stagingTime;
     num theRatio;
     num yieldOutput;
+    num millProductId;
+    String groupProtocol;
+    String millInfo;
+    String mineral;
+    num miningStatus;
+    String observerAddress;
+    String riskProtocol;
+    String sampleInfo;
     
     factory Group.fromJson(Map<String,dynamic> json) => _$GroupFromJson(json);
     Map<String, dynamic> toJson() => _$GroupToJson(this);

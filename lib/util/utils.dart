@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'package:url_launcher/url_launcher.dart';
 
 enum LoadingState { DONE, LOADING, WAITING, ERROR }
@@ -28,3 +29,21 @@ String constructTime(int seconds, {d = '天', h = '小时', m = '分', s = '秒'
 
 String formatTime(int timeNum, String unit, [bool showUnit = false]) =>
     timeNum != 0 || showUnit ? timeNum.toString() + unit : '';
+
+String getHtmlUrl(title, content, {parsed = true}) {
+  final html = '''
+              <!DOCTYPE html>
+              <html lang="en">
+              <head>
+                <meta charset="UTF-8">
+                <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                <title>${title}</title>
+              </head>
+              <body>
+                ${content}
+              </body>
+              </html>
+        ''';
+  final String contentBase64 = base64Encode(const Utf8Encoder().convert(html));
+  return parsed ? 'data:text/html;base64,${contentBase64}' : html;
+}

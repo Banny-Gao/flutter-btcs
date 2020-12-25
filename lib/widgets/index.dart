@@ -12,3 +12,4 @@ export 'orders/orderPayment.dart';
 export 'orders/orders.dart';
 export 'orders/order.dart';
 export 'assets/withdraws.dart';
+export 'groups/group.dart';

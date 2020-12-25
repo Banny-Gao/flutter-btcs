@@ -1,11 +1,9 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:webview_flutter/webview_flutter.dart';
+import 'package:graphic/graphic.dart' as graphic;
 
 import '../../scopedModels/index.dart';
 import '../../models/index.dart' as Models;
@@ -22,14 +20,13 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin {
   List<Models.Slides> _imgList = [];
   List<Models.Bulletins> _bulletins = [];
+  List<Models.HashRate> _hashRates = [];
 
   get wantKeepAlive => true;
 
   @override
   void initState() {
     super.initState();
-
-    if (Platform.isAndroid) WebView.platform = SurfaceAndroidWebView();
 
     Future.delayed(Duration.zero).then((value) {
       _getData();
@@ -198,15 +195,44 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin {
 
   Widget buildhashrateCharts() {
     return Container(
-      margin: EdgeInsets.only(top: 20.0),
+      margin: EdgeInsets.only(top: 10.0),
       child: Column(
         children: [
           buildTitle('矿池算力'),
-          Container(
-            width: MediaQuery.of(context).size.width,
-            height: 240.0,
-            child: Container(),
-          ),
+          _hashRates.length != 0
+              ? Container(
+                  width: MediaQuery.of(context).size.width,
+                  height: 200.0,
+                  child: graphic.Chart(
+                    data: _hashRates,
+                    scales: {
+                      'createTime': graphic.CatScale(
+                        accessor: (map) => map.createTime.toString(),
+                      ),
+                      'hashrate': graphic.LinearScale(
+                        accessor: (map) => map.hashrate as num,
+                        nice: true,
+                      ),
+                    },
+                    geoms: [
+                      graphic.LineGeom(
+                        position:
+                            graphic.PositionAttr(field: 'createTime*hashrate'),
+                        shape: graphic.ShapeAttr(
+                            values: [graphic.BasicLineShape(smooth: true)]),
+                      )
+                    ],
+                    axes: {
+                      'createTime': graphic.Defaults.horizontalAxis,
+                      'hashrate': graphic.Defaults.verticalAxis,
+                    },
+                    interactions: [
+                      graphic.Defaults.xPaning,
+                      graphic.Defaults.xScaling,
+                    ],
+                  ),
+                )
+              : Container(),
         ],
       ),
     );
@@ -223,6 +249,7 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin {
     try {
       await _getSlides();
       await _getBulletins();
+      _getHashRate();
     } finally {
       EasyLoading.dismiss();
     }
@@ -262,5 +289,23 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin {
       '/contentPreview',
       arguments: arguments,
     );
+  }
+
+  _getHashRate() async {
+    final response = await Utils.API.getHashRate();
+    final resp = Models.HashRateResponse.fromJson(response);
+
+    if (resp.code != 200) {
+      EasyLoading.showError(resp.message);
+      return;
+    }
+
+    if (mounted)
+      setState(() {
+        resp.data.sort((left, right) {
+          return left.longTime.compareTo(right.longTime);
+        });
+        _hashRates = resp.data;
+      });
   }
 }

@@ -8,8 +8,6 @@ import '../../scopedModels/index.dart';
 import '../../models/index.dart' as Models;
 import '../../util/index.dart' as Utils;
 
-import '../data.dart';
-
 // ignore: must_be_immutable
 class CapitalLogs extends StatefulWidget {
   num currencyId;
@@ -20,7 +18,7 @@ class CapitalLogs extends StatefulWidget {
 }
 
 class _CapitalLogs extends State<CapitalLogs> {
-  final num pageSize = 10;
+  final num pageSize = 100;
   num pageNum = 1;
   bool isCompleted = false;
   bool isLoading = false;
@@ -56,38 +54,44 @@ class _CapitalLogs extends State<CapitalLogs> {
         ),
         body: Column(
           children: [
-            Container(
-              width: MediaQuery.of(context).size.width,
-              height: 200.0,
-              child: graphic.Chart(
-                data: adjustData,
-                scales: {
-                  'index': graphic.CatScale(
-                    accessor: (map) => map['index'].toString(),
-                    range: [0, 1],
-                  ),
-                  'type': graphic.CatScale(
-                    accessor: (map) => map['type'] as String,
-                  ),
-                  'value': graphic.LinearScale(
-                    accessor: (map) => map['value'] as num,
-                    nice: true,
-                  ),
-                },
-                geoms: [
-                  graphic.LineGeom(
-                    position: graphic.PositionAttr(field: 'index*value'),
-                    color: graphic.ColorAttr(field: 'type'),
-                    shape: graphic.ShapeAttr(
-                        values: [graphic.BasicLineShape(smooth: true)]),
+            logs.length != 0
+                ? Container(
+                    width: MediaQuery.of(context).size.width,
+                    height: 200.0,
+                    child: graphic.Chart(
+                      data: logs,
+                      scales: {
+                        'createTime': graphic.CatScale(
+                          accessor: (map) => map.createTime.toString(),
+                        ),
+                        'money': graphic.LinearScale(
+                          accessor: (map) => map.money as num,
+                          nice: true,
+                        ),
+                        'type': graphic.CatScale(
+                          accessor: (map) => map.type.toString(),
+                        ),
+                      },
+                      geoms: [
+                        graphic.LineGeom(
+                          position:
+                              graphic.PositionAttr(field: 'createTime*money'),
+                          color: graphic.ColorAttr(field: 'type'),
+                          shape: graphic.ShapeAttr(
+                              values: [graphic.BasicLineShape(smooth: true)]),
+                        )
+                      ],
+                      axes: {
+                        'createTime': graphic.Defaults.horizontalAxis,
+                        'money': graphic.Defaults.verticalAxis,
+                      },
+                      interactions: [
+                        graphic.Defaults.xPaning,
+                        graphic.Defaults.xScaling,
+                      ],
+                    ),
                   )
-                ],
-                axes: {
-                  'index': graphic.Defaults.horizontalAxis,
-                  'value': graphic.Defaults.verticalAxis,
-                },
-              ),
-            ),
+                : Container(),
             Divider(),
             Padding(
               padding: EdgeInsets.all(10.0),
@@ -274,6 +278,7 @@ class _CapitalLogs extends State<CapitalLogs> {
       setState(() {
         logs = more.toList();
         isCompleted = isLastPage;
+        logs.sort((left, right) => left.createTime.compareTo(right.createTime));
       });
   }
 }

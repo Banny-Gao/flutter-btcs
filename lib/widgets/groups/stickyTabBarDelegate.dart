@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 class StickyTabBarDelegate extends SliverPersistentHeaderDelegate {
   final TabBar child;
   final String coverImgUrl;
+  final Widget coverImage;
   final double collapsedHeight;
   final double expandedHeight;
 
@@ -11,6 +12,7 @@ class StickyTabBarDelegate extends SliverPersistentHeaderDelegate {
     this.coverImgUrl,
     this.collapsedHeight = 0,
     this.expandedHeight = 0,
+    this.coverImage,
   });
 
   @override
@@ -48,7 +50,13 @@ class StickyTabBarDelegate extends SliverPersistentHeaderDelegate {
                     fit: BoxFit.fill,
                   ),
                 )
-              : Container(),
+              : coverImage != null
+                  ? Container(
+                      width: MediaQuery.of(context).size.width,
+                      height: expandedHeight,
+                      child: coverImage,
+                    )
+                  : Container(),
           Positioned(
             left: 0,
             right: 0,

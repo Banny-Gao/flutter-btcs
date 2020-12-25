@@ -182,7 +182,7 @@ Future _getGroups({@required currencyId}) async {
 }
 
 // 拼团详情
-Future _getGroup(id) async {
+Future _getGroup({id}) async {
   final resp = await Request.dio.get('/front/group/detail/$id');
 
   return resp.data;
@@ -752,6 +752,19 @@ Future _getCapitalLogs(
   return resp.data;
 }
 
+Future _getHashRate() async {
+  final resp = await Request.dio.get(
+    '/front/hashrate/list',
+    options: Options(extra: {
+      'useResponseInterceptor': false,
+    }),
+  );
+
+  Request.netCache.cache.clear();
+
+  return resp.data;
+}
+
 class API {
   static final getCode = _getCode;
   static final signUp = _signUp;
@@ -798,4 +811,5 @@ class API {
   static final upload = _upload;
   static final getAssets = _getAssets;
   static final getCapitalLogs = _getCapitalLogs;
+  static final getHashRate = _getHashRate;
 }

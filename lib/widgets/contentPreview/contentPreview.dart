@@ -1,7 +1,7 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:webview_flutter/webview_flutter.dart';
+
+import '../../util/utils.dart';
 
 class ContentPreview extends StatelessWidget {
   final String title;
@@ -13,7 +13,7 @@ class ContentPreview extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final initialUrl = url != null ? url : _getHtmlUrl(title, content);
+    final initialUrl = url != null ? url : getHtmlUrl(title, content);
 
     return Scaffold(
       appBar: AppBar(
@@ -27,24 +27,5 @@ class ContentPreview extends StatelessWidget {
         ),
       ),
     );
-  }
-
-  String _getHtmlUrl(title, content) {
-    final html = '''
-              <!DOCTYPE html>
-              <html lang="en">
-              <head>
-                <meta charset="UTF-8">
-                <meta name="viewport" content="width=device-width, initial-scale=1.0">
-                <title>${title}</title>
-              </head>
-              <body>
-                ${content}
-              </body>
-              </html>
-        ''';
-    final String contentBase64 =
-        base64Encode(const Utf8Encoder().convert(html));
-    return 'data:text/html;base64,${contentBase64}';
   }
 }

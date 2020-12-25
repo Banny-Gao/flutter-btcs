@@ -241,7 +241,14 @@ class _GroupsState extends State<Groups>
             Material(
               type: MaterialType.transparency,
               child: InkWell(
-                onTap: () {},
+                onTap: () {
+                  Navigator.of(context).pushNamed(
+                    '/group',
+                    arguments: {
+                      'id': group.id,
+                    },
+                  );
+                },
               ),
             ),
           ],
