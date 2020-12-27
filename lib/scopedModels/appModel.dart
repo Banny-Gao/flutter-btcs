@@ -1,6 +1,5 @@
 import 'dart:core';
 
-import 'package:dio/dio.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 
@@ -17,6 +16,7 @@ class AppModel extends Model with BaseModel, ThemeModel, ProfileModel
   // 是否为release版
   static bool get isRelease => bool.fromEnvironment("dart.vm.product");
   static List coinList;
+  static bool isSocketConnected = false;
 
   List<Models.Coin> coins = [];
 
@@ -31,7 +31,6 @@ class AppModel extends Model with BaseModel, ThemeModel, ProfileModel
 
   Future<Null> getCoins() async {
     final dio = Utils.getBaseRequest();
-    dio.interceptors.add(LogInterceptor(responseBody: true));
 
     final response = await dio.get('/front/currency/list');
 

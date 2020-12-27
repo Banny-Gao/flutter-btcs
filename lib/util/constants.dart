@@ -1,4 +1,5 @@
 final BaseUrl = "http://47.93.123.178:9099/api/";
+final BaseSocketUrl = "http://47.93.123.178:9099/api/market-ws";
 
 class Tips {
   static const codeErrorText = "验证码格式有误";

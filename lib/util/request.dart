@@ -11,7 +11,6 @@ import '../routes.dart';
 import 'index.dart';
 
 final getBaseRequest = () => Dio(BaseOptions(
-      // baseUrl: 'http://5r29og8.hn3.mofasuidao.cn/api',
       baseUrl: BaseUrl,
       connectTimeout: 10000,
       receiveTimeout: 10000,

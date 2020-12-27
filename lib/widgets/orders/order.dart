@@ -107,6 +107,8 @@ class _OrderState extends State<Order> with RouteAware {
               scales: {
                 'createTime': graphic.CatScale(
                   accessor: (map) => map['createTime'].toString(),
+                  tickCount:
+                      computedEarnings.length > 4 ? 4 : computedEarnings.length,
                 ),
                 'type': graphic.CatScale(
                   accessor: (map) => map['type'],

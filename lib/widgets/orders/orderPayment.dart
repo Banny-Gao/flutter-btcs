@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:qr_flutter/qr_flutter.dart';
+import 'package:clipboard/clipboard.dart';
 
 import '../../models/index.dart' as Models;
 import '../../util/index.dart' as Utils;
@@ -243,10 +244,16 @@ class _OrderPayment extends State<OrderPayment> {
                     ),
                     Padding(
                       padding: EdgeInsets.only(left: 10.0),
-                      child: Icon(
-                        FontAwesomeIcons.copy,
-                        size: 16.0,
-                        color: Colors.black45,
+                      child: GestureDetector(
+                        onTap: () async {
+                          FlutterClipboard.copy('${paymentInfo.orderNumber}');
+                          EasyLoading.showInfo('已复制订单编号');
+                        },
+                        child: Icon(
+                          FontAwesomeIcons.copy,
+                          size: 16.0,
+                          color: Colors.black45,
+                        ),
                       ),
                     ),
                   ],
@@ -281,10 +288,16 @@ class _OrderPayment extends State<OrderPayment> {
                     ),
                     Padding(
                       padding: EdgeInsets.only(left: 10.0),
-                      child: Icon(
-                        FontAwesomeIcons.copy,
-                        size: 16.0,
-                        color: Colors.black45,
+                      child: GestureDetector(
+                        onTap: () async {
+                          FlutterClipboard.copy('${paymentInfo.topAddress}');
+                          EasyLoading.showInfo('已复制收款地址');
+                        },
+                        child: Icon(
+                          FontAwesomeIcons.copy,
+                          size: 16.0,
+                          color: Colors.black45,
+                        ),
                       ),
                     ),
                   ],

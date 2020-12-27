@@ -765,6 +765,19 @@ Future _getHashRate() async {
   return resp.data;
 }
 
+Future _getCoinPrice() async {
+  final resp = await Request.dio.get(
+    '/front/btcPrice/list',
+    options: Options(extra: {
+      'useResponseInterceptor': false,
+    }),
+  );
+
+  Request.netCache.cache.clear();
+
+  return resp.data;
+}
+
 class API {
   static final getCode = _getCode;
   static final signUp = _signUp;
@@ -812,4 +825,9 @@ class API {
   static final getAssets = _getAssets;
   static final getCapitalLogs = _getCapitalLogs;
   static final getHashRate = _getHashRate;
+  static final getCoinPrice = _getCoinPrice;
+}
+
+class WSS {
+  static final fireCoins = '/topic/market/price';
 }

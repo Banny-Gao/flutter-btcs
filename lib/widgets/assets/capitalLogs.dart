@@ -63,6 +63,7 @@ class _CapitalLogs extends State<CapitalLogs> {
                       scales: {
                         'createTime': graphic.CatScale(
                           accessor: (map) => map.createTime.toString(),
+                          tickCount: logs.length > 4 ? 4 : logs.length,
                         ),
                         'money': graphic.LinearScale(
                           accessor: (map) => map.money as num,

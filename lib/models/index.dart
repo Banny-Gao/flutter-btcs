@@ -10,6 +10,8 @@ export 'capitalLogsResponse.dart' ;
 export 'capitalLogsResponseData.dart' ; 
 export 'changeUserInfoResponse.dart' ; 
 export 'coin.dart' ; 
+export 'coinPrice.dart' ; 
+export 'coinPricesResponse.dart' ; 
 export 'coinsResponse.dart' ; 
 export 'currencyAddresses.dart' ; 
 export 'data.dart' ; 

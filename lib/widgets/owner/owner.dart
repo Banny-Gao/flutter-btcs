@@ -24,12 +24,12 @@ class _OwnerState extends State<Owner> with AutomaticKeepAliveClientMixin {
       'path': '/orders',
       'icon': FontAwesomeIcons.receipt,
     },
-    {
-      'title': '实名认证',
-      'key': 'auth',
-      'path': '/auth',
-      'icon': FontAwesomeIcons.accessibleIcon,
-    },
+    // {
+    //   'title': '实名认证',
+    //   'key': 'auth',
+    //   'path': '/auth',
+    //   'icon': FontAwesomeIcons.accessibleIcon,
+    // },
     {
       'title': '帮助中心',
       'key': 'helps',
@@ -42,24 +42,24 @@ class _OwnerState extends State<Owner> with AutomaticKeepAliveClientMixin {
       'path': '/walletAddresses',
       'icon': FontAwesomeIcons.wallet,
     },
-    {
-      'title': '修改登录密码',
-      'key': 'changePassword',
-      'path': '/changePassword',
-      'icon': FontAwesomeIcons.lock,
-    },
-    {
-      'title': '设置/修改支付密码',
-      'key': 'changePaymentPassword',
-      'path': '/changePaymentPassword',
-      'icon': FontAwesomeIcons.lock,
-    },
-    {
-      'title': '修改手机号',
-      'key': 'changePhone',
-      'path': '/changePhone',
-      'icon': FontAwesomeIcons.phone,
-    },
+    // {
+    //   'title': '修改登录密码',
+    //   'key': 'changePassword',
+    //   'path': '/changePassword',
+    //   'icon': FontAwesomeIcons.lock,
+    // },
+    // {
+    //   'title': '设置/修改支付密码',
+    //   'key': 'changePaymentPassword',
+    //   'path': '/changePaymentPassword',
+    //   'icon': FontAwesomeIcons.lock,
+    // },
+    // {
+    //   'title': '修改手机号',
+    //   'key': 'changePhone',
+    //   'path': '/changePhone',
+    //   'icon': FontAwesomeIcons.phone,
+    // },
     {
       'title': '公司简介',
       'key': 'about',

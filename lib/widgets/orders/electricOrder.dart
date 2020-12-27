@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:qr_flutter/qr_flutter.dart';
+import 'package:clipboard/clipboard.dart';
 
 import '../../models/index.dart' as Models;
 import '../../util/index.dart' as Utils;
@@ -164,10 +165,17 @@ class _ElectricOrder extends State<ElectricOrder> {
                         ),
                         Padding(
                           padding: EdgeInsets.only(left: 10.0),
-                          child: Icon(
-                            FontAwesomeIcons.copy,
-                            size: 16.0,
-                            color: Colors.black45,
+                          child: GestureDetector(
+                            onTap: () async {
+                              FlutterClipboard.copy(
+                                  '${paymentInfo.electricOrderNumber}');
+                              EasyLoading.showInfo('已复制缴费订单编号');
+                            },
+                            child: Icon(
+                              FontAwesomeIcons.copy,
+                              size: 16.0,
+                              color: Colors.black45,
+                            ),
                           ),
                         ),
                       ],
@@ -205,10 +213,17 @@ class _ElectricOrder extends State<ElectricOrder> {
                         ),
                         Padding(
                           padding: EdgeInsets.only(left: 10.0),
-                          child: Icon(
-                            FontAwesomeIcons.copy,
-                            size: 16.0,
-                            color: Colors.black45,
+                          child: GestureDetector(
+                            onTap: () async {
+                              FlutterClipboard.copy(
+                                  '${paymentInfo.payAddress}');
+                              EasyLoading.showInfo('已复制支付地址');
+                            },
+                            child: Icon(
+                              FontAwesomeIcons.copy,
+                              size: 16.0,
+                              color: Colors.black45,
+                            ),
                           ),
                         ),
                       ],

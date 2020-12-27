@@ -5,6 +5,7 @@ import 'package:scoped_model/scoped_model.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:clipboard/clipboard.dart';
 
 import '../../scopedModels/index.dart';
 import '../../models/index.dart' as Models;
@@ -258,10 +259,16 @@ class _Electrics extends State<Electrics> {
                           ),
                           Padding(
                             padding: EdgeInsets.only(left: 10.0),
-                            child: Icon(
-                              FontAwesomeIcons.copy,
-                              size: 16.0,
-                              color: Colors.black45,
+                            child: GestureDetector(
+                              onTap: () async {
+                                FlutterClipboard.copy('${electric.payAddress}');
+                                EasyLoading.showInfo('已复制支付地址');
+                              },
+                              child: Icon(
+                                FontAwesomeIcons.copy,
+                                size: 16.0,
+                                color: Colors.black45,
+                              ),
                             ),
                           ),
                         ],

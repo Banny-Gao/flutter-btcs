@@ -21,6 +21,7 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin {
   List<Models.Slides> _imgList = [];
   List<Models.Bulletins> _bulletins = [];
   List<Models.HashRate> _hashRates = [];
+  List<Models.CoinPrice> _fireCoins = [];
 
   get wantKeepAlive => true;
 
@@ -179,15 +180,48 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin {
 
   Widget buildCoinPirceCharts() {
     return Container(
-      margin: EdgeInsets.only(top: 20.0),
+      margin: EdgeInsets.only(top: 10.0),
       child: Column(
         children: [
           buildTitle('FireCoin价格'),
-          Container(
-            width: MediaQuery.of(context).size.width,
-            height: 240.0,
-            child: Container(),
-          ),
+          _fireCoins.length != 0
+              ? Container(
+                  width: MediaQuery.of(context).size.width,
+                  height: 200.0,
+                  child: graphic.Chart(
+                    data: _fireCoins,
+                    scales: {
+                      'createTime': graphic.CatScale(
+                        accessor: (map) => map.createTime.toString(),
+                        tickCount:
+                            _fireCoins.length > 4 ? 4 : _fireCoins.length,
+                      ),
+                      'lastPrice': graphic.LinearScale(
+                        accessor: (map) => map.lastPrice as num,
+                        nice: true,
+                      ),
+                    },
+                    geoms: [
+                      graphic.LineGeom(
+                        position:
+                            graphic.PositionAttr(field: 'createTime*lastPrice'),
+                        shape: graphic.ShapeAttr(
+                            values: [graphic.BasicLineShape(smooth: true)]),
+                        size: graphic.SizeAttr(values: [0.5]),
+                        color: graphic.ColorAttr(values: Colors.primaries),
+                      )
+                    ],
+                    axes: {
+                      'createTime': graphic.Defaults.horizontalAxis,
+                      'lastPrice': graphic.Defaults.verticalAxis,
+                    },
+                    interactions: [
+                      graphic.Defaults.xPaning,
+                      graphic.Defaults.xScaling,
+                    ],
+                  ),
+                )
+              : Container(),
         ],
       ),
     );
@@ -208,6 +242,8 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin {
                     scales: {
                       'createTime': graphic.CatScale(
                         accessor: (map) => map.createTime.toString(),
+                        tickCount:
+                            _hashRates.length > 4 ? 4 : _hashRates.length,
                       ),
                       'hashrate': graphic.LinearScale(
                         accessor: (map) => map.hashrate as num,
@@ -220,7 +256,22 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin {
                             graphic.PositionAttr(field: 'createTime*hashrate'),
                         shape: graphic.ShapeAttr(
                             values: [graphic.BasicLineShape(smooth: true)]),
-                      )
+                        size: graphic.SizeAttr(values: [0.5]),
+                        color: graphic.ColorAttr(values: Colors.primaries),
+                      ),
+                      // graphic.AreaGeom(
+                      //   position:
+                      //       graphic.PositionAttr(field: 'createTime*hashrate'),
+                      //   shape: graphic.ShapeAttr(
+                      //       values: [graphic.BasicAreaShape(smooth: true)]),
+                      //   color: graphic.ColorAttr(
+                      //     values: Colors.primaries
+                      //         .map<Color>(
+                      //           (color) => color.withAlpha(65),
+                      //         )
+                      //         .toList(),
+                      //   ),
+                      // ),
                     ],
                     axes: {
                       'createTime': graphic.Defaults.horizontalAxis,
@@ -250,6 +301,7 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin {
       await _getSlides();
       await _getBulletins();
       _getHashRate();
+      _getFireCoins();
     } finally {
       EasyLoading.dismiss();
     }
@@ -306,6 +358,24 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin {
           return left.longTime.compareTo(right.longTime);
         });
         _hashRates = resp.data;
+      });
+  }
+
+  _getFireCoins() async {
+    final response = await Utils.API.getCoinPrice();
+    final resp = Models.CoinPricesResponse.fromJson(response);
+
+    if (resp.code != 200) {
+      EasyLoading.showError(resp.message);
+      return;
+    }
+
+    if (mounted)
+      setState(() {
+        resp.data.sort((left, right) {
+          return left.longTime.compareTo(right.longTime);
+        });
+        _fireCoins = resp.data;
       });
   }
 }
