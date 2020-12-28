@@ -1,5 +1,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.ore_pool_app">
+   <uses-permission android:name="android.permission.INTERNET"/>
    <application
         android:label="比特超算"
         android:icon="@mipmap/ic_launcher"
