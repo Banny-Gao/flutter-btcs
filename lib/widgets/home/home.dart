@@ -3,7 +3,9 @@ import 'package:scoped_model/scoped_model.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:graphic/graphic.dart' as graphic;
+// import 'package:graphic/graphic.dart' as graphic;
+
+import 'package:flutter_echarts/flutter_echarts.dart';
 
 import '../../scopedModels/index.dart';
 import '../../models/index.dart' as Models;
@@ -188,37 +190,54 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin {
               ? Container(
                   width: MediaQuery.of(context).size.width,
                   height: 200.0,
-                  child: graphic.Chart(
-                    data: _fireCoins,
-                    scales: {
-                      'createTime': graphic.CatScale(
-                        accessor: (map) => map.createTime.toString(),
-                        tickCount:
-                            _fireCoins.length > 4 ? 4 : _fireCoins.length,
-                      ),
-                      'lastPrice': graphic.LinearScale(
-                        accessor: (map) => map.lastPrice as num,
-                        nice: true,
-                      ),
-                    },
-                    geoms: [
-                      graphic.LineGeom(
-                        position:
-                            graphic.PositionAttr(field: 'createTime*lastPrice'),
-                        shape: graphic.ShapeAttr(
-                            values: [graphic.BasicLineShape(smooth: true)]),
-                        size: graphic.SizeAttr(values: [0.5]),
-                        color: graphic.ColorAttr(values: Colors.primaries),
-                      )
-                    ],
-                    axes: {
-                      'createTime': graphic.Defaults.horizontalAxis,
-                      'lastPrice': graphic.Defaults.verticalAxis,
-                    },
-                    interactions: [
-                      graphic.Defaults.xPaning,
-                      graphic.Defaults.xScaling,
-                    ],
+                  child:
+                      // graphic.Chart(
+                      //   data: _fireCoins,
+                      //   scales: {
+                      //     'createTime': graphic.CatScale(
+                      //       accessor: (map) => map.createTime.toString(),
+                      //       tickCount:
+                      //           _fireCoins.length > 4 ? 4 : _fireCoins.length,
+                      //     ),
+                      //     'lastPrice': graphic.LinearScale(
+                      //       accessor: (map) => map.lastPrice as num,
+                      //       nice: true,
+                      //     ),
+                      //   },
+                      //   geoms: [
+                      //     graphic.LineGeom(
+                      //       position:
+                      //           graphic.PositionAttr(field: 'createTime*lastPrice'),
+                      //       shape: graphic.ShapeAttr(
+                      //           values: [graphic.BasicLineShape(smooth: true)]),
+                      //       size: graphic.SizeAttr(values: [0.5]),
+                      //       color: graphic.ColorAttr(values: Colors.primaries),
+                      //     )
+                      //   ],
+                      //   axes: {
+                      //     'createTime': graphic.Defaults.horizontalAxis,
+                      //     'lastPrice': graphic.Defaults.verticalAxis,
+                      //   },
+                      //   interactions: [
+                      //     graphic.Defaults.xPaning,
+                      //     graphic.Defaults.xScaling,
+                      //   ],
+                      // ),
+                      Echarts(
+                    option: '''
+                                {
+                                  xAxis: {
+                                    data: ${_fireCoins.map((fireCoin) => fireCoin.createTime)}
+                                  },
+                                  yAxis: {
+                                    type: 'value'
+                                  },
+                                  series: [{
+                                    data: [820, 932, 901, 934, 1290, 1330, 1320],
+                                    type: 'line'
+                                  }]
+                                }
+                          ''',
                   ),
                 )
               : Container(),
@@ -237,50 +256,55 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin {
               ? Container(
                   width: MediaQuery.of(context).size.width,
                   height: 200.0,
-                  child: graphic.Chart(
-                    data: _hashRates,
-                    scales: {
-                      'createTime': graphic.CatScale(
-                        accessor: (map) => map.createTime.toString(),
-                        tickCount:
-                            _hashRates.length > 4 ? 4 : _hashRates.length,
-                      ),
-                      'hashrate': graphic.LinearScale(
-                        accessor: (map) => map.hashrate as num,
-                        nice: true,
-                      ),
-                    },
-                    geoms: [
-                      graphic.LineGeom(
-                        position:
-                            graphic.PositionAttr(field: 'createTime*hashrate'),
-                        shape: graphic.ShapeAttr(
-                            values: [graphic.BasicLineShape(smooth: true)]),
-                        size: graphic.SizeAttr(values: [0.5]),
-                        color: graphic.ColorAttr(values: Colors.primaries),
-                      ),
-                      // graphic.AreaGeom(
-                      //   position:
-                      //       graphic.PositionAttr(field: 'createTime*hashrate'),
-                      //   shape: graphic.ShapeAttr(
-                      //       values: [graphic.BasicAreaShape(smooth: true)]),
-                      //   color: graphic.ColorAttr(
-                      //     values: Colors.primaries
-                      //         .map<Color>(
-                      //           (color) => color.withAlpha(65),
-                      //         )
-                      //         .toList(),
-                      //   ),
+                  child:
+                      // graphic.Chart(
+                      //   data: _hashRates,
+                      //   scales: {
+                      //     'createTime': graphic.CatScale(
+                      //       accessor: (map) => map.createTime.toString(),
+                      //       tickCount:
+                      //           _hashRates.length > 4 ? 4 : _hashRates.length,
+                      //     ),
+                      //     'hashrate': graphic.LinearScale(
+                      //       accessor: (map) => map.hashrate as num,
+                      //       nice: true,
+                      //     ),
+                      //   },
+                      //   geoms: [
+                      //     graphic.LineGeom(
+                      //       position:
+                      //           graphic.PositionAttr(field: 'createTime*hashrate'),
+                      //       shape: graphic.ShapeAttr(
+                      //           values: [graphic.BasicLineShape(smooth: true)]),
+                      //       size: graphic.SizeAttr(values: [0.5]),
+                      //       color: graphic.ColorAttr(values: Colors.primaries),
+                      //     ),
+                      //   ],
+                      //   axes: {
+                      //     'createTime': graphic.Defaults.horizontalAxis,
+                      //     'hashrate': graphic.Defaults.verticalAxis,
+                      //   },
+                      //   interactions: [
+                      //     graphic.Defaults.xPaning,
+                      //     graphic.Defaults.xScaling,
+                      //   ],
                       // ),
-                    ],
-                    axes: {
-                      'createTime': graphic.Defaults.horizontalAxis,
-                      'hashrate': graphic.Defaults.verticalAxis,
-                    },
-                    interactions: [
-                      graphic.Defaults.xPaning,
-                      graphic.Defaults.xScaling,
-                    ],
+                      Echarts(
+                    option: '''
+                              {
+                                xAxis: {
+                                  type: 'category',
+                                  data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+                                },
+                                yAxis: {
+                                  type: 'value'
+                                },
+                                series: [{
+                                  data: [820, 932, 901, 934, 1290, 1330, 1320],
+                                  type: 'line'
+                                }]
+                              }
+                        ''',
                   ),
                 )
               : Container(),

@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:graphic/graphic.dart' as graphic;
+import 'package:flutter_echarts/flutter_echarts.dart';
+// import 'package:graphic/graphic.dart' as graphic;
 
 import '../../scopedModels/index.dart';
 import '../../models/index.dart' as Models;
@@ -58,39 +59,56 @@ class _CapitalLogs extends State<CapitalLogs> {
                 ? Container(
                     width: MediaQuery.of(context).size.width,
                     height: 200.0,
-                    child: graphic.Chart(
-                      data: logs,
-                      scales: {
-                        'createTime': graphic.CatScale(
-                          accessor: (map) => map.createTime.toString(),
-                          tickCount: logs.length > 4 ? 4 : logs.length,
-                        ),
-                        'money': graphic.LinearScale(
-                          accessor: (map) => map.money as num,
-                          nice: true,
-                        ),
-                        'type': graphic.CatScale(
-                          accessor: (map) => map.type.toString(),
-                        ),
+                    child: Echarts(
+                      option: '''
+                    {
+                      xAxis: {
+                        type: 'category',
+                        data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
                       },
-                      geoms: [
-                        graphic.LineGeom(
-                          position:
-                              graphic.PositionAttr(field: 'createTime*money'),
-                          color: graphic.ColorAttr(field: 'type'),
-                          shape: graphic.ShapeAttr(
-                              values: [graphic.BasicLineShape(smooth: true)]),
-                        )
-                      ],
-                      axes: {
-                        'createTime': graphic.Defaults.horizontalAxis,
-                        'money': graphic.Defaults.verticalAxis,
+                      yAxis: {
+                        type: 'value'
                       },
-                      interactions: [
-                        graphic.Defaults.xPaning,
-                        graphic.Defaults.xScaling,
-                      ],
+                      series: [{
+                        data: [820, 932, 901, 934, 1290, 1330, 1320],
+                        type: 'line'
+                      }]
+                    }
+                  ''',
                     ),
+                    // graphic.Chart(
+                    //   data: logs,
+                    //   scales: {
+                    //     'createTime': graphic.CatScale(
+                    //       accessor: (map) => map.createTime.toString(),
+                    //       tickCount: logs.length > 4 ? 4 : logs.length,
+                    //     ),
+                    //     'money': graphic.LinearScale(
+                    //       accessor: (map) => map.money as num,
+                    //       nice: true,
+                    //     ),
+                    //     'type': graphic.CatScale(
+                    //       accessor: (map) => map.type.toString(),
+                    //     ),
+                    //   },
+                    //   geoms: [
+                    //     graphic.LineGeom(
+                    //       position:
+                    //           graphic.PositionAttr(field: 'createTime*money'),
+                    //       color: graphic.ColorAttr(field: 'type'),
+                    //       shape: graphic.ShapeAttr(
+                    //           values: [graphic.BasicLineShape(smooth: true)]),
+                    //     )
+                    //   ],
+                    //   axes: {
+                    //     'createTime': graphic.Defaults.horizontalAxis,
+                    //     'money': graphic.Defaults.verticalAxis,
+                    //   },
+                    //   interactions: [
+                    //     graphic.Defaults.xPaning,
+                    //     graphic.Defaults.xScaling,
+                    //   ],
+                    // ),
                   )
                 : Container(),
             Divider(),

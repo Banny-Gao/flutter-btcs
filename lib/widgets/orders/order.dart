@@ -3,7 +3,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:graphic/graphic.dart' as graphic;
+// import 'package:graphic/graphic.dart' as graphic;
 
 import '../../routes.dart';
 import '../../models/index.dart' as Models;
@@ -88,58 +88,58 @@ class _OrderState extends State<Order> with RouteAware {
       ),
       body: ListView(
         children: <Widget>[
-          computedEarnings.length != 0 ? buildOrderEarnings() : Container(),
+          computedEarnings.length != 0 ? Container() : Container(),
           order.orderNumber != null ? buildOrderInfo() : Container(),
         ],
       ),
     );
   }
 
-  Widget buildOrderEarnings() {
-    return Container(
-      child: Column(
-        children: [
-          Container(
-            width: MediaQuery.of(context).size.width,
-            height: 200.0,
-            child: graphic.Chart(
-              data: computedEarnings,
-              scales: {
-                'createTime': graphic.CatScale(
-                  accessor: (map) => map['createTime'].toString(),
-                  tickCount:
-                      computedEarnings.length > 4 ? 4 : computedEarnings.length,
-                ),
-                'type': graphic.CatScale(
-                  accessor: (map) => map['type'],
-                ),
-                'value': graphic.LinearScale(
-                  accessor: (map) => map['value'] as num,
-                  nice: true,
-                ),
-              },
-              geoms: [
-                graphic.LineGeom(
-                  position: graphic.PositionAttr(field: 'createTime*value'),
-                  color: graphic.ColorAttr(field: 'type'),
-                  shape: graphic.ShapeAttr(
-                      values: [graphic.BasicLineShape(smooth: true)]),
-                )
-              ],
-              axes: {
-                'createTime': graphic.Defaults.horizontalAxis,
-                'value': graphic.Defaults.verticalAxis,
-              },
-              interactions: [
-                graphic.Defaults.xPaning,
-                graphic.Defaults.xScaling,
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
+  // Widget buildOrderEarnings() {
+  //   return Container(
+  //     child: Column(
+  //       children: [
+  //         Container(
+  //           width: MediaQuery.of(context).size.width,
+  //           height: 200.0,
+  //           child: graphic.Chart(
+  //             data: computedEarnings,
+  //             scales: {
+  //               'createTime': graphic.CatScale(
+  //                 accessor: (map) => map['createTime'].toString(),
+  //                 tickCount:
+  //                     computedEarnings.length > 4 ? 4 : computedEarnings.length,
+  //               ),
+  //               'type': graphic.CatScale(
+  //                 accessor: (map) => map['type'],
+  //               ),
+  //               'value': graphic.LinearScale(
+  //                 accessor: (map) => map['value'] as num,
+  //                 nice: true,
+  //               ),
+  //             },
+  //             geoms: [
+  //               graphic.LineGeom(
+  //                 position: graphic.PositionAttr(field: 'createTime*value'),
+  //                 color: graphic.ColorAttr(field: 'type'),
+  //                 shape: graphic.ShapeAttr(
+  //                     values: [graphic.BasicLineShape(smooth: true)]),
+  //               )
+  //             ],
+  //             axes: {
+  //               'createTime': graphic.Defaults.horizontalAxis,
+  //               'value': graphic.Defaults.verticalAxis,
+  //             },
+  //             interactions: [
+  //               graphic.Defaults.xPaning,
+  //               graphic.Defaults.xScaling,
+  //             ],
+  //           ),
+  //         ),
+  //       ],
+  //     ),
+  //   );
+  // }
 
   _getData() async {
     EasyLoading.show();
