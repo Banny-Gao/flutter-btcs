@@ -1,9 +1,10 @@
 import 'dart:math';
+import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-// import 'package:graphic/graphic.dart' as graphic;
+import 'package:flutter_echarts/flutter_echarts.dart';
 
 import '../../routes.dart';
 import '../../models/index.dart' as Models;
@@ -53,33 +54,6 @@ class _OrderState extends State<Order> with RouteAware {
     _getData();
   }
 
-  get computedEarnings {
-    List list = [];
-    earnings.forEach((earning) {
-      list.add({
-        'type': 'earnings',
-        'value': earning.earnings,
-        'createTime': earning.createTime,
-        'longTime': earning.longTime,
-      });
-      list.add({
-        'type': 'platformMoney',
-        'value': earning.platformMoney,
-        'longTime': earning.longTime,
-        'createTime': earning.createTime,
-      });
-      list.add({
-        'type': 'totalEarnings',
-        'value': earning.totalEarnings,
-        'longTime': earning.longTime,
-        'createTime': earning.createTime,
-      });
-    });
-    list.sort(
-        (left, right) => left['createTime'].compareTo(right['createTime']));
-    return list;
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -88,58 +62,56 @@ class _OrderState extends State<Order> with RouteAware {
       ),
       body: ListView(
         children: <Widget>[
-          computedEarnings.length != 0 ? Container() : Container(),
+          earnings.length != 0 ? buildOrderEarnings() : Container(),
           order.orderNumber != null ? buildOrderInfo() : Container(),
         ],
       ),
     );
   }
 
-  // Widget buildOrderEarnings() {
-  //   return Container(
-  //     child: Column(
-  //       children: [
-  //         Container(
-  //           width: MediaQuery.of(context).size.width,
-  //           height: 200.0,
-  //           child: graphic.Chart(
-  //             data: computedEarnings,
-  //             scales: {
-  //               'createTime': graphic.CatScale(
-  //                 accessor: (map) => map['createTime'].toString(),
-  //                 tickCount:
-  //                     computedEarnings.length > 4 ? 4 : computedEarnings.length,
-  //               ),
-  //               'type': graphic.CatScale(
-  //                 accessor: (map) => map['type'],
-  //               ),
-  //               'value': graphic.LinearScale(
-  //                 accessor: (map) => map['value'] as num,
-  //                 nice: true,
-  //               ),
-  //             },
-  //             geoms: [
-  //               graphic.LineGeom(
-  //                 position: graphic.PositionAttr(field: 'createTime*value'),
-  //                 color: graphic.ColorAttr(field: 'type'),
-  //                 shape: graphic.ShapeAttr(
-  //                     values: [graphic.BasicLineShape(smooth: true)]),
-  //               )
-  //             ],
-  //             axes: {
-  //               'createTime': graphic.Defaults.horizontalAxis,
-  //               'value': graphic.Defaults.verticalAxis,
-  //             },
-  //             interactions: [
-  //               graphic.Defaults.xPaning,
-  //               graphic.Defaults.xScaling,
-  //             ],
-  //           ),
-  //         ),
-  //       ],
-  //     ),
-  //   );
-  // }
+  Widget buildOrderEarnings() {
+    return Container(
+      child: Column(
+        children: [
+          Container(
+            width: MediaQuery.of(context).size.width,
+            height: 200.0,
+            child:
+            Echarts(
+                        option: ''' 
+                        {
+                          dataset: {
+                            dimensions: ['createTime', 'earnings', 'platformMoney', 'totalEarnings'],
+                            source: ${jsonEncode(earnings)},
+                          },
+                          tooltip: {
+                              trigger: 'axis'
+                          },
+                          xAxis: {
+                              type: 'category',
+                          },
+                          yAxis: {
+                              type: 'value',
+                              scale: true,
+                          },
+                          grid: {
+                            left: '14%',
+                            top: 20,
+                            bottom: 20,
+                          },
+                          series: [
+                            {type: 'line',},
+                            {type: 'line',},
+                            {type: 'line',},
+                          ],
+                        }
+                          ''',
+                  ),
+          ),
+        ],
+      ),
+    );
+  }
 
   _getData() async {
     EasyLoading.show();
@@ -180,6 +152,8 @@ class _OrderState extends State<Order> with RouteAware {
     if (mounted)
       setState(() {
         earnings = more.toList();
+        earnings.sort(
+        (left, right) => left.createTime.compareTo(right.createTime));
         earningsPagination.isCompleted = isLastPage;
       });
   }

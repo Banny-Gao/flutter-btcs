@@ -1,10 +1,10 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-// import 'package:graphic/graphic.dart' as graphic;
-
 import 'package:flutter_echarts/flutter_echarts.dart';
 
 import '../../scopedModels/index.dart';
@@ -188,55 +188,43 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin {
           buildTitle('FireCoin价格'),
           _fireCoins.length != 0
               ? Container(
-                  width: MediaQuery.of(context).size.width,
+                  width: MediaQuery.of(context).size.width - 20.0,
                   height: 200.0,
-                  child:
-                      // graphic.Chart(
-                      //   data: _fireCoins,
-                      //   scales: {
-                      //     'createTime': graphic.CatScale(
-                      //       accessor: (map) => map.createTime.toString(),
-                      //       tickCount:
-                      //           _fireCoins.length > 4 ? 4 : _fireCoins.length,
-                      //     ),
-                      //     'lastPrice': graphic.LinearScale(
-                      //       accessor: (map) => map.lastPrice as num,
-                      //       nice: true,
-                      //     ),
-                      //   },
-                      //   geoms: [
-                      //     graphic.LineGeom(
-                      //       position:
-                      //           graphic.PositionAttr(field: 'createTime*lastPrice'),
-                      //       shape: graphic.ShapeAttr(
-                      //           values: [graphic.BasicLineShape(smooth: true)]),
-                      //       size: graphic.SizeAttr(values: [0.5]),
-                      //       color: graphic.ColorAttr(values: Colors.primaries),
-                      //     )
-                      //   ],
-                      //   axes: {
-                      //     'createTime': graphic.Defaults.horizontalAxis,
-                      //     'lastPrice': graphic.Defaults.verticalAxis,
-                      //   },
-                      //   interactions: [
-                      //     graphic.Defaults.xPaning,
-                      //     graphic.Defaults.xScaling,
-                      //   ],
-                      // ),
-                      Echarts(
-                    option: '''
-                                {
-                                  xAxis: {
-                                    data: ${_fireCoins.map((fireCoin) => fireCoin.createTime)}
-                                  },
-                                  yAxis: {
-                                    type: 'value'
-                                  },
-                                  series: [{
-                                    data: [820, 932, 901, 934, 1290, 1330, 1320],
-                                    type: 'line'
-                                  }]
-                                }
+                  child: Echarts(
+                        option: ''' 
+                        {
+                          dataset: {
+                            dimensions: ['createTime', 'lastPrice'],
+                            source: ${jsonEncode(_fireCoins)},
+                          },
+                          tooltip: {
+                              trigger: 'axis'
+                          },
+                          xAxis: {
+                              type: 'category',
+                              boundaryGap: false,
+                          },
+                          yAxis: {
+                              type: 'value',
+                              scale: true,
+                          },
+                          grid: {
+                            left: '14%',
+                            top: 20,
+                          },
+                          dataZoom: [{
+                              type: 'inside',
+                              start: 0,
+                              end: 100
+                          }, {
+                              type: 'slider',
+                              start: 0,
+                              end: 100
+                          }],
+                          series: [{
+                            type: 'line',
+                          }],
+                        }
                           ''',
                   ),
                 )
@@ -257,56 +245,51 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin {
                   width: MediaQuery.of(context).size.width,
                   height: 200.0,
                   child:
-                      // graphic.Chart(
-                      //   data: _hashRates,
-                      //   scales: {
-                      //     'createTime': graphic.CatScale(
-                      //       accessor: (map) => map.createTime.toString(),
-                      //       tickCount:
-                      //           _hashRates.length > 4 ? 4 : _hashRates.length,
-                      //     ),
-                      //     'hashrate': graphic.LinearScale(
-                      //       accessor: (map) => map.hashrate as num,
-                      //       nice: true,
-                      //     ),
-                      //   },
-                      //   geoms: [
-                      //     graphic.LineGeom(
-                      //       position:
-                      //           graphic.PositionAttr(field: 'createTime*hashrate'),
-                      //       shape: graphic.ShapeAttr(
-                      //           values: [graphic.BasicLineShape(smooth: true)]),
-                      //       size: graphic.SizeAttr(values: [0.5]),
-                      //       color: graphic.ColorAttr(values: Colors.primaries),
-                      //     ),
-                      //   ],
-                      //   axes: {
-                      //     'createTime': graphic.Defaults.horizontalAxis,
-                      //     'hashrate': graphic.Defaults.verticalAxis,
-                      //   },
-                      //   interactions: [
-                      //     graphic.Defaults.xPaning,
-                      //     graphic.Defaults.xScaling,
-                      //   ],
-                      // ),
                       Echarts(
-                    option: '''
-                              {
-                                xAxis: {
-                                  type: 'category',
-                                  data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
-                                },
-                                yAxis: {
-                                  type: 'value'
-                                },
-                                series: [{
-                                  data: [820, 932, 901, 934, 1290, 1330, 1320],
-                                  type: 'line'
-                                }]
-                              }
-                        ''',
+                        option: ''' 
+                        {
+                          dataset: {
+                            dimensions: ['createTime', 'hashrate'],
+                            source: ${jsonEncode(_hashRates)},
+                          },
+                          tooltip: {
+                              trigger: 'axis'
+                          },
+                          xAxis: {
+                              type: 'category',
+                              boundaryGap: false,
+                          },
+                          yAxis: {
+                              type: 'value',
+                              scale: true,
+                          },
+                          grid: {
+                            left: '14%',
+                            top: 20,
+                            bottom: 20,
+                          },
+                          series: [{
+                            type: 'line',
+                            smooth: true,
+                            symbol: 'none',
+                            sampling: 'average',
+                            itemStyle: {
+                                color: 'rgb(255, 158, 68)'
+                            },
+                            areaStyle: {
+                                color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
+                                    offset: 0,
+                                    color: 'rgb(255, 158, 68)'
+                                }, {
+                                    offset: 1,
+                                    color: 'rgb(255, 70, 131)'
+                                }])
+                            },
+                          }],
+                        }
+                          ''',
                   ),
-                )
+                  )
               : Container(),
         ],
       ),
