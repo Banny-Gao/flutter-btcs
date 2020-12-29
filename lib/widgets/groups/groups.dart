@@ -42,7 +42,7 @@ class _GroupsState extends State<Groups>
   double gridChildWidth;
   double gridChildHeight;
   double gridVerticalPadding;
-  double childAspectRatio = 0.54;
+  double childAspectRatio = 1.2;
 
   get wantKeepAlive => true;
 
@@ -102,9 +102,9 @@ class _GroupsState extends State<Groups>
   @override
   // ignore: must_call_super
   Widget build(BuildContext context) {
-    gridChildWidth = (MediaQuery.of(context).size.width / 2) - 20;
+    gridChildWidth = MediaQuery.of(context).size.width - 10;
     gridChildHeight = gridChildWidth / childAspectRatio;
-    gridVerticalPadding = gridChildHeight / 100;
+    gridVerticalPadding = gridChildHeight / 180;
 
     return ScopedModelDescendant<AppModel>(builder: (context, child, model) {
       return Scaffold(
@@ -165,6 +165,14 @@ class _GroupsState extends State<Groups>
       final response = await Utils.API.getGroups(currencyId: coin.currencyId);
       final resp = Models.GroupsResponse.fromJson(response);
 
+      if (resp.code == 401) {
+        Navigator.of(context).pushNamedAndRemoveUntil(
+          '/login',
+          (Route route) => false,
+        );
+        return;
+      }
+
       if (resp.code != 200) {
         EasyLoading.showError(resp.message);
         return;
@@ -197,10 +205,9 @@ class _GroupsState extends State<Groups>
           child: GridView.custom(
             // padding: EdgeInsets.all(10.0),
             gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 2,
+              crossAxisCount: 1,
               childAspectRatio: childAspectRatio,
               mainAxisSpacing: 5.0,
-              crossAxisSpacing: 5.0,
             ),
             childrenDelegate: SliverChildBuilderDelegate(
               (BuildContext context, index) => buildGridItem(tabGroup[index]),
@@ -230,7 +237,7 @@ class _GroupsState extends State<Groups>
 
     List<Widget> children = <Widget>[
       Container(
-        height: gridChildHeight / 3,
+        height: gridChildHeight / 2.68,
         child: Stack(
           fit: StackFit.expand,
           children: [
@@ -256,8 +263,7 @@ class _GroupsState extends State<Groups>
       ),
       Divider(height: 0),
       Padding(
-        padding: EdgeInsets.fromLTRB(
-            10.0, gridVerticalPadding, 10.0, gridVerticalPadding),
+        padding: EdgeInsets.fromLTRB(10.0, 0, 10.0, 0),
         child: Text(
           group.groupName,
           maxLines: 1,
@@ -344,8 +350,7 @@ class _GroupsState extends State<Groups>
             border: Border.all(color: Colors.black45),
           ),
           child: Padding(
-            padding: EdgeInsets.fromLTRB(
-                8.0, gridVerticalPadding, 8.0, gridVerticalPadding),
+            padding: EdgeInsets.fromLTRB(8.0, 0, 8.0, 0),
             child: Align(
               child: Text(
                 Utils.GroupState[state - 1],
@@ -362,7 +367,7 @@ class _GroupsState extends State<Groups>
     }
     return ConstrainedBox(
       constraints: BoxConstraints(
-        minHeight: gridChildHeight / 11.5,
+        minHeight: gridChildHeight / 20,
       ),
       child: Padding(
         padding: EdgeInsets.fromLTRB(10.0, 0, 10.0, 0),

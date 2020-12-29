@@ -251,10 +251,15 @@ class _Electrics extends State<Electrics> {
                               ),
                             ),
                           ),
-                          Text(
-                            '${electric.payAddress}',
-                            style: TextStyle(
-                              color: Colors.black87,
+                          Padding(
+                            padding: EdgeInsets.only(left: 10.0),
+                            child: Text(
+                              '${electric.payAddress}',
+                              style: TextStyle(
+                                color: Colors.black87,
+                              ),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
                             ),
                           ),
                           Padding(
@@ -378,6 +383,13 @@ class _Electrics extends State<Electrics> {
         electricOrderNumber: electricOrder.electricOrderNumber);
     final resp = Models.NonstandardResponse.fromJson(response);
 
+    if (resp.code == 401) {
+      Navigator.of(context).pushNamedAndRemoveUntil(
+        '/login',
+        (Route route) => false,
+      );
+      return;
+    }
     if (resp.code != 200) {
       EasyLoading.showError(resp.message);
       return;

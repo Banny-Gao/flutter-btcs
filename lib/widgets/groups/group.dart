@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:flutter_collapse/flutter_collapse.dart';
 
 import '../../routes.dart';
 import '../../models/index.dart' as Models;
@@ -24,16 +25,14 @@ class _GroupState extends State<Group> with RouteAware {
   Models.Group group = new Models.Group();
   int _tab = 0;
 
-  List<Map<String, dynamic>> tabs = [
-    {'title': '拼团说明', 'content': ''},
-    {'title': '风险说明', 'content': ''},
-    {'title': '矿场信息', 'content': ''},
-    {'title': '矿池信息', 'content': ''},
-  ];
-
   Timer _timer;
   List<Function> timerFns = [];
   bool isLoaded = false;
+  bool isBasicInfoExpanded = false;
+  bool isGroupProtocolExpanded = false;
+  bool isRiskProtocolExpanded = false;
+
+  List<Models.Help> helps = [];
 
   @override
   void didChangeDependencies() {
@@ -45,6 +44,7 @@ class _GroupState extends State<Group> with RouteAware {
   void initState() {
     Future.delayed(Duration.zero).then((value) {
       _getData();
+      _getHelps();
     });
 
     final call = (timer) {
@@ -179,7 +179,7 @@ class _GroupState extends State<Group> with RouteAware {
                     ),
                     Expanded(
                       child: Text(
-                        '拼团信息',
+                        '拼团贷购信息',
                         style: TextStyle(
                           fontSize: 16.0,
                           fontWeight: FontWeight.w600,
@@ -191,36 +191,125 @@ class _GroupState extends State<Group> with RouteAware {
               ),
               buildGroupItem(),
               Divider(),
-              Padding(
-                padding: EdgeInsets.all(10.0),
-                child: Row(
+              Collapse(
+                title: Container(child: Text('基础信息')),
+                body: Column(
                   children: [
-                    Padding(
-                      padding: EdgeInsets.only(right: 6.0),
-                      child: Icon(
-                        FontAwesomeIcons.gripVertical,
-                        size: 16.0,
-                        color: Colors.red[400],
-                      ),
-                    ),
-                    Expanded(
-                      child: Text(
-                        '矿机信息',
-                        style: TextStyle(
-                          fontSize: 16.0,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                    ),
+                    Html(data: group.millInfo),
+                    Html(data: group.mineral),
+                    Html(data: group.sampleInfo),
                   ],
                 ),
+                value: isBasicInfoExpanded,
+                onChange: (bool value) {
+                  setState(() {
+                    isBasicInfoExpanded = value;
+                  });
+                },
               ),
-              group.millInfo != null ? Html(data: group.millInfo) : Container(),
+              Collapse(
+                title: Container(child: Text('拼团说明')),
+                body: Column(
+                  children: [
+                    Html(data: group.groupProtocol),
+                  ],
+                ),
+                value: isGroupProtocolExpanded,
+                onChange: (bool value) {
+                  setState(() {
+                    isGroupProtocolExpanded = value;
+                  });
+                },
+              ),
+              Collapse(
+                title: Container(child: Text('风险说明')),
+                body: Column(
+                  children: [
+                    Html(data: group.riskProtocol),
+                  ],
+                ),
+                value: isRiskProtocolExpanded,
+                onChange: (bool value) {
+                  setState(() {
+                    isRiskProtocolExpanded = value;
+                  });
+                },
+              ),
               Divider(),
-              Row(
-                children: getPagesTab(),
-              ),
-              getPageViews()[_tab],
+              helps.length != 0
+                  ? Padding(
+                      padding: EdgeInsets.all(10.0),
+                      child: Row(
+                        children: [
+                          Padding(
+                            padding: EdgeInsets.only(right: 6.0),
+                            child: Icon(
+                              FontAwesomeIcons.gripVertical,
+                              size: 16.0,
+                              color: Colors.red[400],
+                            ),
+                          ),
+                          Expanded(
+                            child: Text(
+                              '常见问题',
+                              style: TextStyle(
+                                fontSize: 16.0,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    )
+                  : Container(),
+              helps.length != 0
+                  ? Column(
+                      children: helps
+                          .map<Widget>(
+                            (help) => Column(
+                              children: [
+                                InkWell(
+                                  child: Padding(
+                                    padding: EdgeInsets.symmetric(
+                                      vertical: 5.0,
+                                      horizontal: 20.0,
+                                    ),
+                                    child: Row(
+                                      children: [
+                                        Expanded(
+                                          child: Text(
+                                            help.title,
+                                            style: TextStyle(
+                                              color:
+                                                  Theme.of(context).hintColor,
+                                            ),
+                                          ),
+                                        ),
+                                        Icon(
+                                          FontAwesomeIcons.chevronRight,
+                                          size: 12.0,
+                                          color: Colors.grey[400],
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  onTap: () {
+                                    Navigator.of(context).pushNamed(
+                                      '/contentPreview',
+                                      arguments: {
+                                        'title': help.title,
+                                        'content': help.content,
+                                      },
+                                    );
+                                  },
+                                ),
+                                Divider(),
+                              ],
+                            ),
+                          )
+                          .toList(),
+                    )
+                  : Container(),
             ],
           ),
         ),
@@ -276,32 +365,6 @@ class _GroupState extends State<Group> with RouteAware {
           )
           .toList(),
     );
-  }
-
-  getPagesTab() {
-    return tabs.map<Widget>(
-      (info) {
-        return Expanded(
-          child: GestureDetector(
-            onTap: () {
-              setState(() {
-                _tab =
-                    tabs.indexWhere((node) => node['title'] == info['title']);
-              });
-            },
-            child: Text(
-              info['title'],
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                color: tabs[_tab]['title'] == info['title']
-                    ? Theme.of(context).primaryColor
-                    : Colors.grey,
-              ),
-            ),
-          ),
-        );
-      },
-    ).toList();
   }
 
   Widget buildGroupState() {
@@ -374,12 +437,6 @@ class _GroupState extends State<Group> with RouteAware {
       if (mounted)
         setState(() {
           group = resp.data;
-          tabs = [
-            {'title': '拼团说明', 'content': group.groupProtocol},
-            {'title': '风险说明', 'content': group.riskProtocol},
-            {'title': '矿场信息', 'content': group.mineral},
-            {'title': '矿池信息', 'content': group.sampleInfo},
-          ];
           timerFns.add(() => () {
                 setState(() {
                   group.countDownTime -= 1000;
@@ -393,17 +450,6 @@ class _GroupState extends State<Group> with RouteAware {
       });
     }
   }
-
-  List<Widget> getPageViews() => tabs.map<Widget>(
-        (tab) {
-          return isLoaded
-              ? Html(
-                  data: Utils.getHtmlUrl(tab['title'], tab['content'],
-                      parsed: false),
-                )
-              : Container();
-        },
-      ).toList();
 
   checkoutGroup() async {
     num max = group.platformTotal - group.sellPlatform;
@@ -450,5 +496,21 @@ class _GroupState extends State<Group> with RouteAware {
     } finally {
       EasyLoading.dismiss();
     }
+  }
+
+  _getHelps() async {
+    final response = await Utils.API.getHelps(
+      pageNum: 1,
+      pageSize: 6,
+      helpClassifyId: 1,
+    );
+    final resp = Models.HelpsResponse.fromJson(response);
+
+    if (resp.code != 200) return;
+
+    if (mounted)
+      setState(() {
+        helps = resp.data.list;
+      });
   }
 }

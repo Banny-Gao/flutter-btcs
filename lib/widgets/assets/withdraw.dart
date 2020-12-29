@@ -309,6 +309,14 @@ class _Withdraw extends State<Withdraw> {
     final response =
         await Utils.API.getCurrencyAddress(currencyId: widget.asset.currencyId);
     final resp = Models.CurrencyAddresses.fromJson(response);
+
+    if (resp.code == 401) {
+      Navigator.of(context).pushNamedAndRemoveUntil(
+        '/login',
+        (Route route) => false,
+      );
+      return;
+    }
     if (resp.code != 200) return;
 
     if (mounted)
@@ -332,6 +340,14 @@ class _Withdraw extends State<Withdraw> {
     );
 
     final resp = Models.NonstandardResponse.fromJson(response);
+
+    if (resp.code == 401) {
+      Navigator.of(context).pushNamedAndRemoveUntil(
+        '/login',
+        (Route route) => false,
+      );
+      return;
+    }
     if (resp.code != 200) return;
 
     Navigator.of(context).popAndPushNamed('/withdraws');

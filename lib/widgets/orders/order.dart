@@ -76,9 +76,8 @@ class _OrderState extends State<Order> with RouteAware {
           Container(
             width: MediaQuery.of(context).size.width,
             height: 200.0,
-            child:
-            Echarts(
-                        option: ''' 
+            child: Echarts(
+              option: ''' 
                         {
                           dataset: {
                             dimensions: ['createTime', 'earnings', 'platformMoney', 'totalEarnings'],
@@ -106,7 +105,7 @@ class _OrderState extends State<Order> with RouteAware {
                           ],
                         }
                           ''',
-                  ),
+            ),
           ),
         ],
       ),
@@ -152,8 +151,8 @@ class _OrderState extends State<Order> with RouteAware {
     if (mounted)
       setState(() {
         earnings = more.toList();
-        earnings.sort(
-        (left, right) => left.createTime.compareTo(right.createTime));
+        earnings
+            .sort((left, right) => left.createTime.compareTo(right.createTime));
         earningsPagination.isCompleted = isLastPage;
       });
   }

@@ -279,6 +279,13 @@ class _WalletAddresses extends State<WalletAddresses> {
     final response = await Utils.API.deleteWalletAddress(id);
     final resp = Models.DeleteWalletAddressResponse.fromJson(response);
 
+    if (resp.code == 401) {
+      Navigator.of(context).pushNamedAndRemoveUntil(
+        '/login',
+        (Route route) => false,
+      );
+      return;
+    }
     if (resp.code != 200) {
       EasyLoading.showError(resp.message);
       return;

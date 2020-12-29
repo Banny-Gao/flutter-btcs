@@ -11,6 +11,7 @@ class HashRate {
     num hashrate;
     num id;
     String longTime;
+    String varCreateTime;
     
     factory HashRate.fromJson(Map<String,dynamic> json) => _$HashRateFromJson(json);
     Map<String, dynamic> toJson() => _$HashRateToJson(this);

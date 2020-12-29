@@ -210,6 +210,13 @@ class _EditUser extends State<EditUser> {
     );
     final resp = Models.ChangeUserInfoResponse.fromJson(response);
 
+    if (resp.code == 401) {
+      Navigator.of(context).pushNamedAndRemoveUntil(
+        '/login',
+        (Route route) => false,
+      );
+      return;
+    }
     if (resp.code != 200) {
       EasyLoading.showError(resp.message);
       return;

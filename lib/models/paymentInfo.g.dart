@@ -17,7 +17,9 @@ PaymentInfo _$PaymentInfoFromJson(Map<String, dynamic> json) {
     ..money = json['money'] as num
     ..orderNumber = json['orderNumber'] as String
     ..payQr = json['payQr'] as String
-    ..topAddress = json['topAddress'] as String;
+    ..topAddress = json['topAddress'] as String
+    ..wxAccount = json['wxAccount'] as String
+    ..wxQr = json['wxQr'] as String;
 }
 
 Map<String, dynamic> _$PaymentInfoToJson(PaymentInfo instance) =>
@@ -31,5 +33,7 @@ Map<String, dynamic> _$PaymentInfoToJson(PaymentInfo instance) =>
       'money': instance.money,
       'orderNumber': instance.orderNumber,
       'payQr': instance.payQr,
-      'topAddress': instance.topAddress
+      'topAddress': instance.topAddress,
+      'wxAccount': instance.wxAccount,
+      'wxQr': instance.wxQr
     };

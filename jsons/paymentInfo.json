@@ -8,5 +8,7 @@
   "money": 0.0,
   "orderNumber": "",
   "payQr": "",
-  "topAddress": ""
+  "topAddress": "",
+  "wxAccount": "",
+  "wxQr": ""
 }

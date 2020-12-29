@@ -12,7 +12,8 @@ HashRate _$HashRateFromJson(Map<String, dynamic> json) {
     ..currencyId = json['currencyId'] as num
     ..hashrate = json['hashrate'] as num
     ..id = json['id'] as num
-    ..longTime = json['longTime'] as String;
+    ..longTime = json['longTime'] as String
+    ..varCreateTime = json['varCreateTime'] as String;
 }
 
 Map<String, dynamic> _$HashRateToJson(HashRate instance) => <String, dynamic>{
@@ -20,5 +21,6 @@ Map<String, dynamic> _$HashRateToJson(HashRate instance) => <String, dynamic>{
       'currencyId': instance.currencyId,
       'hashrate': instance.hashrate,
       'id': instance.id,
-      'longTime': instance.longTime
+      'longTime': instance.longTime,
+      'varCreateTime': instance.varCreateTime
     };

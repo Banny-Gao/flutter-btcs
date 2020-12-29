@@ -205,9 +205,14 @@ class _ElectricOrder extends State<ElectricOrder> {
                         ),
                         Expanded(
                           child: paymentInfo.payAddress != null
-                              ? Text(
-                                  '${paymentInfo.payAddress}',
-                                  textAlign: TextAlign.right,
+                              ? Padding(
+                                  padding: EdgeInsets.only(left: 10.0),
+                                  child: Text(
+                                    '${paymentInfo.payAddress}',
+                                    textAlign: TextAlign.right,
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
                                 )
                               : Container(),
                         ),
@@ -334,6 +339,13 @@ class _ElectricOrder extends State<ElectricOrder> {
     final response = await Utils.API.confirmElectricOrderPayed(
         electricOrderNumber: paymentInfo.electricOrderNumber);
     final resp = Models.NonstandardResponse.fromJson(response);
+    if (resp.code == 401) {
+      Navigator.of(context).pushNamedAndRemoveUntil(
+        '/login',
+        (Route route) => false,
+      );
+      return;
+    }
 
     if (resp.code != 200) {
       EasyLoading.showError(resp.message);
@@ -375,6 +387,13 @@ class _ElectricOrder extends State<ElectricOrder> {
         electricOrderNumber: paymentInfo.electricOrderNumber);
     final resp = Models.NonstandardResponse.fromJson(response);
 
+    if (resp.code == 401) {
+      Navigator.of(context).pushNamedAndRemoveUntil(
+        '/login',
+        (Route route) => false,
+      );
+      return;
+    }
     if (resp.code != 200) {
       EasyLoading.showError(resp.message);
       return;

@@ -140,10 +140,10 @@ class _NewWalletAddress extends State<NewWalletAddress> {
                   Expanded(
                     child: Text('币种地址'),
                   ),
-                  InkWell(
-                    onTap: _scanQR,
-                    child: Icon(FontAwesomeIcons.qrcode),
-                  ),
+                  // InkWell(
+                  //   onTap: _scanQR,
+                  //   child: Icon(FontAwesomeIcons.qrcode),
+                  // ),
                 ],
               ),
               Padding(
@@ -169,15 +169,15 @@ class _NewWalletAddress extends State<NewWalletAddress> {
                   ),
                 ),
               ),
-              walletAddress != null
-                  ? Center(
-                      child: QrImage(
-                        data: walletAddress,
-                        version: QrVersions.auto,
-                        size: 200.0,
-                      ),
-                    )
-                  : Container(),
+              // walletAddress != null
+              //     ? Center(
+              //         child: QrImage(
+              //           data: walletAddress,
+              //           version: QrVersions.auto,
+              //           size: 200.0,
+              //         ),
+              //       )
+              //     : Container(),
             ],
           ),
         ),
@@ -273,6 +273,14 @@ class _NewWalletAddress extends State<NewWalletAddress> {
         currencyId: coinChoicedId,
       );
       resp = Models.AddWalletAddressesResponse.fromJson(response);
+    }
+
+    if (resp.code == 401) {
+      Navigator.of(context).pushNamedAndRemoveUntil(
+        '/login',
+        (Route route) => false,
+      );
+      return;
     }
 
     if (resp.code != 200) {

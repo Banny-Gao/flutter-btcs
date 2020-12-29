@@ -21,7 +21,6 @@ dependencies:
   flutter_easyloading: ^2.2.1
   flutter_swiper: ^1.1.6
   webview_flutter: ^1.0.7
-  graphic: ^0.3.0
   flutter_echarts: ^1.5.0
   google_fonts: ^1.1.1
   image_picker: ^0.6.7+14
@@ -30,7 +29,7 @@ dependencies:
   flutter_slidable: ^0.5.7
   flutter_html: ^1.1.1
   clipboard: ^0.1.2+8
-
+  flutter_collapse: ^0.1.1
 
 dev_dependencies:
   flutter_test:

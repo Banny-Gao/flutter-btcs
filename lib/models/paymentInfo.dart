@@ -16,6 +16,8 @@ class PaymentInfo {
     String orderNumber;
     String payQr;
     String topAddress;
+    String wxAccount;
+    String wxQr;
     
     factory PaymentInfo.fromJson(Map<String,dynamic> json) => _$PaymentInfoFromJson(json);
     Map<String, dynamic> toJson() => _$PaymentInfoToJson(this);

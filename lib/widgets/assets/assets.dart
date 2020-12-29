@@ -332,6 +332,13 @@ class _Assets extends State<Assets> with RouteAware {
     final response = await Utils.API.getAssets(currencyId: currencyId);
     final resp = Models.AssetsResponse.fromJson(response);
 
+    if (resp.code == 401) {
+      Navigator.of(context).pushNamedAndRemoveUntil(
+        '/login',
+        (Route route) => false,
+      );
+      return;
+    }
     if (resp.code != 200) return;
 
     if (mounted)

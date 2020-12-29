@@ -11,6 +11,7 @@ class CoinPrice {
     String currencyName;
     num marketId;
     num longTime;
+    String varCreateTime;
     
     factory CoinPrice.fromJson(Map<String,dynamic> json) => _$CoinPriceFromJson(json);
     Map<String, dynamic> toJson() => _$CoinPriceToJson(this);

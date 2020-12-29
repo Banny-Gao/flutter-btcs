@@ -185,16 +185,16 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin {
       margin: EdgeInsets.only(top: 10.0),
       child: Column(
         children: [
-          buildTitle('FireCoin价格'),
+          buildTitle('BTC行情价格'),
           _fireCoins.length != 0
               ? Container(
                   width: MediaQuery.of(context).size.width - 20.0,
                   height: 200.0,
                   child: Echarts(
-                        option: ''' 
+                    option: ''' 
                         {
                           dataset: {
-                            dimensions: ['createTime', 'lastPrice'],
+                            dimensions: ['varCreateTime', 'lastPrice'],
                             source: ${jsonEncode(_fireCoins)},
                           },
                           tooltip: {
@@ -223,9 +223,13 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin {
                           }],
                           series: [{
                             type: 'line',
+                            label: {
+                              formatter: '价格: {c}'
+                            },
                           }],
                         }
                           ''',
+                    captureAllGestures: true,
                   ),
                 )
               : Container(),
@@ -235,21 +239,22 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin {
   }
 
   Widget buildhashrateCharts() {
-    return Container(
-      margin: EdgeInsets.only(top: 10.0),
-      child: Column(
-        children: [
-          buildTitle('矿池算力'),
-          _hashRates.length != 0
-              ? Container(
-                  width: MediaQuery.of(context).size.width,
-                  height: 200.0,
-                  child:
-                      Echarts(
-                        option: ''' 
+    return Padding(
+      padding: EdgeInsets.only(bottom: 20.0),
+      child: Container(
+        margin: EdgeInsets.only(top: 20.0),
+        child: Column(
+          children: [
+            buildTitle('BTC矿池算力'),
+            _hashRates.length != 0
+                ? Container(
+                    width: MediaQuery.of(context).size.width,
+                    height: 200.0,
+                    child: Echarts(
+                      option: ''' 
                         {
                           dataset: {
-                            dimensions: ['createTime', 'hashrate'],
+                            dimensions: ['varCreateTime', 'hashrate'],
                             source: ${jsonEncode(_hashRates)},
                           },
                           tooltip: {
@@ -288,10 +293,11 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin {
                           }],
                         }
                           ''',
-                  ),
+                    ),
                   )
-              : Container(),
-        ],
+                : Container(),
+          ],
+        ),
       ),
     );
   }
@@ -354,6 +360,13 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin {
     final response = await Utils.API.getHashRate();
     final resp = Models.HashRateResponse.fromJson(response);
 
+    if (resp.code == 401) {
+      Navigator.of(context).pushNamedAndRemoveUntil(
+        '/login',
+        (Route route) => false,
+      );
+      return;
+    }
     if (resp.code != 200) {
       EasyLoading.showError(resp.message);
       return;
@@ -372,6 +385,13 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin {
     final response = await Utils.API.getCoinPrice();
     final resp = Models.CoinPricesResponse.fromJson(response);
 
+    if (resp.code == 401) {
+      Navigator.of(context).pushNamedAndRemoveUntil(
+        '/login',
+        (Route route) => false,
+      );
+      return;
+    }
     if (resp.code != 200) {
       EasyLoading.showError(resp.message);
       return;
