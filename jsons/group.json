@@ -31,5 +31,7 @@
   "miningStatus": 0,
   "observerAddress": "",
   "riskProtocol": "",
-  "sampleInfo": ""
+  "sampleInfo": "",
+  "stagingMoney": 0,
+  "stagingRate": 0
 }

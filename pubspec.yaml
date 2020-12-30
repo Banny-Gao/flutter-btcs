@@ -46,3 +46,4 @@ flutter:
   assets:
     - assets/img/login_logo.png
     - assets/img/avatar.png
+    - assets/img/usdt.png

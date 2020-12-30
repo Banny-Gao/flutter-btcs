@@ -8,5 +8,7 @@
   "payAddress": "",
   "payQr": "",
   "currencyId": 0,
-  "orderNumber": ""
+  "orderNumber": "",
+  "wxAccount": "",
+  "wxQr": ""
 }

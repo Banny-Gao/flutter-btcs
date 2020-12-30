@@ -74,7 +74,7 @@ class _OrderPayment extends State<OrderPayment> {
                                   Padding(
                                     padding: EdgeInsets.only(left: 10.0),
                                     child: Text(
-                                      '${paymentInfo.currencyName}支付',
+                                      'USDT支付',
                                       style: TextStyle(
                                         fontSize: 16.0,
                                         fontWeight: FontWeight.w500,
@@ -124,17 +124,13 @@ class _OrderPayment extends State<OrderPayment> {
                       Padding(
                         padding: EdgeInsets.only(right: 10.0),
                         child: paymentInfo.currencyIconPath != null
-                            ? Image.network(
-                                paymentInfo.currencyIconPath,
+                            ? Image.asset(
+                                'assets/img/usdt.png',
                                 width: 20.0,
                                 height: 20.0,
                                 fit: BoxFit.fill,
                               )
-                            : Icon(
-                                FontAwesomeIcons.btc,
-                                color: Colors
-                                    .primaries[14 % Colors.primaries.length],
-                              ),
+                            : Container(),
                       ),
                       Text(
                         '支付金额',
@@ -145,7 +141,7 @@ class _OrderPayment extends State<OrderPayment> {
                       Expanded(
                         child: paymentInfo.money != null
                             ? Text(
-                                '${paymentInfo.money} ${paymentInfo.currencyName}',
+                                '${paymentInfo.money} USDT',
                                 textAlign: TextAlign.right,
                                 style: TextStyle(
                                   color: Colors.red[400],

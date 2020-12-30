@@ -16,6 +16,8 @@ class ElectricOrder {
     String payQr;
     num currencyId;
     String orderNumber;
+    String wxAccount;
+    String wxQr;
     
     factory ElectricOrder.fromJson(Map<String,dynamic> json) => _$ElectricOrderFromJson(json);
     Map<String, dynamic> toJson() => _$ElectricOrderToJson(this);

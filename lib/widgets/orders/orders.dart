@@ -341,7 +341,7 @@ class _Orders extends State<Orders> with RouteAware {
               ),
             ),
             Text(
-              '${order.buyNumber} / ${order.money} ${order.currencyName}',
+              '${order.buyNumber} / ${order.money} USDT',
               style: TextStyle(
                 color: Colors.black87,
               ),

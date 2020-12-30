@@ -356,48 +356,52 @@ class _OrderState extends State<Order> with RouteAware {
               ),
             )
           : Container(),
-      Padding(
-        padding: EdgeInsets.fromLTRB(20.0, 6.0, 20.0, 6.0),
-        child: Row(
-          children: [
-            Expanded(
-              child: Text(
-                '剩余分期天数',
-                style: TextStyle(
-                  fontSize: 12.0,
-                ),
+      order.status == 1
+          ? Padding(
+              padding: EdgeInsets.fromLTRB(20.0, 6.0, 20.0, 6.0),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      '剩余分期天数',
+                      style: TextStyle(
+                        fontSize: 12.0,
+                      ),
+                    ),
+                  ),
+                  Text(
+                    '${order.paymentNumber} 天',
+                    style: TextStyle(
+                      color: Colors.black87,
+                    ),
+                  ),
+                ],
               ),
-            ),
-            Text(
-              '${order.paymentNumber} 天',
-              style: TextStyle(
-                color: Colors.black87,
+            )
+          : Container(),
+      order.status == 1
+          ? Padding(
+              padding: EdgeInsets.fromLTRB(20.0, 6.0, 20.0, 6.0),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      '未付款分期',
+                      style: TextStyle(
+                        fontSize: 12.0,
+                      ),
+                    ),
+                  ),
+                  Text(
+                    '${order.surplusMoney} USDT',
+                    style: TextStyle(
+                      color: Colors.black87,
+                    ),
+                  ),
+                ],
               ),
-            ),
-          ],
-        ),
-      ),
-      Padding(
-        padding: EdgeInsets.fromLTRB(20.0, 6.0, 20.0, 6.0),
-        child: Row(
-          children: [
-            Expanded(
-              child: Text(
-                '未付款分期',
-                style: TextStyle(
-                  fontSize: 12.0,
-                ),
-              ),
-            ),
-            Text(
-              '${order.surplusMoney} ${order.currencyName}',
-              style: TextStyle(
-                color: Colors.black87,
-              ),
-            ),
-          ],
-        ),
-      ),
+            )
+          : Container(),
       Padding(
         padding: EdgeInsets.fromLTRB(20.0, 6.0, 20.0, 6.0),
         child: Row(
@@ -411,7 +415,7 @@ class _OrderState extends State<Order> with RouteAware {
               ),
             ),
             Text(
-              '${order.buyNumber} / ${order.money} ${order.currencyName}',
+              '${order.buyNumber} / ${order.money} USDT',
               style: TextStyle(
                 color: Colors.black87,
               ),
@@ -433,7 +437,7 @@ class _OrderState extends State<Order> with RouteAware {
                     ),
                   ),
                   Text(
-                    '${order.awaitElectricity} ${order.currencyName}',
+                    '${order.awaitElectricity} USDT',
                     style: TextStyle(
                       color: Colors.black87,
                     ),

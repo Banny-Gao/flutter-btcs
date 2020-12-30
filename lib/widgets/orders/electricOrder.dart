@@ -53,251 +53,285 @@ class _ElectricOrder extends State<ElectricOrder> {
           ),
         ],
       ),
-      body: Padding(
-        padding: EdgeInsets.only(left: 20.0, right: 20.0),
-        child: Column(
-          children: [
-            Padding(
-              padding: EdgeInsets.only(top: 20.0, bottom: 20.0),
-              child: Row(
-                children: [
-                  Padding(
-                    padding: EdgeInsets.only(right: 10.0),
-                    child: paymentInfo.currencyIconPath != null
-                        ? Image.network(
-                            paymentInfo.currencyIconPath,
-                            width: 20.0,
-                            height: 20.0,
-                            fit: BoxFit.fill,
-                          )
-                        : Icon(
-                            FontAwesomeIcons.btc,
-                            color:
-                                Colors.primaries[14 % Colors.primaries.length],
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: EdgeInsets.only(left: 20.0, right: 20.0, bottom: 20.0),
+          child: Column(
+            children: [
+              Padding(
+                padding: EdgeInsets.only(top: 20.0, bottom: 20.0),
+                child: Row(
+                  children: [
+                    Padding(
+                      padding: EdgeInsets.only(right: 10.0),
+                      child: paymentInfo.currencyIconPath != null
+                          ? Image.asset(
+                              'assets/img/usdt.png',
+                              width: 20.0,
+                              height: 20.0,
+                              fit: BoxFit.fill,
+                            )
+                          : Container(),
+                    ),
+                    Padding(
+                      padding: EdgeInsets.only(left: 10.0),
+                      child: paymentInfo.currencyName != null
+                          ? Text(
+                              'USDT支付',
+                              style: TextStyle(
+                                fontSize: 16.0,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            )
+                          : Container(),
+                    ),
+                    Expanded(
+                      child: paymentInfo.money != null
+                          ? Text(
+                              '${paymentInfo.money} USDT',
+                              textAlign: TextAlign.right,
+                              style: TextStyle(
+                                color: Colors.red[400],
+                                fontWeight: FontWeight.w500,
+                              ),
+                            )
+                          : Container(),
+                    ),
+                  ],
+                ),
+              ),
+              Divider(height: 0),
+              Padding(
+                padding: EdgeInsets.only(top: 20.0, bottom: 20.0),
+                child: paymentInfo.createTime != null
+                    ? Row(
+                        children: [
+                          Padding(
+                            padding: EdgeInsets.only(right: 10.0),
+                            child: Icon(
+                              FontAwesomeIcons.clock,
+                              color:
+                                  Colors.primaries[3 % Colors.primaries.length],
+                              size: 20.0,
+                            ),
                           ),
-                  ),
+                          Text(
+                            '创建时间',
+                            style: TextStyle(
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                          Expanded(
+                            child: Text(
+                              '${paymentInfo.createTime}',
+                              textAlign: TextAlign.right,
+                            ),
+                          ),
+                        ],
+                      )
+                    : Container(),
+              ),
+              Divider(height: 0),
+              Padding(
+                padding: EdgeInsets.only(top: 20.0, bottom: 20.0),
+                child: paymentInfo.electricOrderNumber != null
+                    ? Row(
+                        children: [
+                          Padding(
+                            padding: EdgeInsets.only(right: 10.0),
+                            child: Icon(
+                              FontAwesomeIcons.receipt,
+                              color:
+                                  Colors.primaries[1 % Colors.primaries.length],
+                              size: 20.0,
+                            ),
+                          ),
+                          Text(
+                            '缴费订单编号',
+                            style: TextStyle(
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                          Expanded(
+                            child: paymentInfo.electricOrderNumber != null
+                                ? Text(
+                                    '${paymentInfo.electricOrderNumber}',
+                                    textAlign: TextAlign.right,
+                                  )
+                                : Container(),
+                          ),
+                          Padding(
+                            padding: EdgeInsets.only(left: 10.0),
+                            child: GestureDetector(
+                              onTap: () async {
+                                FlutterClipboard.copy(
+                                    '${paymentInfo.electricOrderNumber}');
+                                EasyLoading.showInfo('已复制缴费订单编号');
+                              },
+                              child: Icon(
+                                FontAwesomeIcons.copy,
+                                size: 16.0,
+                                color: Colors.black45,
+                              ),
+                            ),
+                          ),
+                        ],
+                      )
+                    : Container(),
+              ),
+              Divider(height: 0),
+              Padding(
+                padding: EdgeInsets.only(top: 20.0, bottom: 20.0),
+                child: paymentInfo.payAddress != null
+                    ? Row(
+                        children: [
+                          Padding(
+                            padding: EdgeInsets.only(right: 10.0),
+                            child: Icon(
+                              FontAwesomeIcons.mapMarkerAlt,
+                              color:
+                                  Colors.primaries[4 % Colors.primaries.length],
+                              size: 20.0,
+                            ),
+                          ),
+                          Text(
+                            '收款地址',
+                            style: TextStyle(
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                          Expanded(
+                            child: paymentInfo.payAddress != null
+                                ? Padding(
+                                    padding: EdgeInsets.only(left: 10.0),
+                                    child: Text(
+                                      '${paymentInfo.payAddress}',
+                                      textAlign: TextAlign.right,
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                  )
+                                : Container(),
+                          ),
+                          Padding(
+                            padding: EdgeInsets.only(left: 10.0),
+                            child: GestureDetector(
+                              onTap: () async {
+                                FlutterClipboard.copy(
+                                    '${paymentInfo.payAddress}');
+                                EasyLoading.showInfo('已复制支付地址');
+                              },
+                              child: Icon(
+                                FontAwesomeIcons.copy,
+                                size: 16.0,
+                                color: Colors.black45,
+                              ),
+                            ),
+                          ),
+                        ],
+                      )
+                    : Container(),
+              ),
+              Padding(
+                padding: EdgeInsets.only(top: 20.0, bottom: 20.0),
+                child: paymentInfo.payQr != null
+                    ? Image.network(
+                        paymentInfo.payQr,
+                        width: 200.0,
+                        height: 200.0,
+                      )
+                    : paymentInfo.payQr != null
+                        ? QrImage(
+                            data: paymentInfo.payQr,
+                            version: QrVersions.auto,
+                            size: 200.0,
+                          )
+                        : Container(),
+              ),
+              Divider(height: 0),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text('客服微信: ${paymentInfo.wxAccount}'),
                   Padding(
                     padding: EdgeInsets.only(left: 10.0),
-                    child: paymentInfo.currencyName != null
-                        ? Text(
-                            '${paymentInfo.currencyName}支付',
-                            style: TextStyle(
-                              fontSize: 16.0,
-                              fontWeight: FontWeight.w500,
-                            ),
-                          )
-                        : Container(),
-                  ),
-                  Expanded(
-                    child: paymentInfo.money != null
-                        ? Text(
-                            '${paymentInfo.money} ${paymentInfo.currencyName}',
-                            textAlign: TextAlign.right,
-                            style: TextStyle(
-                              color: Colors.red[400],
-                              fontWeight: FontWeight.w500,
-                            ),
-                          )
-                        : Container(),
+                    child: GestureDetector(
+                      onTap: () async {
+                        FlutterClipboard.copy('${paymentInfo.wxAccount}');
+                        EasyLoading.showInfo('已复制客服微信');
+                      },
+                      child: Icon(
+                        FontAwesomeIcons.copy,
+                        size: 16.0,
+                        color: Colors.black45,
+                      ),
+                    ),
                   ),
                 ],
               ),
-            ),
-            Divider(height: 0),
-            Padding(
-              padding: EdgeInsets.only(top: 20.0, bottom: 20.0),
-              child: paymentInfo.createTime != null
-                  ? Row(
-                      children: [
-                        Padding(
-                          padding: EdgeInsets.only(right: 10.0),
-                          child: Icon(
-                            FontAwesomeIcons.clock,
-                            color:
-                                Colors.primaries[3 % Colors.primaries.length],
-                            size: 20.0,
-                          ),
-                        ),
-                        Text(
-                          '创建时间',
-                          style: TextStyle(
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                        Expanded(
-                          child: Text(
-                            '${paymentInfo.createTime}',
-                            textAlign: TextAlign.right,
-                          ),
-                        ),
-                      ],
-                    )
-                  : Container(),
-            ),
-            Divider(height: 0),
-            Padding(
-              padding: EdgeInsets.only(top: 20.0, bottom: 20.0),
-              child: paymentInfo.electricOrderNumber != null
-                  ? Row(
-                      children: [
-                        Padding(
-                          padding: EdgeInsets.only(right: 10.0),
-                          child: Icon(
-                            FontAwesomeIcons.receipt,
-                            color:
-                                Colors.primaries[1 % Colors.primaries.length],
-                            size: 20.0,
-                          ),
-                        ),
-                        Text(
-                          '缴费订单编号',
-                          style: TextStyle(
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                        Expanded(
-                          child: paymentInfo.electricOrderNumber != null
-                              ? Text(
-                                  '${paymentInfo.electricOrderNumber}',
-                                  textAlign: TextAlign.right,
-                                )
-                              : Container(),
-                        ),
-                        Padding(
-                          padding: EdgeInsets.only(left: 10.0),
-                          child: GestureDetector(
-                            onTap: () async {
-                              FlutterClipboard.copy(
-                                  '${paymentInfo.electricOrderNumber}');
-                              EasyLoading.showInfo('已复制缴费订单编号');
-                            },
-                            child: Icon(
-                              FontAwesomeIcons.copy,
-                              size: 16.0,
-                              color: Colors.black45,
-                            ),
-                          ),
-                        ),
-                      ],
-                    )
-                  : Container(),
-            ),
-            Divider(height: 0),
-            Padding(
-              padding: EdgeInsets.only(top: 20.0, bottom: 20.0),
-              child: paymentInfo.payAddress != null
-                  ? Row(
-                      children: [
-                        Padding(
-                          padding: EdgeInsets.only(right: 10.0),
-                          child: Icon(
-                            FontAwesomeIcons.mapMarkerAlt,
-                            color:
-                                Colors.primaries[4 % Colors.primaries.length],
-                            size: 20.0,
-                          ),
-                        ),
-                        Text(
-                          '收款地址',
-                          style: TextStyle(
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                        Expanded(
-                          child: paymentInfo.payAddress != null
-                              ? Padding(
-                                  padding: EdgeInsets.only(left: 10.0),
-                                  child: Text(
-                                    '${paymentInfo.payAddress}',
-                                    textAlign: TextAlign.right,
-                                    maxLines: 1,
-                                    overflow: TextOverflow.ellipsis,
-                                  ),
-                                )
-                              : Container(),
-                        ),
-                        Padding(
-                          padding: EdgeInsets.only(left: 10.0),
-                          child: GestureDetector(
-                            onTap: () async {
-                              FlutterClipboard.copy(
-                                  '${paymentInfo.payAddress}');
-                              EasyLoading.showInfo('已复制支付地址');
-                            },
-                            child: Icon(
-                              FontAwesomeIcons.copy,
-                              size: 16.0,
-                              color: Colors.black45,
-                            ),
-                          ),
-                        ),
-                      ],
-                    )
-                  : Container(),
-            ),
-            Padding(
-              padding: EdgeInsets.only(top: 20.0, bottom: 20.0),
-              child: paymentInfo.payQr != null
-                  ? Image.network(
-                      paymentInfo.payQr,
-                      width: 200.0,
-                      height: 200.0,
-                    )
-                  : paymentInfo.payQr != null
-                      ? QrImage(
-                          data: paymentInfo.payQr,
-                          version: QrVersions.auto,
-                          size: 200.0,
-                        )
-                      : Container(),
-            ),
-            Divider(height: 0),
-            Container(
-              margin: EdgeInsets.only(top: 40.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
-                  RaisedButton(
-                    color: Theme.of(context).primaryColor,
-                    highlightColor: Theme.of(context).primaryColorDark,
-                    child: Padding(
-                      padding: EdgeInsets.symmetric(
-                        vertical: 10.0,
-                        horizontal: 20.0,
-                      ),
-                      child: Text(
-                        "已支付",
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 16.0,
-                        ),
-                      ),
-                    ),
-                    onPressed: handlePayed,
-                  ),
-                  OutlineButton(
-                    highlightedBorderColor: Colors.black54,
-                    child: Padding(
-                      padding: EdgeInsets.symmetric(
-                        vertical: 10.0,
-                        horizontal: 20.0,
-                      ),
-                      child: Text(
-                        "稍后支付",
-                        style: TextStyle(
-                          color: Colors.black54,
-                          fontSize: 16.0,
-                        ),
-                      ),
-                    ),
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    },
-                  ),
-                ],
+              Padding(
+                padding: EdgeInsets.only(top: 10.0, bottom: 20.0),
+                child: paymentInfo.wxQr != null
+                    ? Image.network(
+                        paymentInfo.wxQr,
+                        width: 200.0,
+                        height: 200.0,
+                      )
+                    : paymentInfo.wxAccount != null
+                        ? QrImage(
+                            data: paymentInfo.wxAccount,
+                            version: QrVersions.auto,
+                            size: 200.0,
+                          )
+                        : Container(),
               ),
-            ),
-          ],
+              Container(
+                margin: EdgeInsets.only(top: 40.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    RaisedButton(
+                      color: Theme.of(context).primaryColor,
+                      highlightColor: Theme.of(context).primaryColorDark,
+                      child: Padding(
+                        padding: EdgeInsets.symmetric(
+                          vertical: 10.0,
+                          horizontal: 20.0,
+                        ),
+                        child: Text(
+                          "已支付",
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 16.0,
+                          ),
+                        ),
+                      ),
+                      onPressed: handlePayed,
+                    ),
+                    OutlineButton(
+                      highlightedBorderColor: Colors.black54,
+                      child: Padding(
+                        padding: EdgeInsets.symmetric(
+                          vertical: 10.0,
+                          horizontal: 20.0,
+                        ),
+                        child: Text(
+                          "稍后支付",
+                          style: TextStyle(
+                            color: Colors.black54,
+                            fontSize: 16.0,
+                          ),
+                        ),
+                      ),
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -310,11 +344,9 @@ class _ElectricOrder extends State<ElectricOrder> {
 
   _getData() async {
     EasyLoading.show();
-    try {
-      await getOrderPaymentInfo();
-    } finally {
-      EasyLoading.dismiss();
-    }
+    await getOrderPaymentInfo();
+
+    EasyLoading.dismiss();
   }
 
   getOrderPaymentInfo() async {
@@ -325,7 +357,10 @@ class _ElectricOrder extends State<ElectricOrder> {
     final resp = Models.ElectricOrderResponse.fromJson(response);
 
     if (resp.code != 200) {
-      await EasyLoading.showError(resp.message, duration: Duration(seconds: 3));
+      EasyLoading.showInfo(resp.message, duration: Duration(seconds: 3));
+      await Future.delayed(Duration(seconds: 3));
+      EasyLoading.dismiss();
+      Navigator.of(context).pop();
       return;
     }
 

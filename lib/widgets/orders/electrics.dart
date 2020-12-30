@@ -231,7 +231,7 @@ class _Electrics extends State<Electrics> {
                             ),
                           ),
                           Text(
-                            '${electric.money} ${coin.currencyName}',
+                            '${electric.money} USDT',
                             style: TextStyle(
                               color: Colors.black87,
                             ),

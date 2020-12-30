@@ -39,6 +39,8 @@ class Group {
     String observerAddress;
     String riskProtocol;
     String sampleInfo;
+    num stagingMoney;
+    num stagingRate;
     
     factory Group.fromJson(Map<String,dynamic> json) => _$GroupFromJson(json);
     Map<String, dynamic> toJson() => _$GroupToJson(this);

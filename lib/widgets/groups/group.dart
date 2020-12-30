@@ -13,6 +13,7 @@ import '../../util/index.dart' as Utils;
 import 'groupCheckOutCount.dart';
 import '../orders/orderSubmit.dart';
 
+// ignore: must_be_immutable
 class Group extends StatefulWidget {
   num id;
   Group({Key key, @required this.id}) : super(key: key);
@@ -67,38 +68,60 @@ class _GroupState extends State<Group> with RouteAware {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          title: Text('拼团详情'),
-        ),
-        body: Column(
+      appBar: AppBar(
+        title: Text('拼团详情'),
+      ),
+      body: Container(
+        color: Colors.white,
+        child: Column(
           children: [
             buildInfos(),
             buildAction(),
           ],
-        ));
+        ),
+      ),
+    );
   }
 
   Widget buildAction() {
     return Row(
       children: [
-        Padding(
-          padding: EdgeInsets.only(left: 10.0, right: 10.0),
-          child: Text(
-            '原价${group.realityMoney} ${group.currencyName}',
-            style: TextStyle(
-              color: Colors.grey[400],
-              fontSize: 12.0,
-              decoration: TextDecoration.lineThrough,
-            ),
-          ),
-        ),
         Expanded(
-          child: Text(
-            '拼团价${group.realityMoney} ${group.currencyName}',
-            style: TextStyle(
-              color: Colors.red[400],
-              fontSize: 14.0,
-              fontWeight: FontWeight.w500,
+          child: Padding(
+            padding: EdgeInsets.only(left: 10.0, right: 10.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  '拼团成功${group.miningBeginNumber}日左右上架开机',
+                  style: TextStyle(fontSize: 12.0, color: Colors.black54),
+                ),
+                Row(
+                  children: [
+                    Padding(
+                      padding: EdgeInsets.only(right: 10.0, top: 2.0),
+                      child: Text(
+                        '首年0息0管理费',
+                        style: TextStyle(
+                          color: Colors.black54,
+                          fontSize: 12.0,
+                        ),
+                      ),
+                    ),
+                    Expanded(
+                      child: Text(
+                        '拼团价${group.realityMoney} USDT',
+                        textAlign: TextAlign.right,
+                        style: TextStyle(
+                          color: Colors.red[400],
+                          fontSize: 13.0,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
             ),
           ),
         ),
@@ -190,7 +213,6 @@ class _GroupState extends State<Group> with RouteAware {
                 ),
               ),
               buildGroupItem(),
-              Divider(),
               Collapse(
                 title: Container(child: Text('基础信息')),
                 body: Column(
@@ -235,7 +257,6 @@ class _GroupState extends State<Group> with RouteAware {
                   });
                 },
               ),
-              Divider(),
               helps.length != 0
                   ? Padding(
                       padding: EdgeInsets.all(10.0),
@@ -319,51 +340,48 @@ class _GroupState extends State<Group> with RouteAware {
 
   Widget buildGroupItem() {
     final Map<String, dynamic> map = {
-      '团购开始时间': group.beginTime,
-      '团购结束时间': group.endTime,
-      '矿场运维名称': group.mineFieldName,
       '机器型号': group.lcd,
-      '周期': '${group.activityDay}天',
-      '托管模式': group.carePattern,
-      '每日电费': group.electricMoney,
-      '算力': '${group.hashrate}TH/s',
-      '管理费用比例(%)': group.manageFee,
-      '拼团总共台数': group.platformTotal,
-      '功耗:': '${group.power}W',
-      '已出售台数': group.sellPlatform,
-      '分期期数': group.stagingTime,
-      '分期付款比例': group.theRatio,
-      '静态收益': '${group.yieldOutput} ${group.currencyName}/天',
+      '成团数量': '${group.platformTotal}台',
+      '剩余台数': '${group.platformTotal - group.sellPlatform}台',
+      '矿机贷款首付': '${group.theRatio}%',
+      '分期付款周期': '${group.stagingTime}/月',
+      '每期还款本金': '${group.stagingMoney}USDT/月/台',
+      '托管矿位租金': '${group.electricMoney}USDT/月/台',
+      '管理费用比例': '${group.manageFee}%',
+      '每期还款利息': '${group.stagingRate}%',
     };
 
-    return Column(
-      children: map.keys
-          .map<Widget>(
-            (key) => Padding(
-              padding: EdgeInsets.fromLTRB(10.0, 6.0, 10.0, 0),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: Text(
-                      '$key',
-                      style: TextStyle(
-                        fontSize: 12.0,
-                        color: Colors.black45,
+    return Padding(
+      padding: EdgeInsets.only(bottom: 10.0),
+      child: Column(
+        children: map.keys
+            .map<Widget>(
+              (key) => Padding(
+                padding: EdgeInsets.fromLTRB(10.0, 6.0, 10.0, 0),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: Text(
+                        '$key',
+                        style: TextStyle(
+                          fontSize: 12.0,
+                          color: Colors.black54,
+                        ),
                       ),
                     ),
-                  ),
-                  Text(
-                    '${map[key]}',
-                    style: TextStyle(
-                      color: Colors.black54,
-                      fontSize: 14.0,
+                    Text(
+                      '${map[key]}',
+                      style: TextStyle(
+                        color: Colors.black87,
+                        fontSize: 12.0,
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
-            ),
-          )
-          .toList(),
+            )
+            .toList(),
+      ),
     );
   }
 

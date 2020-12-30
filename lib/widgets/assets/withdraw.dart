@@ -260,9 +260,19 @@ class _Withdraw extends State<Withdraw> {
                 top: 20.0,
               ),
               child: Text(
-                '温馨提示',
-                style: TextStyle(color: Colors.black45),
+                '温馨提示:',
+                style: TextStyle(color: Colors.black54, fontSize: 12.0),
               ),
+            ),
+            Text(
+              '最小提币数量为: ${widget.asset.minLimit}${widget.asset.currencyName}',
+              softWrap: true,
+              style: TextStyle(color: Colors.black54, fontSize: 12.0),
+            ),
+            Text(
+              '为保障资金安全，当您账户安全测了变更、密码修改、我们会对提币进行人工审核，请耐心等待工作人员电话联系。请务必确认电脑及浏览器安全，防止信息被篡改或泄露。您所提的数字资产为一币多链资产，无论您选择从哪个链上提出，均意味着您所拥有的该提币页面展示的数字资产总量减少相应的提出数量。',
+              softWrap: true,
+              style: TextStyle(color: Colors.black54, fontSize: 12.0),
             ),
             Padding(
               padding: EdgeInsets.only(top: 40.0),

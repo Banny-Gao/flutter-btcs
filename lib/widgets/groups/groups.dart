@@ -42,7 +42,7 @@ class _GroupsState extends State<Groups>
   double gridChildWidth;
   double gridChildHeight;
   double gridVerticalPadding;
-  double childAspectRatio = 1.2;
+  double childAspectRatio = 1.25;
 
   get wantKeepAlive => true;
 
@@ -222,7 +222,7 @@ class _GroupsState extends State<Groups>
     final Map<String, dynamic> map = {
       '矿场名称': group.mineFieldName,
       '机器型号': group.lcd,
-      '周期': '${group.activityDay}天',
+      // '周期': '${group.activityDay}天',
       // '托管模式': group.carePattern,
       // '每日电费': group.electricMoney,
       '算力': '${group.hashrate}TH/s',
@@ -232,12 +232,12 @@ class _GroupsState extends State<Groups>
       // '已出售台数': group.sellPlatform,
       // '分期期数': group.stagingTime,
       // '分期付款比例': group.theRatio,
-      '静态收益': '${group.yieldOutput}${group.currencyName}/天',
+      '静态收益': '${group.yieldOutput} ${group.currencyName}/天(参考值)',
     };
 
     List<Widget> children = <Widget>[
       Container(
-        height: gridChildHeight / 2.68,
+        height: gridChildHeight / 2.5,
         child: Stack(
           fit: StackFit.expand,
           children: [
@@ -263,13 +263,13 @@ class _GroupsState extends State<Groups>
       ),
       Divider(height: 0),
       Padding(
-        padding: EdgeInsets.fromLTRB(10.0, 0, 10.0, 0),
+        padding: EdgeInsets.fromLTRB(10.0, gridVerticalPadding, 10.0, 0),
         child: Text(
           group.groupName,
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
           style: TextStyle(
-            fontSize: gridChildHeight / 30,
+            fontSize: gridChildHeight / 26,
             fontWeight: FontWeight.w600,
           ),
         ),
@@ -392,7 +392,7 @@ class _GroupsState extends State<Groups>
             text: TextSpan(
               children: [
                 TextSpan(
-                  text: '${group.realityMoney}${group.currencyName}',
+                  text: '${group.realityMoney} USDT',
                   style: TextStyle(
                     fontSize: gridChildHeight / 35,
                     color: Colors.black45,
@@ -400,7 +400,7 @@ class _GroupsState extends State<Groups>
                   ),
                 ),
                 TextSpan(
-                  text: ' ${group.discountMoney}${group.currencyName}',
+                  text: ' ${group.discountMoney} USDT',
                   style: TextStyle(
                     color: Colors.red[400],
                     fontSize: gridChildHeight / 30,
