@@ -243,37 +243,46 @@ class _Electrics extends State<Electrics> {
                       padding: EdgeInsets.only(top: 6.0),
                       child: Row(
                         children: [
+                          Text(
+                            '支付地址',
+                            style: TextStyle(
+                              fontSize: 12.0,
+                            ),
+                            softWrap: false,
+                          ),
                           Expanded(
-                            child: Text(
-                              '支付地址',
-                              style: TextStyle(
-                                fontSize: 12.0,
-                              ),
-                            ),
-                          ),
-                          Padding(
-                            padding: EdgeInsets.only(left: 10.0),
-                            child: Text(
-                              '${electric.payAddress}',
-                              style: TextStyle(
-                                color: Colors.black87,
-                              ),
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                          ),
-                          Padding(
-                            padding: EdgeInsets.only(left: 10.0),
-                            child: GestureDetector(
-                              onTap: () async {
-                                FlutterClipboard.copy('${electric.payAddress}');
-                                EasyLoading.showInfo('已复制支付地址');
-                              },
-                              child: Icon(
-                                FontAwesomeIcons.copy,
-                                size: 16.0,
-                                color: Colors.black45,
-                              ),
+                            child: Row(
+                              children: [
+                                Expanded(
+                                  child: Padding(
+                                    padding: EdgeInsets.only(left: 10.0),
+                                    child: Text(
+                                      '${electric.payAddress}',
+                                      style: TextStyle(
+                                        color: Colors.black87,
+                                      ),
+                                      textAlign: TextAlign.right,
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                  ),
+                                ),
+                                Padding(
+                                  padding: EdgeInsets.only(left: 10.0),
+                                  child: GestureDetector(
+                                    onTap: () async {
+                                      FlutterClipboard.copy(
+                                          '${electric.payAddress}');
+                                      EasyLoading.showInfo('已复制支付地址');
+                                    },
+                                    child: Icon(
+                                      FontAwesomeIcons.copy,
+                                      size: 16.0,
+                                      color: Colors.black45,
+                                    ),
+                                  ),
+                                ),
+                              ],
                             ),
                           ),
                         ],

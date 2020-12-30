@@ -340,7 +340,7 @@ class _GroupState extends State<Group> with RouteAware {
 
   Widget buildGroupItem() {
     final Map<String, dynamic> map = {
-      '机器型号': group.lcd,
+      '机器型号': '${group.lcd}',
       '成团数量': '${group.platformTotal}台',
       '剩余台数': '${group.platformTotal - group.sellPlatform}台',
       '矿机贷款首付': '${group.theRatio}%',
@@ -350,37 +350,71 @@ class _GroupState extends State<Group> with RouteAware {
       '管理费用比例': '${group.manageFee}%',
       '每期还款利息': '${group.stagingRate}%',
     };
+    final Map<num, String> tipsMap = {
+      3: '''你所分期购买的矿机费用（均已包含算力质保费、运维质保费、托管运输上架费），因市场各种因素等导致价格変化，平台保留价格调整的权利，实际购买价格以付款时为准，平台不予以退补差价。''',
+      4: '''实物矿机产品全部还清本金后产权和使用权归购买人所有(矿机租赁期内的使用权归购买人所有) ''',
+      5: '''当挖矿收益不足以抵扣分期应还本金时，购买人需提前还清本期剩余本金差额，否则平台将暂时关闭相应的矿机。''',
+      6: '''矿位租金(租金均已经包含电费、水费、网络费，日常监控、网络维护、场地配套、算力保障，矿场降温系统）矿位租金是从数字资产的收益中扣除矿位租金。如遇供电方调价等不可抗力导致矿位租金変化，平台保留矿位租金调整的权利。''',
+      7: '''还清本金后平台管理费按数字资产的收益30%收取。''',
+      8: '''按托管批次在数字资产的收益中扣除。注册首年由平台承担可能为0利息。''',
+    };
+
+    var i = -1;
 
     return Padding(
       padding: EdgeInsets.only(bottom: 10.0),
       child: Column(
-        children: map.keys
-            .map<Widget>(
-              (key) => Padding(
-                padding: EdgeInsets.fromLTRB(10.0, 6.0, 10.0, 0),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: Text(
+        children: map.keys.map<Widget>((key) {
+          i++;
+          final tooltip = tipsMap[i] != null
+              ? Padding(
+                  padding: EdgeInsets.only(left: 6.0),
+                  child: Tooltip(
+                    message: tipsMap[i],
+                    verticalOffset: -40.0,
+                    textStyle: TextStyle(fontSize: 12.0, color: Colors.white),
+                    padding: EdgeInsets.symmetric(
+                      vertical: 10.0,
+                      horizontal: 14.0,
+                    ),
+                    child: Icon(
+                      FontAwesomeIcons.questionCircle,
+                      size: 14.0,
+                      color: Theme.of(context).backgroundColor,
+                    ),
+                  ),
+                )
+              : Container();
+
+          return Padding(
+            padding: EdgeInsets.fromLTRB(10.0, 6.0, 10.0, 0),
+            child: Row(
+              children: [
+                Expanded(
+                  child: Row(
+                    children: [
+                      Text(
                         '$key',
                         style: TextStyle(
                           fontSize: 12.0,
                           color: Colors.black54,
                         ),
                       ),
-                    ),
-                    Text(
-                      '${map[key]}',
-                      style: TextStyle(
-                        color: Colors.black87,
-                        fontSize: 12.0,
-                      ),
-                    ),
-                  ],
+                      tooltip,
+                    ],
+                  ),
                 ),
-              ),
-            )
-            .toList(),
+                Text(
+                  map[key],
+                  style: TextStyle(
+                    color: Colors.black87,
+                    fontSize: 12.0,
+                  ),
+                ),
+              ],
+            ),
+          );
+        }).toList(),
       ),
     );
   }

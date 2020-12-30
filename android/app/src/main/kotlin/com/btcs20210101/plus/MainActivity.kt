@@ -1,4 +1,4 @@
-package com.example.ore_pool_app
+package com.btcs20210101.plus
 
 import io.flutter.embedding.android.FlutterActivity
 
