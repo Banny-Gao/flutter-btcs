@@ -33,5 +33,11 @@
   "riskProtocol": "",
   "sampleInfo": "",
   "stagingMoney": 0,
-  "stagingRate": 0
+  "stagingRate": 0,
+  "downExplain": "",
+  "stagingExplain": "",
+  "repaymentExplain": "",
+  "careExplain": "",
+  "managExplain": "",
+  "interestExplain": ""
 }
