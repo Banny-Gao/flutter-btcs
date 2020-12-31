@@ -42,7 +42,13 @@ Group _$GroupFromJson(Map<String, dynamic> json) {
     ..riskProtocol = json['riskProtocol'] as String
     ..sampleInfo = json['sampleInfo'] as String
     ..stagingMoney = json['stagingMoney'] as num
-    ..stagingRate = json['stagingRate'] as num;
+    ..stagingRate = json['stagingRate'] as num
+    ..downExplain = json['downExplain'] as String
+    ..stagingExplain = json['stagingExplain'] as String
+    ..repaymentExplain = json['repaymentExplain'] as String
+    ..careExplain = json['careExplain'] as String
+    ..managExplain = json['managExplain'] as String
+    ..interestExplain = json['interestExplain'] as String;
 }
 
 Map<String, dynamic> _$GroupToJson(Group instance) => <String, dynamic>{
@@ -80,5 +86,11 @@ Map<String, dynamic> _$GroupToJson(Group instance) => <String, dynamic>{
       'riskProtocol': instance.riskProtocol,
       'sampleInfo': instance.sampleInfo,
       'stagingMoney': instance.stagingMoney,
-      'stagingRate': instance.stagingRate
+      'stagingRate': instance.stagingRate,
+      'downExplain': instance.downExplain,
+      'stagingExplain': instance.stagingExplain,
+      'repaymentExplain': instance.repaymentExplain,
+      'careExplain': instance.careExplain,
+      'managExplain': instance.managExplain,
+      'interestExplain': instance.interestExplain
     };

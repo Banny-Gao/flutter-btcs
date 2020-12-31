@@ -363,6 +363,7 @@ class _GroupState extends State<Group> with RouteAware {
       padding: EdgeInsets.only(bottom: 10.0),
       child: Column(
         children: map.keys.map<Widget>((key) {
+          print(tipsMap[key]);
           final tooltip = tipsMap[key] != null
               ? Padding(
                   padding: EdgeInsets.only(left: 6.0),
@@ -495,6 +496,8 @@ class _GroupState extends State<Group> with RouteAware {
                   group.countDownTime -= 1000;
                 });
               });
+
+          print(group.downExplain);
         });
     } finally {
       EasyLoading.dismiss();
