@@ -182,11 +182,11 @@ class _OrderSubmit extends State<OrderSubmit> {
         .map<DataRow>(
           (server) => DataRow(
             cells: [
+              DataCell(Text(server.serveProduct)),
               DataCell(Text(server.chargeWay)),
               DataCell(Text(server.costType)),
               DataCell(Text(server.number)),
               DataCell(Text(server.price)),
-              DataCell(Text(server.serveProduct)),
               DataCell(Text(server.serviceName)),
               DataCell(Text(server.subtotal)),
             ],

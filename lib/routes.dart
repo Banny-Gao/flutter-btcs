@@ -35,8 +35,16 @@ final routes = {
     return Order(orderNumber: args['orderNumber']);
   },
   '/withdraws': (context) => Withdraws(),
-  '/changePassword': (context) => ChangePassword(),
-  '/changePhone': (context) => ChangePhone(),
+  '/changePassword': (context) {
+    final Map<String, dynamic> args = ModalRoute.of(context).settings.arguments;
+
+    return ChangePassword(phone: args['phone']);
+  },
+  '/changePhone': (context) {
+    final Map<String, dynamic> args = ModalRoute.of(context).settings.arguments;
+
+    return ChangePhone(mode: args['mode']);
+  },
   '/auth': (context) {
     final Map<String, dynamic> args = ModalRoute.of(context).settings.arguments;
 

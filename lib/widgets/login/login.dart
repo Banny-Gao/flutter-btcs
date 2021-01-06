@@ -351,35 +351,41 @@ class _LoginPageState extends State<Login> with SingleTickerProviderStateMixin {
                   ),
                   onPressed: () => _handleSignIn(model)),
             ),
-            // Padding(
-            //   padding: EdgeInsets.only(top: 16.0),
-            //   child: Row(
-            //     crossAxisAlignment: CrossAxisAlignment.center,
-            //     mainAxisAlignment: MainAxisAlignment.center,
-            //     children: [
-            //       FlatButton(
-            //         onPressed: () {},
-            //         child: Text(
-            //           "短信登录?",
-            //           style: TextStyle(
-            //             fontSize: 12.0,
-            //             color: Colors.black54,
-            //           ),
-            //         ),
-            //       ),
-            //       FlatButton(
-            //         onPressed: () {},
-            //         child: Text(
-            //           "忘记密码?",
-            //           style: TextStyle(
-            //             fontSize: 12.0,
-            //             color: Colors.black54,
-            //           ),
-            //         ),
-            //       ),
-            //     ],
-            //   ),
-            // ),
+            Padding(
+              padding: EdgeInsets.only(top: 16.0),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  FlatButton(
+                    onPressed: () {
+                      Navigator.of(context)
+                          .pushNamed('/changePhone', arguments: {'mode': 1});
+                    },
+                    child: Text(
+                      "短信登录?",
+                      style: TextStyle(
+                        fontSize: 12.0,
+                        color: Colors.black54,
+                      ),
+                    ),
+                  ),
+                  FlatButton(
+                    onPressed: () {
+                      Navigator.of(context)
+                          .pushNamed('/changePhone', arguments: {'mode': 2});
+                    },
+                    child: Text(
+                      "忘记密码?",
+                      style: TextStyle(
+                        fontSize: 12.0,
+                        color: Colors.black54,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
           ],
         ),
       ),

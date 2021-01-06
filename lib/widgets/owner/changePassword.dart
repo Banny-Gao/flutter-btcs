@@ -11,7 +11,8 @@ import '../../util/index.dart' as Utils;
 import '../../common/index.dart' as Common;
 
 class ChangePassword extends StatefulWidget {
-  ChangePassword({Key key}) : super(key: key);
+  final phone;
+  ChangePassword({Key key, this.phone}) : super(key: key);
 
   @override
   _ChangePassword createState() => _ChangePassword();
@@ -176,11 +177,16 @@ class _ChangePassword extends State<ChangePassword> {
   }
 
   void _handleGetCode() async {
+    final phone =
+        widget.phone != null ? widget.phone : ProfileModel.profile.phone;
     EasyLoading.show();
-    final response = await Utils.API.getCode(ProfileModel.profile.phone, 5);
+    final response = await Utils.API.getCode(phone, 5);
     final resp = Models.ResponseBasic.fromJson(response);
     EasyLoading.dismiss();
-    if (resp.code != 200) return;
+    if (resp.code != 200) {
+      EasyLoading.showError(resp.message);
+      return;
+    }
 
     EasyLoading.showSuccess(Utils.Tips.signUpCodeSendSuccess);
     if (countdownTime == 0) {

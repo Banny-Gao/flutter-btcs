@@ -11,7 +11,8 @@ import '../../util/index.dart' as Utils;
 import '../../common/index.dart' as Common;
 
 class ChangePhone extends StatefulWidget {
-  ChangePhone({Key key}) : super(key: key);
+  num mode;
+  ChangePhone({Key key, this.mode = 0}) : super(key: key);
 
   @override
   _ChangePhone createState() => _ChangePhone();
@@ -31,9 +32,30 @@ class _ChangePhone extends State<ChangePhone> {
   Timer _timer;
   var countdownTime = 0;
 
+  String title = '';
+  String actionTitle = '';
+  String phoneText = '';
+
   @override
   void initState() {
     super.initState();
+
+    switch (widget.mode) {
+      case 0:
+        title = '修改手机号';
+        actionTitle = '保存';
+        phoneText = '请输入新手机号';
+        break;
+      case 1:
+        title = "短信登录";
+        actionTitle = '登录';
+        phoneText = '请输入手机号';
+        break;
+      default:
+        title = "重置密码";
+        actionTitle = '下一步';
+        phoneText = '请输入手机号';
+    }
 
     _phoneFocusNode.addListener(() {
       if (!_phoneFocusNode.hasFocus) {
@@ -56,10 +78,10 @@ class _ChangePhone extends State<ChangePhone> {
     return ScopedModelDescendant<AppModel>(
       builder: (context, child, model) => Scaffold(
         appBar: AppBar(
-          title: Text('修改手机号'),
+          title: Text(title),
           actions: [
             FlatButton(
-              child: Text('保存'),
+              child: Text(actionTitle),
               onPressed: () {
                 _handleSave(model);
               },
@@ -75,10 +97,11 @@ class _ChangePhone extends State<ChangePhone> {
     return Form(
       key: _formKey,
       child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Padding(
             padding: EdgeInsets.only(
-                top: 10.0, bottom: 10.0, left: 25.0, right: 25.0),
+                top: 20.0, bottom: 10.0, left: 25.0, right: 25.0),
             child: TextFormField(
               autofocus: true,
               focusNode: _phoneFocusNode,
@@ -97,12 +120,7 @@ class _ChangePhone extends State<ChangePhone> {
               keyboardType: TextInputType.phone,
               style: TextStyle(fontSize: 16.0, color: Colors.black),
               decoration: InputDecoration(
-                border: InputBorder.none,
-                icon: FaIcon(
-                  FontAwesomeIcons.phone,
-                  color: Colors.black,
-                ),
-                labelText: "请输入新手机号",
+                hintText: phoneText,
               ),
               validator: _validatePhone,
               onSaved: (val) {
@@ -110,46 +128,43 @@ class _ChangePhone extends State<ChangePhone> {
               },
             ),
           ),
-          Divider(),
-          Padding(
-            padding: EdgeInsets.only(
-                top: 10.0, bottom: 10.0, left: 25.0, right: 25.0),
-            child: TextFormField(
-                autofocus: true,
-                controller: _codeController,
-                style: TextStyle(fontSize: 16.0, color: Colors.black),
-                decoration: InputDecoration(
-                  border: InputBorder.none,
-                  icon: FaIcon(
-                    FontAwesomeIcons.shieldAlt,
-                    size: 22.0,
-                    color: Common.Colors.primaryFontColor,
-                  ),
-                  labelText: "验证码",
-                  suffixIcon: Padding(
-                    padding: EdgeInsets.all(10.0),
-                    child: RaisedButton(
-                      onPressed: Utils.Re.phone.hasMatch(
-                                _phone.trim(),
-                              ) &&
-                              countdownTime == 0
-                          ? _handleGetCode
-                          : null,
-                      child: Text(
-                        countdownTime > 0 ? '${countdownTime}s后重新获取' : '获取验证码',
+          widget.mode == 2
+              ? Container()
+              : Padding(
+                  padding: EdgeInsets.only(
+                      top: 10.0, bottom: 10.0, left: 25.0, right: 25.0),
+                  child: TextFormField(
+                      autofocus: true,
+                      controller: _codeController,
+                      style: TextStyle(fontSize: 16.0, color: Colors.black),
+                      decoration: InputDecoration(
+                        hintText: "验证码",
+                        suffixIcon: Padding(
+                          padding: EdgeInsets.all(10.0),
+                          child: RaisedButton(
+                            onPressed: Utils.Re.phone.hasMatch(
+                                      _phone.trim(),
+                                    ) &&
+                                    countdownTime == 0
+                                ? _handleGetCode
+                                : null,
+                            child: Text(
+                              countdownTime > 0
+                                  ? '${countdownTime}s后重新获取'
+                                  : '获取验证码',
+                            ),
+                          ),
+                        ),
                       ),
-                    ),
-                  ),
+                      validator: (val) {
+                        return Utils.Re.number.hasMatch(val.trim())
+                            ? null
+                            : Utils.Tips.codeErrorText;
+                      },
+                      onSaved: (val) {
+                        _code = val.trim();
+                      }),
                 ),
-                validator: (val) {
-                  return Utils.Re.number.hasMatch(val.trim())
-                      ? null
-                      : Utils.Tips.codeErrorText;
-                },
-                onSaved: (val) {
-                  _code = val.trim();
-                }),
-          ),
         ],
       ),
     );
@@ -187,7 +202,7 @@ class _ChangePhone extends State<ChangePhone> {
   }
 
   void _handleGetCode() async {
-    final response = await Utils.API.getCode(_phone, 1);
+    final response = await Utils.API.getCode(_phone, widget.mode == 0 ? 1 : 4);
     final resp = Models.ResponseBasic.fromJson(response);
     if (resp.code != 200) return;
 
@@ -203,6 +218,19 @@ class _ChangePhone extends State<ChangePhone> {
     if (!_userForm.validate()) return;
     _userForm.save();
 
+    switch (widget.mode) {
+      case 0:
+        handleChangePhone();
+        break;
+      case 1:
+        handlePhoneLogin(model);
+        break;
+      default:
+        handleChangePassword();
+    }
+  }
+
+  handleChangePhone() async {
     final response = await Utils.API.changePhone(
       memberPhone: _phone,
       code: _code,
@@ -217,6 +245,7 @@ class _ChangePhone extends State<ChangePhone> {
       );
       return;
     }
+
     if (resp.code != 200) {
       EasyLoading.showError(resp.message);
       return;
@@ -224,5 +253,28 @@ class _ChangePhone extends State<ChangePhone> {
     EasyLoading.showInfo('手机号修改成功，请重新登录');
 
     Navigator.of(context).restorablePopAndPushNamed('/login');
+  }
+
+  handlePhoneLogin(model) async {
+    final response = await Utils.API.codeSignIn(
+      phone: _phone,
+      code: _code,
+    );
+
+    final resp = Models.UserSignResponse.fromJson(response);
+    bool isLogin = resp.code == 200;
+
+    if (!isLogin) return;
+
+    await model.toggleLogStatus(isLogin,
+        token: resp.data?.token, phone: resp.data?.phone);
+
+    Navigator.of(context).restorablePopAndPushNamed('/');
+  }
+
+  handleChangePassword() {
+    Navigator.of(context).popAndPushNamed('/changePassword', arguments: {
+      'phone': _phone,
+    });
   }
 }

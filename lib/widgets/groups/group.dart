@@ -24,7 +24,6 @@ class Group extends StatefulWidget {
 
 class _GroupState extends State<Group> with RouteAware {
   Models.Group group = new Models.Group();
-  int _tab = 0;
 
   Timer _timer;
   List<Function> timerFns = [];
@@ -218,8 +217,6 @@ class _GroupState extends State<Group> with RouteAware {
                 body: Column(
                   children: [
                     Html(data: group.millInfo),
-                    Html(data: group.mineral),
-                    Html(data: group.sampleInfo),
                   ],
                 ),
                 value: isBasicInfoExpanded,
@@ -363,7 +360,6 @@ class _GroupState extends State<Group> with RouteAware {
       padding: EdgeInsets.only(bottom: 10.0),
       child: Column(
         children: map.keys.map<Widget>((key) {
-          print(tipsMap[key]);
           final tooltip = tipsMap[key] != null
               ? Padding(
                   padding: EdgeInsets.only(left: 6.0),
