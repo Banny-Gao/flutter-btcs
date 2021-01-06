@@ -8,13 +8,16 @@ import '../../scopedModels/index.dart';
 import '../../models/index.dart' as Models;
 import '../../util/index.dart' as Utils;
 
+import '../../routes.dart';
+
 class Owner extends StatefulWidget {
   Owner({Key key}) : super(key: key);
   @override
   _OwnerState createState() => _OwnerState();
 }
 
-class _OwnerState extends State<Owner> with AutomaticKeepAliveClientMixin {
+class _OwnerState extends State<Owner>
+    with AutomaticKeepAliveClientMixin, RouteAware {
   Models.User user = Models.User();
 
   List tabs = [
@@ -24,12 +27,12 @@ class _OwnerState extends State<Owner> with AutomaticKeepAliveClientMixin {
       'path': '/orders',
       'icon': FontAwesomeIcons.receipt,
     },
-    // {
-    //   'title': '实名认证',
-    //   'key': 'auth',
-    //   'path': '/auth',
-    //   'icon': FontAwesomeIcons.accessibleIcon,
-    // },
+    {
+      'title': '实名认证',
+      'key': 'auth',
+      'path': '/auth',
+      'icon': FontAwesomeIcons.accessibleIcon,
+    },
     {
       'title': '帮助中心',
       'key': 'helps',
@@ -42,24 +45,24 @@ class _OwnerState extends State<Owner> with AutomaticKeepAliveClientMixin {
       'path': '/walletAddresses',
       'icon': FontAwesomeIcons.wallet,
     },
-    // {
-    //   'title': '修改登录密码',
-    //   'key': 'changePassword',
-    //   'path': '/changePassword',
-    //   'icon': FontAwesomeIcons.lock,
-    // },
+    {
+      'title': '修改密码',
+      'key': 'changePassword',
+      'path': '/changePassword',
+      'icon': FontAwesomeIcons.lock,
+    },
     // {
     //   'title': '设置/修改支付密码',
     //   'key': 'changePaymentPassword',
     //   'path': '/changePaymentPassword',
     //   'icon': FontAwesomeIcons.lock,
     // },
-    // {
-    //   'title': '修改手机号',
-    //   'key': 'changePhone',
-    //   'path': '/changePhone',
-    //   'icon': FontAwesomeIcons.phone,
-    // },
+    {
+      'title': '修改手机号',
+      'key': 'changePhone',
+      'path': '/changePhone',
+      'icon': FontAwesomeIcons.phone,
+    },
     {
       'title': '公司简介',
       'key': 'about',
@@ -78,6 +81,20 @@ class _OwnerState extends State<Owner> with AutomaticKeepAliveClientMixin {
     Future.delayed(Duration.zero).then((value) {
       _getData();
     });
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    routeObserver.subscribe(this, ModalRoute.of(context));
+  }
+
+  @override
+  void didPopNext() {
+    final route = ModalRoute.of(context).settings.name;
+    if (route == '/auth') {
+      _getData();
+    }
   }
 
   @override
@@ -251,10 +268,13 @@ class _OwnerState extends State<Owner> with AutomaticKeepAliveClientMixin {
   getTabRight(index) {
     final tab = tabs[index];
     String text;
+    bool isShowChevronRight = true;
 
     switch (tab['key']) {
       case 'auth':
         text = user.autoStatus != null ? Utils.AuthStates[user.autoStatus] : '';
+        isShowChevronRight =
+            user.autoStatus == 0 || user.autoStatus == 2 ? true : false;
         break;
       case 'changePaymentPassword':
         text = user.payPwdState != null
@@ -276,11 +296,13 @@ class _OwnerState extends State<Owner> with AutomaticKeepAliveClientMixin {
         ),
         Padding(
           padding: EdgeInsets.only(left: 10.0),
-          child: Icon(
-            FontAwesomeIcons.chevronRight,
-            size: 12.0,
-            color: Colors.grey[400],
-          ),
+          child: isShowChevronRight
+              ? Icon(
+                  FontAwesomeIcons.chevronRight,
+                  size: 12.0,
+                  color: Colors.grey[400],
+                )
+              : Container(),
         ),
       ],
     );
@@ -300,6 +322,19 @@ class _OwnerState extends State<Owner> with AutomaticKeepAliveClientMixin {
             'content': _companyAbout,
           },
         );
+        break;
+      case 'auth':
+        if (user.autoStatus == 2) {
+          Navigator.of(context).pushNamed('/auth', arguments: {
+            'shouldGetAuthInfo': true,
+          });
+          return;
+        }
+
+        if (user.autoStatus == 0) {
+          Navigator.of(context).pushNamed('/auth');
+          return;
+        }
         break;
       default:
         Navigator.of(context).pushNamed(tab['path']);

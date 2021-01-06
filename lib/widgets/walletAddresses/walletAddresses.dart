@@ -56,13 +56,7 @@ class _WalletAddresses extends State<WalletAddresses> {
           actions: [
             FlatButton(
               onPressed: _showPopUpNewAddress,
-              child: Text(
-                '新建地址',
-                style: TextStyle(
-                  fontSize: 14.0,
-                  color: Theme.of(context).bottomAppBarColor,
-                ),
-              ),
+              child: Text('新建地址'),
             ),
           ],
         ),

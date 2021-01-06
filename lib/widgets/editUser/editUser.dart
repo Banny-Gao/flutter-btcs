@@ -50,13 +50,7 @@ class _EditUser extends State<EditUser> {
           title: Text('编辑个人信息'),
           actions: [
             FlatButton(
-              child: Text(
-                '保存',
-                style: TextStyle(
-                  color: Theme.of(context).bottomAppBarColor,
-                  fontSize: 16.0,
-                ),
-              ),
+              child: Text('保存'),
               onPressed: () {
                 _handleSave(model);
               },

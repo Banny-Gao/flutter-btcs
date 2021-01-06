@@ -99,11 +99,11 @@ Future _changePassword({code, phone, newPassword}) async {
     data: {
       'code': code,
       'phone': phone,
-      'password': newPassword,
+      'newPassword': newPassword,
     },
     options: Options(
       extra: {
-        "showLoading": true,
+        'useResponseInterceptor': false,
       },
     ),
   );
@@ -504,7 +504,7 @@ Future _userAuth({
     },
     options: Options(
       extra: {
-        "showLoading": true,
+        "useResponseInterceptor": false,
       },
     ),
   );
@@ -531,7 +531,7 @@ Future _changePhone({code, memberPhone}) async {
     },
     options: Options(
       extra: {
-        "showLoading": true,
+        "useResponseInterceptor": false,
       },
     ),
   );

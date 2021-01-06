@@ -9,6 +9,10 @@ class Tips {
   static String signUpCodeSendSuccess = "短信发送成功，请注意查收";
   static String userNameErrorText = "昵称不能为空";
   static String choiceCoinEmpty = "请选择币种";
+  static String idCardErrorText = "身份证号码格式有误";
+  static String nameErrorText = "姓名不能空";
+  static String isCardDateStartError = "有效期开始时间不能为空";
+  static String isCardDateEndError = "有效期结束时间不能为空";
 }
 
 List AuthStates = ['未认证', '待审核', '审核拒绝', '已认证'];

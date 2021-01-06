@@ -1,6 +1,7 @@
 export 'addWalletAddressesResponse.dart' ; 
 export 'asset.dart' ; 
 export 'assetsResponse.dart' ; 
+export 'authInfo.dart' ; 
 export 'bulletins.dart' ; 
 export 'bulletinsResponse.dart' ; 
 export 'bulletinsResponseData.dart' ; 
@@ -22,6 +23,7 @@ export 'electricOrder.dart' ;
 export 'electricOrderResponse.dart' ; 
 export 'electricsResponse.dart' ; 
 export 'electricsResponseData.dart' ; 
+export 'getAuthInfoResponse.dart' ; 
 export 'group.dart' ; 
 export 'groupResponse.dart' ; 
 export 'groupsResponse.dart' ; 

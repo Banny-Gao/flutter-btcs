@@ -41,7 +41,11 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin {
     return ScopedModelDescendant<AppModel>(builder: (context, child, model) {
       return Scaffold(
         appBar: AppBar(
-          title: Text('比特超算'),
+          title: Image.asset(
+            'assets/img/logo.png',
+            fit: BoxFit.fitHeight,
+            height: 32.0,
+          ),
         ),
         body: ListView(
           children: <Widget>[
@@ -248,7 +252,7 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin {
             buildTitle('BTC矿池算力'),
             _hashRates.length != 0
                 ? Container(
-                    width: MediaQuery.of(context).size.width,
+                    width: MediaQuery.of(context).size.width - 20.0,
                     height: 200.0,
                     child: Echarts(
                       option: ''' 

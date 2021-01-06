@@ -3,6 +3,7 @@ import 'dart:core';
 
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import '../themes/galleryThemeData.dart';
 
 import 'index.dart';
 
@@ -10,7 +11,10 @@ class ThemeModel extends BaseModel {
   Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
 
   static const _THEME_KEY = "theme_prefs_key";
-  static List<ThemeData> _themes = [ThemeData.light(), ThemeData.dark()];
+  static List<ThemeData> _themes = [
+    GalleryThemeData.lightThemeData,
+    GalleryThemeData.darkThemeData
+  ];
   int _currentTheme = 0;
 
   ThemeData get theme => _themes[_currentTheme];

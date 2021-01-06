@@ -35,6 +35,13 @@ final routes = {
     return Order(orderNumber: args['orderNumber']);
   },
   '/withdraws': (context) => Withdraws(),
+  '/changePassword': (context) => ChangePassword(),
+  '/changePhone': (context) => ChangePhone(),
+  '/auth': (context) {
+    final Map<String, dynamic> args = ModalRoute.of(context).settings.arguments;
+
+    return Auth(shouldGetAuthInfo: args['shouldGetAuthInfo']);
+  },
   // ignore: top_level_function_literal_block
   '/group': (context) {
     final Map<String, dynamic> args = ModalRoute.of(context).settings.arguments;

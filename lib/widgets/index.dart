@@ -13,3 +13,6 @@ export 'orders/orders.dart';
 export 'orders/order.dart';
 export 'assets/withdraws.dart';
 export 'groups/group.dart';
+export 'owner/changePassword.dart';
+export 'owner/changePhone.dart';
+export 'owner/auth.dart';
