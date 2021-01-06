@@ -66,7 +66,7 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin {
       child: new Swiper(
         itemBuilder: (BuildContext context, int index) {
           return Padding(
-            padding: EdgeInsets.all(10.0),
+            padding: EdgeInsets.all(5.0),
             child: DecoratedBox(
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(10.0),
@@ -96,8 +96,8 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin {
         // pagination: new SwiperPagination(),
         autoplay: true,
         autoplayDelay: 5000,
-        viewportFraction: 0.80,
-        scale: 0.84,
+        viewportFraction: 0.86,
+        scale: 0.92,
       ),
     );
   }
@@ -191,18 +191,25 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin {
         children: [
           buildTitle('BTC行情价格'),
           _fireCoins.length != 0
-              ? Container(
-                  width: MediaQuery.of(context).size.width - 20.0,
-                  height: 200.0,
-                  child: Echarts(
-                    option: ''' 
+              ? Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Container(
+                      width: MediaQuery.of(context).size.width - 20.0,
+                      height: 200.0,
+                      child: Echarts(
+                        option: ''' 
                         {
                           dataset: {
                             dimensions: ['varCreateTime', 'lastPrice'],
                             source: ${jsonEncode(_fireCoins)},
                           },
                           tooltip: {
-                              trigger: 'axis'
+                              trigger: 'axis',
+                              formatter: function (params) {
+                                  var data = params[0].value
+                                  return data.varCreateTime + '<br />\$ ' + data.lastPrice
+                              }
                           },
                           xAxis: {
                               type: 'category',
@@ -214,7 +221,7 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin {
                           },
                           grid: {
                             left: '14%',
-                            top: 20,
+                            top: 16,
                           },
                           dataZoom: [{
                               type: 'inside',
@@ -233,8 +240,10 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin {
                           }],
                         }
                           ''',
-                    captureAllGestures: true,
-                  ),
+                        captureAllGestures: true,
+                      ),
+                    ),
+                  ],
                 )
               : Container(),
         ],
@@ -249,20 +258,36 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin {
         margin: EdgeInsets.only(top: 20.0),
         child: Column(
           children: [
-            buildTitle('BTC矿池算力'),
+            buildTitle('比特超算矿池算力'),
             _hashRates.length != 0
-                ? Container(
-                    width: MediaQuery.of(context).size.width - 20.0,
-                    height: 200.0,
-                    child: Echarts(
-                      option: ''' 
+                ? Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                        Padding(
+                          padding: EdgeInsets.only(
+                            left: 24.0,
+                          ),
+                          child: Text(
+                            'TH/s',
+                            style: TextStyle(fontSize: 12.0),
+                          ),
+                        ),
+                        Container(
+                          width: MediaQuery.of(context).size.width - 20.0,
+                          height: 200.0,
+                          child: Echarts(
+                            option: ''' 
                         {
                           dataset: {
                             dimensions: ['varCreateTime', 'hashrate'],
                             source: ${jsonEncode(_hashRates)},
                           },
                           tooltip: {
-                              trigger: 'axis'
+                              trigger: 'axis',
+                              formatter: function (params) {
+                                  var data = params[0].value
+                                  return data.varCreateTime + '<br />' + data.hashrate + ' TH/s'
+                              }
                           },
                           xAxis: {
                               type: 'category',
@@ -270,18 +295,15 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin {
                           },
                           yAxis: {
                               type: 'value',
-                              scale: true,
                           },
                           grid: {
                             left: '14%',
-                            top: 20,
+                            top: 16,
                             bottom: 20,
                           },
                           series: [{
                             type: 'line',
-                            smooth: true,
                             symbol: 'none',
-                            sampling: 'average',
                             itemStyle: {
                                 color: 'rgb(255, 158, 68)'
                             },
@@ -297,8 +319,9 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin {
                           }],
                         }
                           ''',
-                    ),
-                  )
+                          ),
+                        ),
+                      ])
                 : Container(),
           ],
         ),

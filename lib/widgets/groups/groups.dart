@@ -42,7 +42,7 @@ class _GroupsState extends State<Groups>
   double gridChildWidth;
   double gridChildHeight;
   double gridVerticalPadding;
-  double childAspectRatio = 1.25;
+  double childAspectRatio = 2;
 
   get wantKeepAlive => true;
 
@@ -104,7 +104,7 @@ class _GroupsState extends State<Groups>
   Widget build(BuildContext context) {
     gridChildWidth = MediaQuery.of(context).size.width - 10;
     gridChildHeight = gridChildWidth / childAspectRatio;
-    gridVerticalPadding = gridChildHeight / 180;
+    gridVerticalPadding = gridChildHeight / 140;
 
     return ScopedModelDescendant<AppModel>(builder: (context, child, model) {
       return Scaffold(
@@ -236,32 +236,6 @@ class _GroupsState extends State<Groups>
     };
 
     List<Widget> children = <Widget>[
-      Container(
-        height: gridChildHeight / 2.5,
-        child: Stack(
-          fit: StackFit.expand,
-          children: [
-            Hero(
-              tag: group.id,
-              child: Image.network(group.producImg, fit: BoxFit.fill),
-            ),
-            Material(
-              type: MaterialType.transparency,
-              child: InkWell(
-                onTap: () {
-                  Navigator.of(context).pushNamed(
-                    '/group',
-                    arguments: {
-                      'id': group.id,
-                    },
-                  );
-                },
-              ),
-            ),
-          ],
-        ),
-      ),
-      Divider(height: 0),
       Padding(
         padding: EdgeInsets.fromLTRB(10.0, gridVerticalPadding, 10.0, 0),
         child: Text(
@@ -269,7 +243,7 @@ class _GroupsState extends State<Groups>
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
           style: TextStyle(
-            fontSize: gridChildHeight / 26,
+            fontSize: gridChildHeight / 14,
             fontWeight: FontWeight.w600,
           ),
         ),
@@ -286,7 +260,7 @@ class _GroupsState extends State<Groups>
                 child: Text(
                   '$key',
                   style: TextStyle(
-                    fontSize: gridChildHeight / 35,
+                    fontSize: gridChildHeight / 20,
                     color: Colors.black45,
                   ),
                 ),
@@ -295,7 +269,7 @@ class _GroupsState extends State<Groups>
                 '${map[key]}',
                 style: TextStyle(
                   color: Colors.black54,
-                  fontSize: gridChildHeight / 30,
+                  fontSize: gridChildHeight / 18,
                 ),
               ),
             ],
@@ -311,20 +285,59 @@ class _GroupsState extends State<Groups>
     ]);
 
     return Card(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: children,
-      ),
+      child: Row(children: [
+        // Container(
+        //   width: MediaQuery.of(context).size.width * 0.4,
+        //   child: Stack(
+        //     fit: StackFit.expand,
+        //     children: [
+        //       Hero(
+        //         tag: group.id,
+        //         child: Image.network(group.producImg, fit: BoxFit.fitWidth),
+        //       ),
+        //       Material(
+        //         type: MaterialType.transparency,
+        //         child: InkWell(
+        //           onTap: () {
+        //             Navigator.of(context).pushNamed(
+        //               '/group',
+        //               arguments: {
+        //                 'id': group.id,
+        //               },
+        //             );
+        //           },
+        //         ),
+        //       ),
+        //     ],
+        //   ),
+        // ),
+        Expanded(
+          child: InkWell(
+            onTap: () {
+              Navigator.of(context).pushNamed(
+                '/group',
+                arguments: {
+                  'id': group.id,
+                },
+              );
+            },
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: children,
+            ),
+          ),
+        ),
+      ]),
     );
   }
 
   Widget buildGroupState(state, countDownTime) {
     TextStyle basicStyle = TextStyle(
-      fontSize: gridChildHeight / 30,
+      fontSize: gridChildHeight / 18,
       color: Colors.black45,
     );
     TextStyle activeStyle = TextStyle(
-      fontSize: gridChildHeight / 35,
+      fontSize: gridChildHeight / 20,
       color: Colors.red[400],
     );
 
@@ -355,7 +368,7 @@ class _GroupsState extends State<Groups>
               child: Text(
                 Utils.GroupState[state - 1],
                 style: TextStyle(
-                  fontSize: gridChildHeight / 30,
+                  fontSize: gridChildHeight / 18,
                   color: Colors.black45,
                 ),
               ),
@@ -394,7 +407,7 @@ class _GroupsState extends State<Groups>
                 TextSpan(
                   text: '${group.realityMoney} USDT',
                   style: TextStyle(
-                    fontSize: gridChildHeight / 35,
+                    fontSize: gridChildHeight / 20,
                     color: Colors.black45,
                     decoration: TextDecoration.lineThrough,
                   ),
@@ -403,7 +416,7 @@ class _GroupsState extends State<Groups>
                   text: ' ${group.discountMoney} USDT',
                   style: TextStyle(
                     color: Colors.red[400],
-                    fontSize: gridChildHeight / 30,
+                    fontSize: gridChildHeight / 18,
                   ),
                 ),
               ],
@@ -431,7 +444,7 @@ class _GroupsState extends State<Groups>
         (group.sellPlatform / group.platformTotal).toStringAsFixed(2));
 
     return Padding(
-      padding: EdgeInsets.fromLTRB(10.0, 0, 10.0, gridChildHeight / 35),
+      padding: EdgeInsets.fromLTRB(10.0, 0, 10.0, gridChildHeight / 20),
       child: group.groupState != 1
           ? Row(
               children: [
@@ -447,7 +460,7 @@ class _GroupsState extends State<Groups>
                     '已售${soldPercent * 100}%',
                     style: TextStyle(
                       color: Colors.black54,
-                      fontSize: gridChildHeight / 35,
+                      fontSize: gridChildHeight / 20,
                     ),
                   ),
                 ),

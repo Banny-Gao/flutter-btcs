@@ -18,11 +18,11 @@ class OrderSubmit extends StatefulWidget {
 
 class _OrderSubmit extends State<OrderSubmit> {
   Map<String, dynamic> serverKeyMap = {
+    'serveProduct': '服务/商品',
     'chargeWay': '收费方式',
     'costType': '费用类型',
     'number': '数量',
     'price': '价格',
-    'serveProduct': '服务/商品',
     'serviceName': '服务商',
     'subtotal': '小计',
   };

@@ -24,7 +24,8 @@ class _LoginPageState extends State<Login> with SingleTickerProviderStateMixin {
   final _signUpKey = GlobalKey<FormState>();
   final _signInKey = GlobalKey<FormState>();
 
-  FocusNode _phoneFocusNode = FocusNode();
+  FocusNode _signInPhoneFocusNode = FocusNode();
+  FocusNode _signUpPhoneFocusNode = FocusNode();
 
   TextEditingController _signInPhoneController = new TextEditingController();
   TextEditingController _signInPasswordController = new TextEditingController();
@@ -50,7 +51,8 @@ class _LoginPageState extends State<Login> with SingleTickerProviderStateMixin {
   Color _left = Colors.blue[600];
   Color _right = Common.Colors.whiteGradientStart;
 
-  String _phone = '';
+  String _signInPhone = '';
+  String _signUpPhone = '';
   String _signInPassword = '';
   String _signUpCode = '';
   String _signUpPassword = '';
@@ -71,16 +73,31 @@ class _LoginPageState extends State<Login> with SingleTickerProviderStateMixin {
       end: TextStyle(color: _left),
     ).animate(_textStyleController);
 
-    _phoneFocusNode.addListener(() {
-      if (!_phoneFocusNode.hasFocus) {
-        final value = _signUpPhoneController.text;
+    _signInPhoneFocusNode.addListener(() {
+      if (!_signInPhoneFocusNode.hasFocus) {
+        final value = _signInPhoneController.text;
         if (Utils.Re.phone.hasMatch(value.trim())) {
           setState(() {
-            _phone = value;
+            _signInPhone = value;
           });
         } else {
           setState(() {
-            _phone = '';
+            _signInPhone = '';
+          });
+        }
+      }
+    });
+
+    _signUpPhoneFocusNode.addListener(() {
+      if (!_signUpPhoneFocusNode.hasFocus) {
+        final value = _signUpPhoneController.text;
+        if (Utils.Re.phone.hasMatch(value.trim())) {
+          setState(() {
+            _signUpPhone = value;
+          });
+        } else {
+          setState(() {
+            _signUpPhone = '';
           });
         }
       }
@@ -236,6 +253,7 @@ class _LoginPageState extends State<Login> with SingleTickerProviderStateMixin {
                           EdgeInsets.only(top: 10.0, left: 25.0, right: 25.0),
                       child: TextFormField(
                         autofocus: true,
+                        focusNode: _signInPhoneFocusNode,
                         controller: _signInPhoneController,
                         keyboardType: TextInputType.phone,
                         style: TextStyle(fontSize: 16.0, color: Colors.black),
@@ -250,7 +268,7 @@ class _LoginPageState extends State<Login> with SingleTickerProviderStateMixin {
                         ),
                         validator: _validatePhone,
                         onSaved: (val) {
-                          _phone = val.trim();
+                          _signInPhone = val.trim();
                         },
                       ),
                     ),
@@ -391,16 +409,16 @@ class _LoginPageState extends State<Login> with SingleTickerProviderStateMixin {
                                 right: 25.0),
                             child: TextFormField(
                               autofocus: true,
-                              focusNode: _phoneFocusNode,
+                              focusNode: _signUpPhoneFocusNode,
                               controller: _signUpPhoneController,
                               onChanged: (value) {
                                 if (Utils.Re.phone.hasMatch(value.trim())) {
                                   setState(() {
-                                    _phone = value;
+                                    _signUpPhone = value;
                                   });
                                 } else {
                                   setState(() {
-                                    _phone = '';
+                                    _signUpPhone = '';
                                   });
                                 }
                               },
@@ -417,7 +435,7 @@ class _LoginPageState extends State<Login> with SingleTickerProviderStateMixin {
                               ),
                               validator: _validatePhone,
                               onSaved: (val) {
-                                _phone = val.trim();
+                                _signUpPhone = val.trim();
                               },
                             ),
                           ),
@@ -449,7 +467,7 @@ class _LoginPageState extends State<Login> with SingleTickerProviderStateMixin {
                                     padding: EdgeInsets.all(10.0),
                                     child: RaisedButton(
                                       onPressed: Utils.Re.phone.hasMatch(
-                                                _phone.trim(),
+                                                _signUpPhone.trim(),
                                               ) &&
                                               countdownTime == 0
                                           ? _handleGetRegisterCode
@@ -683,7 +701,7 @@ class _LoginPageState extends State<Login> with SingleTickerProviderStateMixin {
   }
 
   void _handleGetRegisterCode() async {
-    final response = await Utils.API.getCode(_phone, 3);
+    final response = await Utils.API.getCode(_signUpPhone, 3);
     final resp = Models.ResponseBasic.fromJson(response);
     if (resp.code != 200) return;
 
@@ -719,7 +737,7 @@ class _LoginPageState extends State<Login> with SingleTickerProviderStateMixin {
     }
 
     final response = await Utils.API.signUp(
-      phone: _phone,
+      phone: _signUpPhone,
       code: _signUpCode,
       password: _signUpPassword,
       inviteCode: _signUpInviteCode,
@@ -744,7 +762,7 @@ class _LoginPageState extends State<Login> with SingleTickerProviderStateMixin {
     _signInForm.save();
 
     final response = await Utils.API.passwordSignIn(
-      phone: _phone,
+      phone: _signInPhone,
       password: _signInPassword,
     );
 

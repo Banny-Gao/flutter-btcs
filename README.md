@@ -1,4 +1,4 @@
-# ore_pool_app
+# btcs_plus
 
 A new Flutter project.
 

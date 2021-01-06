@@ -351,20 +351,19 @@ class _GroupState extends State<Group> with RouteAware {
       '每期还款利息': '${group.stagingRate}%',
     };
     final Map<String, String> tipsMap = {
-      '矿机贷款首付':
-          '''你所分期购买的矿机费用（均已包含算力质保费、运维质保费、托管运输上架费），因市场各种因素等导致价格変化，平台保留价格调整的权利，实际购买价格以付款时为准，平台不予以退补差价。''',
-      '分期付款周期': '''实物矿机产品全部还清本金后产权和使用权归购买人所有(矿机租赁期内的使用权归购买人所有) ''',
-      '每期还款本金': '''当挖矿收益不足以抵扣分期应还本金时，购买人需提前还清本期剩余本金差额，否则平台将暂时关闭相应的矿机。''',
-      '托管矿位租金':
-          '''矿位租金(租金均已经包含电费、水费、网络费，日常监控、网络维护、场地配套、算力保障，矿场降温系统）矿位租金是从数字资产的收益中扣除矿位租金。如遇供电方调价等不可抗力导致矿位租金変化，平台保留矿位租金调整的权利。''',
-      '管理费用比例': '''还清本金后平台管理费按数字资产的收益30%收取。''',
-      '每期还款利息': '''按托管批次在数字资产的收益中扣除。注册首年由平台承担可能为0利息。''',
+      '矿机贷款首付': '${group.downExplain}',
+      '分期付款周期': '${group.stagingExplain}',
+      '每期还款本金': '${group.repaymentExplain}',
+      '托管矿位租金': '${group.careExplain}',
+      '管理费用比例': '${group.managExplain}',
+      '每期还款利息': '${group.interestExplain}',
     };
 
     return Padding(
       padding: EdgeInsets.only(bottom: 10.0),
       child: Column(
         children: map.keys.map<Widget>((key) {
+          print(tipsMap[key]);
           final tooltip = tipsMap[key] != null
               ? Padding(
                   padding: EdgeInsets.only(left: 6.0),
@@ -497,6 +496,8 @@ class _GroupState extends State<Group> with RouteAware {
                   group.countDownTime -= 1000;
                 });
               });
+
+          print(group.downExplain);
         });
     } finally {
       EasyLoading.dismiss();
