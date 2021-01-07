@@ -1,0 +1,6 @@
+{
+  "user": "$user",
+  "token": "",
+  "phone": "",
+  "cache": "$cacheConfig"
+}

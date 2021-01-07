@@ -1,0 +1,22 @@
+{
+  "awaitElectricity": 0,
+  "buyNumber": 0,
+  "causeStatus": 0,
+  "createTime": "",
+  "currencyIconPath": "",
+  "currencyName": "",
+  "energyStatus": 0,
+  "groupName": "",
+  "id": 0,
+  "lcd": "",
+  "memberId": 0,
+  "miningEndTime": "",
+  "money": 0,
+  "orderNumber": "",
+  "paymentNumber": 0,
+  "producImg": "",
+  "robotStatus": 0,
+  "status": 0,
+  "surplusMoney": 0,
+  "totalEarnings": 0
+}

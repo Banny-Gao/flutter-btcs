@@ -1,0 +1,18 @@
+{
+  "actualMoney": 0,
+  "address": "",
+  "createTime": "",
+  "currencyId": 0,
+  "currencyName": "",
+  "id": 0,
+  "memberId": 0,
+  "memberName": "",
+  "money": 0,
+  "opId": 0,
+  "opTime": "",
+  "refReason": "",
+  "serviceCharge": 0,
+  "status": 0,
+  "username": "",
+  "remark": ""
+}
