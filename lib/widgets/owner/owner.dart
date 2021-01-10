@@ -12,6 +12,7 @@ import '../../routes.dart';
 
 class Owner extends StatefulWidget {
   Owner({Key key}) : super(key: key);
+
   @override
   _OwnerState createState() => _OwnerState();
 }
@@ -332,9 +333,27 @@ class _OwnerState extends State<Owner>
         }
 
         if (user.autoStatus == 0) {
-          Navigator.of(context).pushNamed('/auth');
+          Navigator.of(context).pushNamed('/auth', arguments: {
+            'shouldGetAuthInfo': false,
+          });
           return;
         }
+        break;
+      case 'changePassword':
+        Navigator.of(context).pushNamed(
+          '/changePassword',
+          arguments: {
+            'phone': user.memberPhone,
+          },
+        );
+        break;
+      case 'changePhone':
+        Navigator.of(context).pushNamed(
+          '/changePhone',
+          arguments: {
+            'mode': 0,
+          },
+        );
         break;
       default:
         Navigator.of(context).pushNamed(tab['path']);
