@@ -35,16 +35,19 @@ final routes = {
     return Order(orderNumber: args['orderNumber']);
   },
   '/withdraws': (context) => Withdraws(),
+  // ignore: top_level_function_literal_block
   '/changePassword': (context) {
     final Map<String, dynamic> args = ModalRoute.of(context).settings.arguments;
-
-    return ChangePassword(phone: args['phone']);
+    final phone = args != null ? args['phone'] : null;
+    return ChangePassword(phone: phone);
   },
+  // ignore: top_level_function_literal_block
   '/changePhone': (context) {
     final Map<String, dynamic> args = ModalRoute.of(context).settings.arguments;
-
-    return ChangePhone(mode: args['mode']);
+    final mode = args != null ? args['mode'] : 0;
+    return ChangePhone(mode: mode);
   },
+  // ignore: top_level_function_literal_block
   '/auth': (context) {
     final Map<String, dynamic> args = ModalRoute.of(context).settings.arguments;
 

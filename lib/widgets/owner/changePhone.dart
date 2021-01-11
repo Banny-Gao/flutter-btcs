@@ -2,17 +2,16 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:scoped_model/scoped_model.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 
 import '../../scopedModels/index.dart';
 import '../../models/index.dart' as Models;
 import '../../util/index.dart' as Utils;
-import '../../common/index.dart' as Common;
 
+// ignore: must_be_immutable
 class ChangePhone extends StatefulWidget {
   num mode;
-  ChangePhone({Key key, this.mode = 0}) : super(key: key);
+  ChangePhone({Key key, @required this.mode}) : super(key: key);
 
   @override
   _ChangePhone createState() => _ChangePhone();
