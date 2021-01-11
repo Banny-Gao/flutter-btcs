@@ -251,7 +251,7 @@ class _ChangePhone extends State<ChangePhone> {
     }
     EasyLoading.showInfo('手机号修改成功，请重新登录');
 
-    Navigator.of(context).restorablePopAndPushNamed('/login');
+    Navigator.of(context).popAndPushNamed('/login');
   }
 
   handlePhoneLogin(model) async {
@@ -268,7 +268,7 @@ class _ChangePhone extends State<ChangePhone> {
     await model.toggleLogStatus(isLogin,
         token: resp.data?.token, phone: resp.data?.phone);
 
-    Navigator.of(context).restorablePopAndPushNamed('/');
+    Navigator.of(context).popAndPushNamed('/');
   }
 
   handleChangePassword() {

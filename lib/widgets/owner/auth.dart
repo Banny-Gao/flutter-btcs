@@ -238,6 +238,51 @@ class _Auth extends State<Auth> {
             ),
           ),
           Padding(
+            padding: EdgeInsets.only(left: 20.0, right: 20.0),
+            child: TextFormField(
+              controller: _idCardNumController,
+              keyboardType: TextInputType.number,
+              decoration: InputDecoration(
+                hintText: 'BTC提币地址（认证后不可修改）',
+              ),
+              validator: (val) =>
+              val.trim().length != 0 ? null : Utils.Tips.btcAddressErrorText,
+              onSaved: (val) {
+                authInfo.btcAddress = val.trim();
+              },
+            ),
+          ),
+          Padding(
+            padding: EdgeInsets.only(left: 20.0, right: 20.0),
+            child: TextFormField(
+              controller: _idCardNumController,
+              keyboardType: TextInputType.number,
+              decoration: InputDecoration(
+                hintText: 'ETH提币地址（认证后不可修改）',
+              ),
+              validator: (val) =>
+              val.trim().length != 0 ? null : Utils.Tips.ethAddressErrorText,
+              onSaved: (val) {
+                authInfo.ethAddress = val.trim();
+              },
+            ),
+          ),
+          Padding(
+            padding: EdgeInsets.only(left: 20.0, right: 20.0),
+            child: TextFormField(
+              controller: _idCardNumController,
+              keyboardType: TextInputType.number,
+              decoration: InputDecoration(
+                hintText: 'USDT打款地址（认证后不可修改）',
+              ),
+              validator: (val) =>
+              val.trim().length != 0 ? null : Utils.Tips.usdtAddressErrorText,
+              onSaved: (val) {
+                authInfo.usdtAddress = val.trim();
+              },
+            ),
+          ),
+          Padding(
             padding: EdgeInsets.only(left: 20.0, right: 20.0, bottom: 40.0),
             child: Container(
               decoration: BoxDecoration(

@@ -221,6 +221,6 @@ class _ChangePassword extends State<ChangePassword> {
     }
     EasyLoading.showInfo('密码修改成功，请重新登录');
 
-    Navigator.of(context).restorablePopAndPushNamed('/login');
+    Navigator.of(context).popAndPushNamed('/login');
   }
 }

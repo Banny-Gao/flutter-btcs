@@ -13,6 +13,9 @@ class Tips {
   static String nameErrorText = "姓名不能空";
   static String isCardDateStartError = "有效期开始时间不能为空";
   static String isCardDateEndError = "有效期结束时间不能为空";
+  static String btcAddressErrorText = "BTC提现地址不能为空";
+  static String ethAddressErrorText = "ETH提现地址不能为空";
+  static String usdtAddressErrorText = "USDT提现地址不能为空";
 }
 
 List AuthStates = ['未认证', '待审核', '审核拒绝', '已认证'];
